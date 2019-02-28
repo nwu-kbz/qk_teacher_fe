@@ -73,7 +73,7 @@
     width: 400px;
     height: 270px;
     background-color: white;
-    padding: 7px 25px 3px;
+    padding: 15px 25px 3px;
     position: absolute;
     left: 50%;
     top: 50%;
