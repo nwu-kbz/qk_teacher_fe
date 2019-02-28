@@ -6,6 +6,7 @@ import router from './router'
 import '../node_modules/bootstrap/dist/css/bootstrap.css';
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
+import './theme/index.less';
 
 Vue.config.productionTip = false
 Vue.use(iView);

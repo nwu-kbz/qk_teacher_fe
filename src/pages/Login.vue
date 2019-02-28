@@ -1,7 +1,6 @@
 <template>
   <div class="main">
     <div class="bg bg-blur"></div>
-
     <div class="main-page">
       <div class="title">
         <h1 style="font-size: 30px;color: #51d3b2;display: inline-block">用户登录&nbsp;</h1>
@@ -22,7 +21,9 @@
           <Icon type="ios-help-circle" size="18"/>忘记密码
         </div>
       </div>
+      <a href="#">没有账号？点击注册</a>
     </div>
+
   </div>
 </template>
 
@@ -70,15 +71,15 @@
     }
   .main-page {
     width: 400px;
-    height: 300px;
+    height: 270px;
     background-color: white;
-    padding: 3px 25px 3px;
+    padding: 7px 25px 3px;
     position: absolute;
     left: 50%;
     top: 50%;
     margin-left: -225px;
     margin-top: -180px;
-
+border-radius:20px ;
   }
   .main {
     position: relative;
@@ -119,5 +120,17 @@
 .forgetPassword a{
   line-height: 25px;
 }
-
+.forgetPassword{
+  float: right;
+}
+.altOption{
+  width: 300px;
+  margin: 5px auto;
+}
+  .main-page a{
+    float: right;
+    position:absolute;
+    bottom:5px;
+    right:5px;
+  }
 </style>
