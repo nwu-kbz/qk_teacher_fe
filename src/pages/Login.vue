@@ -11,14 +11,16 @@
         <span class="line"></span>
       </div>
       <Input class='input_message' prefix="ios-contact-outline" placeholder="用户名" style="width: auto" clearable/>
-      <Input class='input_message' prefix="ios-lock-outline" placeholder="密码" style="width: auto" clearable type="password"/>
-      <Button type="success" long class="login_btn">登录</Button>
+      <Input class='input_message' prefix="ios-lock-outline" placeholder="密码" style="width: auto" clearable
+             type="password"/>
+      <Button type="success" long class="login_btn" @click="login">登录</Button>
       <div class="altOption">
         <div class="remenberPassword altDiv">
           <Checkbox v-model="rememberPasswd">记住密码</Checkbox>
         </div>
         <div class="forgetPassword altDiv">
-          <Icon type="ios-help-circle" size="18"/>忘记密码
+          <Icon type="ios-help-circle" size="18"/>
+          忘记密码
         </div>
       </div>
       <a href="#">没有账号？点击注册</a>
@@ -28,13 +30,19 @@
 </template>
 
 <script>
-  import { Checkbox,Icon,Input,Button} from 'iview';
+  import {Checkbox, Icon, Input, Button} from 'iview';
+
   export default {
     name: "Login",
-    components:{Checkbox,Icon,Input,Button },
+    components: {Checkbox, Icon, Input, Button},
     data() {
       return {
-        rememberPasswd:false
+        rememberPasswd: false
+      }
+    },
+    methods:{
+      login(){
+        this.$router.push('/main')
       }
     }
   }
@@ -65,10 +73,12 @@
     -ms-filter: blur(5px);
     filter: blur(5px);
   }
-  .main-page .title{
-      margin: 0 auto;
-      text-align: center;
-    }
+
+  .main-page .title {
+    margin: 0 auto;
+    text-align: center;
+  }
+
   .main-page {
     width: 400px;
     height: 270px;
@@ -79,11 +89,13 @@
     top: 50%;
     margin-left: -225px;
     margin-top: -180px;
-border-radius:20px ;
+    border-radius: 20px;
   }
+
   .main {
     position: relative;
   }
+
   .welcomeText {
     height: 20px;
     line-height: 20px;
@@ -100,37 +112,44 @@ border-radius:20px ;
     color: #686868;
     vertical-align: middle;
   }
-.login_btn{
-  background-color: #51d3b2;
-  border:none;
-  width: 300px;
-  display: block !important;
-  margin:  0 auto;
-}
-  .input_message{
+
+  .login_btn {
+    background-color: #51d3b2;
+    border: none;
+    width: 300px;
+    display: block !important;
+    margin: 0 auto;
+  }
+
+  .input_message {
 
     display: block;
-    width: 300px!important;
+    width: 300px !important;
 
     margin: 10px auto;
   }
-.altDiv{
-  display: inline-block;
-}
-.forgetPassword a{
-  line-height: 25px;
-}
-.forgetPassword{
-  float: right;
-}
-.altOption{
-  width: 300px;
-  margin: 5px auto;
-}
-  .main-page a{
+
+  .altDiv {
+    display: inline-block;
+  }
+
+  .forgetPassword a {
+    line-height: 25px;
+  }
+
+  .forgetPassword {
     float: right;
-    position:absolute;
-    bottom:5px;
-    right:5px;
+  }
+
+  .altOption {
+    width: 300px;
+    margin: 5px auto;
+  }
+
+  .main-page a {
+    float: right;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
   }
 </style>
