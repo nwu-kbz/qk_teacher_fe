@@ -1,0 +1,63 @@
+@cell-prefix-cls: ~"@{css-prefix}cell";
+@card-prefix-cls: ~"@{css-prefix}card";
+@collapse-prefix-cls: ~"@{css-prefix}collapse";
+@badge-prefix-cls: ~"@{css-prefix}badge";
+
+.@{cell-prefix-cls} {
+  position: relative;
+  overflow: hidden;
+
+  &-main {
+    display: inline-block;
+    vertical-align: middle;
+    width:100%;
+  }
+}
+.@{collapse-prefix-cls}{
+  background-color: rgba(87, 91, 99, .5);
+  border-radius: 3px;
+  //border: 1px solid #dcdee2;
+  & > &-item{
+    //border-top: 1px solid @border-color-base;
+    &:first-child {
+      border-top: 0;
+    }
+
+    > .@{collapse-prefix-cls}-header{
+      height: 38px;
+      line-height: 38px;
+      padding-left: 16px;
+      color: #e1d8df;
+      cursor: pointer;
+      position: relative;
+      //border-bottom: 1px solid transparent;
+      transition: all @transition-time @ease-in-out;
+      background-color: rgba(87, 91, 99, .5);
+
+      > i{
+        transition: transform @transition-time @ease-in-out;
+        margin-right: 14px;
+      }
+    }
+  }
+}
+.@{card-prefix-cls} {
+  background: #fff;
+  border-radius: @border-radius-small;
+  font-size: @font-size-base;
+  position: relative;
+  //overflow: hidden;
+  transition: all @transition-time @ease-in-out;
+
+  &-head {
+    .content-header;
+    color:white;
+    p {
+      color: white
+    }
+  }
+}
+.ivu-collapse-content{
+  background-color: rgba(87, 91, 99, 0.5);;
+  color: white;
+}

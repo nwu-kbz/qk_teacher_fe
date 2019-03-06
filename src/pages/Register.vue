@@ -3,37 +3,32 @@
     <div class="bg bg-blur"></div>
     <div class="main-page">
       <div class="title">
-        <h1 style="font-size: 30px;color: #51d3b2;display: inline-block">用户登录&nbsp;</h1>
-        <span style="font-size: 15px;color:#dbdbdb;">Login User</span></div>
+        <h1 style="font-size: 30px;color: #51d3b2;display: inline-block">注册&nbsp;</h1>
+        <span style="font-size: 15px;color:#dbdbdb;">Register User</span></div>
       <div class="welcomeText">
         <span class="line"></span>
         <span class="txt" style="font-size: 10px">欢迎来到轻课</span>
         <span class="line"></span>
       </div>
       <Input class='input_message' prefix="ios-contact-outline" placeholder="用户名" style="width: auto" clearable/>
+      <Input class='input_message' prefix="ios-mail-outline" placeholder="邮箱" style="width: auto" clearable/>
       <Input class='input_message' prefix="ios-lock-outline" placeholder="密码" style="width: auto" clearable
              type="password"/>
-      <Button type="success" long class="login_btn" @click="login">登录</Button>
+      <Input class='input_message' prefix="ios-lock-outline" placeholder="确认密码" style="width: auto" clearable
+             type="password" id="repassword"/>
+      <Button type="success" long class="login_btn" @click="login">注册</Button>
       <div class="altOption">
-        <div class="remenberPassword altDiv">
-          <Checkbox v-model="rememberPasswd">记住密码</Checkbox>
-        </div>
-        <div class="forgetPassword altDiv">
-          <Icon type="ios-help-circle" size="18"/>
-          忘记密码
-        </div>
       </div>
-      <router-link to="/register">没有账号？点击注册</router-link>
-
+      <router-link to="/main">已有账号？返回登录</router-link>
     </div>
   </div>
 </template>
 
 <script>
-  import {Checkbox, Icon, Input, Button} from 'iview';
+  import {Icon, Input, Button} from 'iview';
   export default {
     name: "Login",
-    components: {Checkbox, Icon, Input, Button},
+    components: {Icon, Input, Button},
     data() {
       return {
         rememberPasswd: false
@@ -81,7 +76,7 @@
 
   .main-page {
     width: 400px;
-    height: 270px;
+    height: 310px;
     background-color: white;
     padding: 15px 25px 3px;
     position: absolute;

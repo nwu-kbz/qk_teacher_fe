@@ -1,0 +1,111 @@
+<template>
+  <div class="main">
+    <NavBar ref="navBar"></NavBar>
+    <div class="flex-container">
+      <div class="inform_menu flex-item">
+        <button class="add_inform">
+          <Icon type="md-add" sixe="30"/>
+          <router-link to="/inform/editorInform">新建通知</router-link>
+        </button>
+        <ul class="inform_items">
+          <li v-for="(inform) in informArr"
+              :key="inform.id" class="inform_item">
+            <router-link :to='`/inform/showInform/${inform.id}`'>
+              {{inform.content}}
+            </router-link>
+          </li>
+        </ul>
+      </div>
+      <div class="inform_main flex-item">
+        <router-view></router-view>
+      </div>
+    </div>
+
+  </div>
+</template>
+
+<script>
+  import NavBar from "../components/NavBar";
+  import {Icon} from 'iview'
+
+  export default {
+    name: "Inform",
+    components: {NavBar},
+    data() {
+      return {
+        activeName:'3',
+        informArr: [{id: 1, content: '第一条通知'}, {id: 2, content: '第二条通知'}, {id: 3, content: '第三条通知'}]
+      }
+    },
+    mounted: function () {
+      // this.open = ["5"];
+      this.activeName = ['3'];
+      // this.$nextTick(function () {
+      //   this.$refs.menu.updateOpened();
+      //   this.$refs.menu.updateActiveName();
+      // })
+      // // this.handleSelect(this.active);
+    },
+    watch: {
+      '$route'() {
+        this.$refs.leftMenu.currentActiveName = ''
+      }
+
+    }
+  }
+</script>
+
+<style lang="less" scoped>
+  .main {
+    width: 100%;
+    height: 100%;
+    .inform_menu {
+      width: 20%;
+      height: 100%;
+      float: left;
+      min-width: 300px;
+      box-shadow: 2px 2px 5px rgba(128, 128, 128, 0.7);
+      .add_inform {
+        width: 200px;
+        height: 35px;
+        background-color: rgba(78, 197, 164, 0.93);
+        border: none;
+        box-shadow: 2px 2px 5px rgba(128, 134, 149, 0.8);
+        color: white;
+        font-size: 16px;
+        margin: 20px 50px;
+        /*margin-top: 20px;*/
+      }
+      .inform_items {
+        list-style: none;
+        width: 100%;
+        padding: 10px 20px;
+        height: 800px;
+        /*overflow: scroll;*/
+        .inform_item {
+          font-size: 16px;
+          height: 30px;
+          line-height: 20px;
+          margin: 5px auto;
+          border-bottom: 1px solid rgba(158, 158, 158, 0.71);
+        }
+      }
+    }
+    .inform_main {
+      float: left;
+      width: 100%;
+      height: 100%;
+      /*background-color: rebeccapurple;*/
+    }
+
+  }
+
+  .flex-container {
+    display: -webkit-flex;
+    display: flex;
+    width: 100%;
+    height: 94%;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+</style>
