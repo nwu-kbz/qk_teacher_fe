@@ -2,6 +2,7 @@
 @card-prefix-cls: ~"@{css-prefix}card";
 @collapse-prefix-cls: ~"@{css-prefix}collapse";
 @badge-prefix-cls: ~"@{css-prefix}badge";
+@input-number-prefix-cls: ~"@{css-prefix}input-number";
 
 .@{cell-prefix-cls} {
   position: relative;
@@ -61,3 +62,47 @@
   background-color: rgba(87, 91, 99, 0.5);;
   color: white;
 }
+
+
+.@{input-number-prefix-cls} {
+  @radius-wrap: 0 @btn-border-radius @btn-border-radius 0;
+
+  .input;
+  margin: 0;
+  padding: 0;
+  width: 80px;
+  height: @input-height-base;
+  line-height: @input-height-base;
+  vertical-align: middle;
+  border: 1px solid @border-color-base;
+  border-radius: @btn-border-radius;
+  overflow: hidden;
+  &-small {
+    padding: 0;
+    width: 50%;
+    height: 30px;
+    font-size: 16px;
+    line-height: 30px;
+
+    .@{input-number-prefix-cls}-input-wrap {
+      height: @input-height-small;
+    }
+    .@{input-number-prefix-cls}-handler {
+      height: @input-height-small / 2;
+    }
+
+    input {
+      height: @input-height-small;
+      line-height: @input-height-small;
+      margin-top: -1px;
+      vertical-align: top;
+    }
+    .@{input-number-prefix-cls}-handler-up-inner {
+      top: -1px;
+    }
+    .@{input-number-prefix-cls}-handler-down-inner {
+      bottom: -1px;
+    }
+  }
+}
+

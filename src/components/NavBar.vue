@@ -6,10 +6,12 @@
         首页
       </MenuItem>
     </router-link>
+    <router-link to="/qbank">
     <MenuItem name="2">
       <Icon type="ios-paper" size="15"/>
       题库
     </MenuItem>
+    </router-link>
     <router-link to="/inform">
       <MenuItem name="3">
         <Badge dot :offset="[7,0]">
@@ -85,20 +87,20 @@
         this.$Message.info('Clicked cancel');
       }
     },
-    mounted: function() {
-      // this.open = ["5"];
-      this.activeName = ['1'];
-      // this.$nextTick(function() {
-      //   this.$refs.menu.updateOpened();
-      //   this.$refs.menu.updateActiveName();
-      // })
-      // this.handleSelect(this.active);
-    },
-    watch: {
-      '$route' () {
-        this.$refs.leftMenu.currentActiveName = ''
-      }
-    }
+    // mounted: function() {
+    //   // this.open = ["5"];
+    //   this.activeName = ['1'];
+    //   // this.$nextTick(function() {
+    //   //   this.$refs.menu.updateOpened();
+    //   //   this.$refs.menu.updateActiveName();
+    //   // })
+    //   // this.handleSelect(this.active);
+    // },
+    // watch: {
+    //   '$route' () {
+    //     this.$refs.leftMenu.currentActiveName = ''
+    //   }
+    // }
   }
 </script>
 

@@ -10,7 +10,8 @@ import Inform from '../pages/Inform'
 import EditorInform from '../components/EditorInform'
 import ShowInform from '../components/ShowInform'
 import Data from '../pages/Data'
-
+import QBank from '../pages/QBank'
+import CourseDetail from '../pages/CourseDetail'
 Vue.use(Router)
 
 export default new Router({
@@ -45,6 +46,18 @@ export default new Router({
       name: 'ClassBegin',
       component: ClassBegin
     },
+    {
+      path: '/qbank',
+      name: 'QBank',
+      component: QBank,
+
+    },
+    {
+      path: '/courseDetail/:id',
+      name: 'CourseDetail',
+      component: CourseDetail,
+    },
+
     {
       path: '/inform',
       name: 'Inform',
