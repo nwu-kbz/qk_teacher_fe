@@ -7,20 +7,20 @@
         <Input search enter-button placeholder="search something" class="search"/>
       </div>
       <div class="qb_bar_right">
-        <Dropdown style="margin-left: 20px">
+        <Dropdown style="margin-left: 20px" @on-click="handleInsert">
           <Button type="primary">
             录入
             <Icon type="ios-arrow-down"></Icon>
           </Button>
           <DropdownMenu slot="list">
-            <DropdownItem @click="addQuestion">添加单题</DropdownItem>
-            <DropdownItem>上传课件</DropdownItem>
+            <DropdownItem name="1">添加单题</DropdownItem>
+            <DropdownItem name="2">上传课件</DropdownItem>
             <DropdownItem>创建组卷</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </div>
-
     </div>
+
     <div class="qb_containter">
       <div class="qb_menu">
         <div class="qb_menu_item">
@@ -39,7 +39,7 @@
                   章节
                 </template>
                 <button class="editor_charpter" @click="handleEditorCharpter">编辑章节</button>
-                <MenuItem v-for="(charpter,index) in charpterArr" :key="index" :name="'2-'+ index">第{{index}}章
+                <MenuItem v-for="(charpter,index) in charpterArr" :key="index" :name="'2-'+ index">第{{index + 1}}章
                 </MenuItem>
                 <MenuItem name="2-0">未指定章节</MenuItem>
               </Submenu>
@@ -92,25 +92,105 @@
       设定章节数目为：
       <InputNumber :max="30" :min="1" v-model="charpterCount" size="small"></InputNumber>
     </Modal>
+    <Modal v-model="modal2" width="900" class="addQuestion" :styles="{top: '40px'}" scrollable>
+      <p slot="header" class="addQuestion_header">
+        <Icon type="md-pricetags"/>
+        <span>《C程序设计基础》</span>
+      </p>
+      <div class="selectCharpter">
+        <span>章节：</span>
+        <Select style="width:200px">
+          <Option v-for="(item) in charpterArr">第{{item + 1}}章</Option>
+          <Option>未指定章节</Option>
+        </Select>
+      </div>
+
+      <div class="addQuestion_main" slot="">
+        <div class="addQuestion_main_item">
+          <span>题目</span>
+          <div class="editer_question">
+            <div id="toolbar">
+            </div>
+            <div id="editor">
+              <p></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="addQuestion_main_item">
+          <span>题型</span>
+          <Select v-model="questionTypeSelected" style="width:100px;margin-right: 110px">
+            <Option v-for="item in questionType" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          </Select>
+          <span>难度</span>
+          <Rate v-model="value" style="margin-right: 100px"/>
+          <span style="width:90px">预计答题时间：</span>
+          <InputNumber :max="30" :min="1" v-model="value1"></InputNumber>
+          <span>分钟</span>
+        </div>
+        <!--单选-->
+        <div class="addQuestion_main_item" v-show="questionTypeSelected==='单选'">
+          <span>选项</span>
+          <AnswerRadio :answers.sync="answers" :right-answer.sync="rightAnswer"></AnswerRadio>
+        </div>
+        <!--多选-->
+        <div class="addQuestion_main_item" v-show="questionTypeSelected==='多选'">
+          <span>选项</span>
+          <AnswerCheckbox :answers.sync="answers" :right-answer.sync="rightAnswer"></AnswerCheckbox>
+        </div>
+        <!--是非-->
+        <div class="addQuestion_main_item" v-show="questionTypeSelected==='是非'">
+          <span>选项</span>
+          <AnswerJudge :right-answer.sync="rightAnswer"></AnswerJudge>
+        </div>
+        <!--填空-->
+        <div class="addQuestion_main_item" v-show="questionTypeSelected==='填空'">
+          <span>选项</span>
+          <AnswerBlank :right-answer.sync="rightAnswer"></AnswerBlank>
+        </div>
+        <!--简答-->
+        <div class="addQuestion_main_item" v-show="questionTypeSelected==='简答'">
+          <span>选项</span>
+          <AnswerCompute :right-answer.sync="rightAnswer"></AnswerCompute>
+        </div>
+      </div>
+
+      <div slot="footer">
+        <Button size="large" :loading="modal_loading" @click="cancel">取消</Button>
+        <Button size="large" type="success" :loading="modal_loading" @click="ok">确认</Button>
+      </div>
+    </Modal>
   </div>
 
 </template>
 
 <script>
   import NavBar from "../components/NavBar";
-  import {MenuItem, Icon, Menu, Modal, Button} from 'iview'
-  import $Message from 'iview'
+  import {MenuItem, Icon, Menu, Modal, Button, Option, Rate, InputNumber} from 'iview'
+  import $Message from 'iview';
+  import AnswerCheckbox from '../components/answer-checkbox';
+  import AnswerRadio from '../components/answer-radio';
+  import AnswerJudge from '../components/answer-judge';
+  import AnswerCompute from '../components/answer-compute';
+  import AnswerBlank from '../components/answer-blank';
+  import Quill from 'quill'
 
   export default {
     name: "CourseDetail",
-    components: {NavBar},
+    components: {NavBar, AnswerCheckbox, AnswerRadio, AnswerCompute, AnswerJudge,AnswerBlank},
     data() {
       return {
+        answers: {
+        },
+        // showQuestionType:[true,false,false,false,false],
+        rightAnswer: [],
         charpterCount: 0,
         resourceCount: 0,
         modal1: false,
+        modal2: true,
         charpterArr: [],
         deleteCount: 0,
+        questionTypeSelected: '单选',
         questionType: [
           {
             value: '单选',
@@ -191,11 +271,11 @@
         typeModel3: true,
         typeModel4: false,
         //所获取的内容
-        research:{
-          type:'',        //类型（3）   单题，组卷，课件
-          questionType:'',//题型（5）   1.单选   2.多选    3.是非   4.填空    5.简答;
-          level:'',       //难度（4）   1.简单   2.中等    3.困难   4.超纲
-          format:'',      //格式（4）   'ppt','pdf','word','excel'
+        research: {
+          type: '',        //类型（3）   单题，组卷，课件
+          questionType: '',//题型（5）   1.单选   2.多选    3.是非   4.填空    5.简答;
+          level: '',       //难度（4）   1.简单   2.中等    3.困难   4.超纲
+          format: '',      //格式（4）   'ppt','pdf','word','excel'
         },
         //结果数据
         resultArr: [],
@@ -287,17 +367,28 @@
 
     },
     methods: {
+      handleInsert(itemId) {
+        switch (parseInt(itemId)) {
+          case 1:
+            this.modal2 = true;
+            break;
+          case 2:
+            this.modal1 = true;
+            break;
+          default:
+            break;
+        }
+      },
       handleEditorCharpter() {
         this.modal1 = true;
       },
       ok() {
-        // console.log($Message, "---------------------")
         this.$Message.info('Clicked ok');
       },
       cancel() {
         this.$Message.info('Clicked cancel');
       },
-      addQuestion(){
+      addQuestion() {
 
       }
 
@@ -324,38 +415,69 @@
         handler(newVal) {
           if (newVal.type === "单题") {
             //获取所选择的题型数值
-            const questionTypeIndex = this.questionType.findIndex((item,index) => {
+            const questionTypeIndex = this.questionType.findIndex((item, index) => {
               return item.label === newVal.questionType
             });
             //获取所选择的难度数值
-            const levelIndex = this.level.findIndex((item,index) => {
+            const levelIndex = this.level.findIndex((item, index) => {
               return item.label === newVal.level
             });
             this.resultArr = this.singleQuestionArr.filter(item =>
-              item.level === (levelIndex + 1) && item.questionType === (questionTypeIndex +1)
+                item.level === (levelIndex + 1) && item.questionType === (questionTypeIndex + 1)
             );
           }
-            if (newVal.type === "组卷") {
-              this.typeModel2 = false;
-              //获取所选择的难度数值
-              const index = this.level.findIndex((item,index) => {
-                return item.label === newVal.level
-              });
-              this.resultArr = this.paperArr.filter(item => item.level === (index + 1));
-            }
-            if (newVal.type === "课件") {
-              this.typeModel2 = false;
-              this.typeModel3 = false;
-              this.typeModel4 = true;
-              const index = this.formatType.findIndex((item,index) => {
-                return item.label === newVal.format
-              });
-              this.resultArr = this.courseWareArr.filter(item => item.type === (index + 1));
-            }
+          if (newVal.type === "组卷") {
+            this.typeModel2 = false;
+            //获取所选择的难度数值
+            const index = this.level.findIndex((item, index) => {
+              return item.label === newVal.level
+            });
+            this.resultArr = this.paperArr.filter(item => item.level === (index + 1));
+          }
+          if (newVal.type === "课件") {
+            this.typeModel2 = false;
+            this.typeModel3 = false;
+            this.typeModel4 = true;
+            const index = this.formatType.findIndex((item, index) => {
+              return item.label === newVal.format
+            });
+            this.resultArr = this.courseWareArr.filter(item => item.type === (index + 1));
+          }
 
         },
         deep: true
-      }
+      },
+
+    },
+    mounted() {
+
+      const options = {
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+            ['blockquote', 'code-block'],
+
+            [{'header': 1}, {'header': 2}],               // custom button values
+            [{'list': 'ordered'}, {'list': 'bullet'}],
+            [{'script': 'sub'}, {'script': 'super'}],      // superscript/subscript
+            [{'indent': '-1'}, {'indent': '+1'}],          // outdent/indent
+            [{'direction': 'rtl'}],                         // text direction
+
+            [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
+            [{'header': [1, 2, 3, 4, 5, 6, false]}],
+
+            [{'color': []}, {'background': []}],          // dropdown with defaults from theme
+            [{'font': []}],
+            [{'align': []}],
+
+            ['clean']                                         // remove formatting button
+          ]
+        },
+        placeholder: '在此处输入题干...',
+        theme: 'snow',
+        scrollingContainer: '#scrolling-container',
+      };
+      new Quill('#editor', options);
     }
 
   }
@@ -428,8 +550,40 @@
           margin: 10px;
         }
       }
+
     }
   }
 
+  .addQuestion {
+    .addQuestion_header {
+      height: 40px;
+    }
+    .addQuestion_main {
+      flex-wrap: wrap;
+      /*height: 700px;*/
+      /*align-items: center;*/
+      /*display: flex;*/
+      align-items: flex-start;
+      .addQuestion_main_item {
+        display: flex;
+        margin-top: 10px;
+        &:nth-child(2) {
+          margin-top: 80px;
+        }
+      }
+      span {
+        width: 40px
+      }
+      .editor_question {
+        display: inline-block;
+        width: 400px;
+      }
+
+    }
+  }
+
+  .selectCharpter {
+
+  }
 
 </style>
