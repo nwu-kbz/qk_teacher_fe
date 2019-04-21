@@ -1,6 +1,6 @@
 <template>
   <div class="main-page">
-    <NavBar ref="navBar"></NavBar>
+    <NavBar ref="navBar" menus=""></NavBar>
     <div class="user_page">
       <div class="user_photo">
         <Avatar icon="ios-person" size="large"/>

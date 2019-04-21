@@ -7,8 +7,11 @@ import '../node_modules/bootstrap/dist/css/bootstrap.css';
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
+import axios from 'axios';
 
-Vue.config.productionTip = false
+
+Vue.config.productionTip = false;
+Vue.prototype.$http = axios;
 Vue.use(iView);
 /* eslint-disable no-new */
 

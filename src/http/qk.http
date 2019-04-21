@@ -1,0 +1,20 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+###  登录
+GET http://qk.heniankj.com/public/index.php/home/teacher/login?username=test&password=1234563
+#Accept: application/json, text/javascript, */*; q=0.01
+X-Requested-With: XMLHttpRequest
+
+
+### 注册
+GET http://qk.heniankj.com/public/index.php/home/teacher/register?username=test&password=123456&repassword=123456&email=11@qq.com&department=1&school=1&position=1
+Accept: application/json, text/javascript, */*; q=0.01
+X-Requested-With: XMLHttpRequest
+
+
+###

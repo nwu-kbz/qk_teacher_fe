@@ -16,7 +16,7 @@
       <MenuItem name="3">
         <Badge dot :offset="[7,0]">
           <Icon type="ios-notifications" size="20"/>
-          消息
+          通知  {{unread}}
         </Badge>
       </MenuItem>
     </router-link>
@@ -76,7 +76,7 @@
       return {
         activeName: '1',
         modal1: false,
-
+        unread:2
       }
     },
     methods: {
