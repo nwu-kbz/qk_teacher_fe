@@ -46,17 +46,17 @@
           </div>
           <div class="modifyPassword">旧密码：
             <div class="enter_password">
-              <Input style="width: 300px" type="password"/>
+              <Input v-model="oldPassWd" style="width: 300px" type="password"/>
             </div>
           </div>
           <div class="modifyPassword">新密码：
             <div class="enter_password">
-              <Input style="width: 300px" type="password"/>
+              <Input v-model="newPassWd" style="width: 300px" type="password"/>
             </div>
           </div>
           <div class="modifyPassword ">确认密码：
             <div class="confirm_password">
-              <Input style="width: 300px" type="password"/>
+              <Input v-model="rePassWd" style="width: 300px" type="password"/>
             </div>
           </div>
         </Modal>
@@ -76,15 +76,28 @@
       return {
         activeName: '1',
         modal1: false,
-        unread:2
+        unread:2,
+        oldPassWd:'',
+        newPassWd:',' ,
+        rePassWd:''
       }
     },
     methods: {
       ok() {
-        this.$Message.info('Clicked ok');
+        //修改密码
+        this.$http.post('changePasswd ',{
+          params: {
+            oldPassWd:this.oldPassWd,
+            newPassWd:this.newPassWd,
+            rePassWd:this.rePassWd
+          }
+        }).then(res =>{
+
+        });
+        this.$Message.info('修改成功');
       },
       cancel() {
-        this.$Message.info('Clicked cancel');
+        this.$Message.info('取消修改');
       }
     },
     // mounted: function() {

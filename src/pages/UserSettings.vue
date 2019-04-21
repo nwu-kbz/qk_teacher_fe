@@ -81,7 +81,12 @@
           }
         ]
       }
-    }
+    },
+    computed: {
+      teacherInfo() {
+        return this.$store.getters.teacherInfo
+      }
+    },
   }
 </script>
 

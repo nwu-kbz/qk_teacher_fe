@@ -8,16 +8,19 @@ import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
 import axios from 'axios';
-
+import store from './store'
 
 Vue.config.productionTip = false;
+axios.defaults.baseURL = 'http://qk.heniankj.com/public/index.php/home/';
 Vue.prototype.$http = axios;
 Vue.use(iView);
+
 /* eslint-disable no-new */
 
 new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
-})
+  template: '<App/>',
+  store
+});

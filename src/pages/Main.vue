@@ -3,15 +3,14 @@
     <NavBar ref="navBar" menus=""></NavBar>
     <div class="user_page">
       <div class="user_photo">
-        <Avatar icon="ios-person" size="large"/>
+        <img class='ivu-avatar' :src="teacherInfo.avatar" />
       </div>
       <div class="user_label">
-        <label class="user_info">西北大学</label>
-        <label class="user_info">佚名</label>
-        <label class="user_info">教授</label>
-        <label class="user_info">信息科学与技术学院</label>
-        <label class="user_info">
-          <a class="user_info" href="#">xfs0565840@163.com</a></label>
+        <label class="user_info">{{teacherInfo.username}}</label>
+        <label class="user_info">{{teacherInfo.position}}</label>
+        <label class="user_info">{{teacherInfo.school}}</label>
+        <label class="user_info">{{teacherInfo.department}}</label>
+        <label class="user_info">{{teacherInfo.email}}</label>
       </div>
     </div>
     <div id="courseTable"></div>
@@ -28,6 +27,11 @@
     components: {
       NavBar,
       MenuItem, Menu, Icon, Submenu, MenuGroup, Avatar
+    },
+    computed: {
+      teacherInfo() {
+        return this.$store.getters.teacherInfo
+      }
     },
     methods:{
       // gridOnClick: function (e) {

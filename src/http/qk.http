@@ -6,15 +6,24 @@
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
 ###  登录
-GET http://qk.heniankj.com/public/index.php/home/teacher/login?username=test&password=1234563
+GET http://qk.heniankj.com/public/index.php/home/teacher/login?username=wj&password=123456
 #Accept: application/json, text/javascript, */*; q=0.01
 X-Requested-With: XMLHttpRequest
 
 
 ### 注册
-GET http://qk.heniankj.com/public/index.php/home/teacher/register?username=test&password=123456&repassword=123456&email=11@qq.com&department=1&school=1&position=1
+POST http://qk.heniankj.com/public/index.php/home/teacher/register
 Accept: application/json, text/javascript, */*; q=0.01
 X-Requested-With: XMLHttpRequest
 
+### select
+GET http://qk.heniankj.com/public/index.php/home/teacher/getInfo
+#Accept: application/json, text/javascript, */*; q=0.01
+X-Requested-With: XMLHttpRequest
+
+### changePasswd
+GET http://qk.heniankj.com/public/index.php/home/teacher/changePasswd
+#Accept: application/json, text/javascript, */*; q=0.01
+X-Requested-With: XMLHttpRequest
 
 ###

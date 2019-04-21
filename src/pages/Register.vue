@@ -10,13 +10,20 @@
         <span class="txt" style="font-size: 10px">欢迎来到轻课</span>
         <span class="line"></span>
       </div>
-      <Input class='input_message' prefix="ios-contact-outline" placeholder="用户名" style="width: auto" clearable/>
-      <Input class='input_message' prefix="ios-mail-outline" placeholder="邮箱" style="width: auto" clearable/>
-      <Input class='input_message' prefix="ios-lock-outline" placeholder="密码" style="width: auto" clearable
-             type="password"/>
-      <Input class='input_message' prefix="ios-lock-outline" placeholder="确认密码" style="width: auto" clearable
-             type="password" id="repassword"/>
-      <Button type="success" long class="login_btn" @click="login">注册</Button>
+      <Input class='input_message' v-model="username" prefix="ios-contact-outline" placeholder="用户名" style="width: auto" clearable/>
+      <Input class='input_message' v-model="email" prefix="ios-mail-outline" placeholder="邮箱" style="width: auto" clearable/>
+      <Select class='input_message select_message' v-model="school" prefix="ios-school-outline" placeholder="学校" style="width:300px" >
+        <Option v-for="(item, index) in schoolArr" :value="item.id" :key="item.id">{{ item.name }}</Option>
+      </Select>
+      <Select class='input_message select_message' v-model="department" prefix="ios-people-outline" placeholder="部门" style="width:300px" >
+        <Option v-for="(item, index) in departmentArr" :value="item.id" :key="item.id">{{ item.name }}</Option>
+      </Select>
+      <Select class='input_message select_message' v-model="position" prefix="ios-ribbon-outline" placeholder="职位" style="width:300px" >
+        <Option v-for="(item, index) in positionArr" :value="item.id" :key="item.id">{{ item.name }}</Option>
+      </Select>
+      <Input class='input_message' v-model="password" prefix="ios-lock-outline" placeholder="密码" style="width: auto" clearable type="password"/>
+      <Input class='input_message' v-model="repassword" prefix="ios-lock-outline" placeholder="重复密码" style="width: auto" clearable type="password" id="repassword"/>
+      <Button type="success" long class="login_btn" @click="handleRegister">注册</Button>
       <div class="altOption">
       </div>
       <router-link to="/main">已有账号？返回登录</router-link>
@@ -26,19 +33,74 @@
 
 <script>
   import {Icon, Input, Button} from 'iview';
+  import {mapGetters,mapActions} from 'vuex';
+
   export default {
     name: "Login",
     components: {Icon, Input, Button},
+    computed:{
+        ...mapGetters(['schoolArr','departmentArr','positionArr'])
+    },
     data() {
       return {
+        username: '',
+        email: '',
+        school: '',
+        department: '',
+        position: '',
+        password: '',
+        repassword: '',
         rememberPasswd: false
       }
     },
-    methods:{
-      login(){
-        this.$router.push('/main')
-      }
+    methods: {
+      clearForm(){
+        this.username = '';
+        this.email = '';
+        this.school = '';
+        this.department = '';
+        this.position = '';
+        this.password = '';
+        this.repassword = '';
+      },
+      handleRegister() {//给数据库中添加数据
+        this.$http.get('teacher/register',
+            {
+              params: {
+                'username': this.username,
+                'password': this.password,
+                'repassword':this.repassword,
+                'email': this.email,
+                'school': this.school,
+                'department': this.department,
+                'position': this.position
+              }
+            })
+            .then(res => {   //error
+              if (res.data.code === 0) {
+                this.$Message.error(res.data.msg);
+                this.clearForm();
+              } else {
+                this.$router.push('/login')
+              }
+            })
+
+      },
+        ...mapActions(['schoolInfo','departmentInfo','positionInfo'])
+    },
+    mounted(){
+      this.$http.get('teacher/getInfo')
+          .then(res => {
+            if (res.data.code === 0) { //err
+              this.$Message.error(res.data.msg);
+            } else{
+              this.schoolInfo(res.data.data.school)
+              this.departmentInfo(res.data.data.department)
+              this.positionInfo(res.data.data.position)
+            }
+          }).catch(e => console.error(e))
     }
+
   }
 </script>
 
@@ -76,14 +138,14 @@
 
   .main-page {
     width: 400px;
-    height: 310px;
+    height: 460px;
     background-color: white;
     padding: 15px 25px 3px;
     position: absolute;
     left: 50%;
     top: 50%;
     margin-left: -225px;
-    margin-top: -180px;
+    margin-top: -260px;
     border-radius: 20px;
   }
 
@@ -146,5 +208,8 @@
     position: absolute;
     bottom: 5px;
     right: 5px;
+  }
+  .select_message{
+
   }
 </style>
