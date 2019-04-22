@@ -6,20 +6,15 @@
       <hr>
       <div class="setting">
         <div class="setting_item">
-          姓名： <Input v-model="formData.username" prefix="ios-contact" placeholder="Enter name" class="input_item"
-                     clearable/>
+          姓名： <Input v-model="formData.username" prefix="ios-contact" placeholder="Enter name" class="input_item" clearable/>
         </div>
         <div class="setting_item">
           邮箱： <Input v-model="formData.email" prefix="ios-mail" placeholder="Enter email" class="input_item" clearable/>
         </div>
 
-        <div class="avatar setting_item">
+        <div class="avatar setting_item" >
           头像：
-          <span class="avatar_img">
-            <img :src="formData.avatar" alt>
-          </span>
-          <div class="changeavatar">
-            <button class="replace" @click="uploadHeadImg">修改头像</button>
+          <div class="changeavatar"   >
             <input
                     type="file"
                     accept="image/jpeg, image/jpg, image/png"
@@ -27,6 +22,10 @@
                     class="hiddenInput"
             >
           </div>
+          <div class="avatar_img" :class="{avatar_blur:isBlur}"  @click="handleChange">
+            <img :src="formData.avatar">
+          </div>
+          <Icon type="ios-camera"  size="30" class="camera" v-show="!isDisplay"/>
         </div>
 
         <div class="setting_item">
@@ -59,6 +58,7 @@
           </Select>
         </div>
       </div>
+      <button class="submit" @click="submitChange">提交</button>
     </div>
   </div>
 
@@ -76,6 +76,8 @@
       return {
         formData: {},
         title: [],
+        isBlur:false,
+        isDisplay:false
       }
     },
     computed: {
@@ -84,10 +86,6 @@
 
     methods: {
       // 修改头像
-      uploadHeadImg() {
-        // 点击修改头像，获取文档中 class=”hiddenInput” 的元素
-        this.$el.querySelector(".hiddenInput").click();
-      },
       handleFile(e) {
         let $target = e.target || e.srcElement;
         let file = $target.files[0];
@@ -99,6 +97,12 @@
           this.teacherInfo.avatar = res.result;
         };
         reader.readAsDataURL(file);
+      },
+      handleChange(){
+        this.$el.querySelector(".hiddenInput").click();
+      },
+      submitChange(){
+
       }
     },
 
@@ -115,29 +119,36 @@
     margin: 0 auto;
     display: flex;
     .avatar_img {
+      position: relative;
       width: 100px;
       height: 100px;
-
+      top: 0;
+      left:0;
+      right: 0;
+      bottom: 0;
+      margin:0px -60px 40px 10px;
       img {
         border-radius: 50%;
         width: 100%;
         height: 100%;
       }
+      img:hover{
+        filter:blur(3px);
+      }
     }
     .replace {
-      margin: 65px 0 10px 40px;
-      display: block;
       font-size: 12px;
       background-color: #b2b2b2;
       color: white;
-      padding: 5px;
-      border: 1px solid #fff;
+      padding: 3px;
+      border: 0px;
       border-radius: 30px;
+      display: none;
     }
   }
 
   .changeavatar {
-    position: relative;
+
     .hiddenInput {
       position: absolute;
       top: 0;
@@ -179,5 +190,15 @@
     }
 
   }
-
+.submit{
+  background: #51d3b2;
+  border-radius: 20px;
+  border: 0;
+  width: 80px;
+  color: white;
+  font-size: 12px;
+  padding: 5px;
+  margin-left: 10px;
+  margin-top: 20px;
+}
 </style>

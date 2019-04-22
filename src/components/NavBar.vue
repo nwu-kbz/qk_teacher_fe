@@ -28,7 +28,7 @@
     </router-link>
     <Submenu name="5" class="user_item">
       <template slot="title">
-        <Icon type="md-contact" size="30"/>
+        <img type="md-contact" size="30" :src="teacherInfo.avatar" class="avatar_logo"/>
       </template>
       <MenuItem name="5-1">
         <router-link to="/userSettings">用户信息</router-link>
@@ -36,10 +36,10 @@
       <MenuItem name="5-2">
         <router-link @click.native="modal1 = true" to="">修改密码</router-link>
         <Modal
-          v-model="modal1"
-          title="修改密码"
-          @on-ok="ok"
-          @on-cancel="cancel">
+                v-model="modal1"
+                title="修改密码"
+                @on-ok="ok"
+                @on-cancel="cancel">
           <div slot="header" style="font-size: 20px">
             <Icon type="ios-lock" size="20"/>
             <span style="font-weight: bold">修改密码 </span>
@@ -61,7 +61,9 @@
           </div>
         </Modal>
       </MenuItem>
-      <MenuItem name="5-3">退出登录</MenuItem>
+      <MenuItem name="5-3">
+        <router-link to="/login">退出登录</router-link>
+      </MenuItem>
       <MenuItem name="5-4">关于我们</MenuItem>
     </Submenu>
   </Menu>
@@ -77,8 +79,9 @@
       return {
         activeName: '1',
         modal1: false,
+        unread: 2,
         oldPassWd: '',
-        newPassWd: ',',
+        newPassWd: '',
         rePassWd: ''
       }
     },
@@ -101,7 +104,7 @@
       }
     },
     computed: {
-      ...mapGetters(['currentPath','unread'])
+      ...mapGetters(['currentPath','teacherInfo'])
     },
     // mounted: function() {
     //   // this.open = ["5"];
@@ -117,7 +120,11 @@
 </script>
 
 <style scoped lang="less">
-
+  .avatar_logo{
+    height: 30px;
+    width: 30px;
+    margin: 5px;
+  }
   .ivu-menu-horizontal {
     height: 40px;
     line-height: 40px;
