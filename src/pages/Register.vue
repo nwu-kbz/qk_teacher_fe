@@ -12,6 +12,10 @@
       </div>
       <Input class='input_message' v-model="username" prefix="ios-contact-outline" placeholder="用户名" style="width: auto" clearable/>
       <Input class='input_message' v-model="email" prefix="ios-mail-outline" placeholder="邮箱" style="width: auto" clearable/>
+      <Input class='input_message' v-model="telephone" prefix="ios-call-outline" placeholder="电话" style="width: auto" clearable/>
+      <Select class='input_message select_message' v-model="sex" prefix="ios-male" placeholder="性别" style="width:300px">
+        <Option v-for="item in sexs" :value="item.value" :key="item.value">{{ item.label }}</Option>
+      </Select>
       <Select class='input_message select_message' v-model="school" prefix="ios-school-outline" placeholder="学校" style="width:300px" >
         <Option v-for="(item, index) in schoolArr" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
@@ -50,7 +54,16 @@
         position: '',
         password: '',
         repassword: '',
-        rememberPasswd: false
+        rememberPasswd: false,
+        sexs: [
+          {
+            value: '男',
+            label: '男'
+          },
+          {
+            value: '女',
+            label: '女'
+          }]
       }
     },
     methods: {
@@ -138,14 +151,14 @@
 
   .main-page {
     width: 400px;
-    height: 460px;
+    height: 520px;
     background-color: white;
     padding: 15px 25px 3px;
     position: absolute;
     left: 50%;
     top: 50%;
     margin-left: -225px;
-    margin-top: -260px;
+    margin-top: -280px;
     border-radius: 20px;
   }
 

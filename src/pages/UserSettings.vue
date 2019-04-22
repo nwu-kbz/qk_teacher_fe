@@ -6,10 +6,10 @@
       <hr>
       <div class="setting">
         <div class="setting_item">
-          姓名： <Input prefix="ios-contact" placeholder="Enter name" class="input_item" clearable/>
+          姓名： <Input v-model="formData.username" prefix="ios-contact" placeholder="Enter name" class="input_item" clearable/>
         </div>
         <div class="setting_item">
-          邮箱： <Input prefix="ios-mail" placeholder="Enter email" class="input_item" clearable/>
+          邮箱： <Input v-model="formData.email" prefix="ios-mail" placeholder="Enter email" class="input_item" clearable/>
         </div>
         <div class="setting_item user_photo">
           <span>头像： </span>
@@ -28,7 +28,7 @@
                   action="//jsonplaceholder.typicode.com/posts/"
                   style="display: inline-block;width:58px;">
             <div style="width: 58px;height:58px;line-height: 58px;">
-              <Icon type="ios-camera" size="20"></Icon>
+              <img type="ios-camera" size="20" :src="teacherInfo.avatar"/>
             </div>
           </Upload>
         </div>
@@ -56,37 +56,39 @@
 <script>
   import {Tabs, TabPane, Input, Upload, Icon, Radio, RadioGroup,} from 'iview'
   import NavBar from "../components/NavBar";
+  import {mapGetters, mapActions} from 'vuex';
 
   export default {
     name: "Modify",
     components: {NavBar},
     data() {
       return {
-        title: [
-          {
-            value: '教授',
-            label: '教授'
-          },
-          {
-            value: '副教授',
-            label: '副教授'
-          },
-          {
-            value: '讲师',
-            label: '讲师'
-          },
-          {
-            value: '助教',
-            label: '助教'
-          }
-        ]
+        formData:{
+          username:'',
+          email:'',
+          sex:'',
+          tel:'',
+          school:'',
+          department:'',
+          position:''
+        },
+        title: []
       }
     },
     computed: {
-      teacherInfo() {
-        return this.$store.getters.teacherInfo
-      }
+        ...mapGetters(['teacherInfo'])
     },
+    watch:{
+      teacherInfo:function (value) {
+        this.formData.username = value.username;
+        this.formData.email = value.email;
+        this.formData.sex = value.sex;
+        this.formData.tel = value.tel;
+        this.formData.school = value.school;
+        this.formData.department = value.department;
+        this.formData.position = value.position;
+      }
+    }
   }
 </script>
 

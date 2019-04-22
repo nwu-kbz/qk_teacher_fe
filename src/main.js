@@ -8,10 +8,15 @@ import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
 import axios from 'axios';
-import store from './store'
+// import Fly from 'node_modules/flyio/dist/npm./';
 
+import store from './store';
+
+// let fly = new Fly();
+// fly.config.baseURL = 'http://qk.heniankj.com/public/index.php/home/';
 Vue.config.productionTip = false;
 axios.defaults.baseURL = 'http://qk.heniankj.com/public/index.php/home/';
+// axios.defaults.withCredentials = false;
 Vue.prototype.$http = axios;
 Vue.use(iView);
 

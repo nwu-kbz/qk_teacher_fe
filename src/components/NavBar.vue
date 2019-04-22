@@ -85,16 +85,22 @@
     methods: {
       ok() {
         //修改密码
-        this.$http.post('changePasswd ',{
+        this.$http.post('teacher/changePasswd ',{
           params: {
-            oldPassWd:this.oldPassWd,
-            newPassWd:this.newPassWd,
-            rePassWd:this.rePassWd
+            oldpassword :this.oldPassWd,
+            newpassword:this.newPassWd,
           }
         }).then(res =>{
-
+          if (res.data.code === 0) {
+            this.$Message.error(res.data.msg);
+            this.oldPassWd = '';
+            this.newPassWd = '';
+            this.rePassWd = '';
+          }else{
+            this.$Message.info('修改成功');
+          }
         });
-        this.$Message.info('修改成功');
+
       },
       cancel() {
         this.$Message.info('取消修改');

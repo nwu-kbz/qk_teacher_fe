@@ -98,7 +98,7 @@
         <span>《C程序设计基础》</span>
       </p>
       <div class="selectCharpter">
-        <span>章节：</span>
+        <span>章节&nbsp</span>
         <Select style="width:200px">
           <Option v-for="(item) in charpterArr">第{{item + 1}}章</Option>
           <Option>未指定章节</Option>
@@ -576,7 +576,7 @@
       }
       .editor_question {
         display: inline-block;
-        width: 400px;
+        width: 360px;
       }
 
     }

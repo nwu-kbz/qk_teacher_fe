@@ -48,6 +48,7 @@
       handleLogin() {
         this.$http.get('teacher/login', {params: {'username': this.username, 'password': this.password}})
             .then(res => {
+              console.log(res);
               if (res.data.code === 0) { //err
                 this.$Message.error(res.data.msg);
                 this.username = '';
@@ -60,6 +61,11 @@
 
               }
             }).catch(e => console.error(e))
+
+        // this.$http('teacher/login', {
+        //   method: 'post',
+        //   withCredentials: true
+        // }).then(res => console.log(res));
       }
     }
   }
