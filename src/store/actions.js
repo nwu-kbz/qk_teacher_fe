@@ -15,5 +15,8 @@ export default {
   positionInfo({commit}, positionArr){
     commit(Position_Info, positionArr)
   },
+  updateCurrentPath({commit}, path) {
+    commit('updateCurrentPath', path);
+  }
 
 }

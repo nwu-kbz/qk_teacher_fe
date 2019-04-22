@@ -21,5 +21,8 @@ export default {
   },
   [Position_Info](state, positionArr) {
     state.positionArr = positionArr;
+  },
+  updateCurrentPath(state, path) {
+    state.currentPath = path;
   }
 }

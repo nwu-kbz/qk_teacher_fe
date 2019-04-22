@@ -1,5 +1,5 @@
 <template>
-  <Menu ref="menu"  mode="horizontal" theme='light' :activeName ="activeName">
+  <Menu ref="menu" mode="horizontal" theme='light' :activeName="currentPath">
     <router-link to="/main">
       <MenuItem name="1">
         <Icon type="ios-home" size="20"/>
@@ -7,16 +7,16 @@
       </MenuItem>
     </router-link>
     <router-link to="/qbank">
-    <MenuItem name="2">
-      <Icon type="ios-paper" size="15"/>
-      题库
-    </MenuItem>
+      <MenuItem name="2">
+        <Icon type="ios-paper" size="15"/>
+        题库
+      </MenuItem>
     </router-link>
     <router-link to="/inform">
       <MenuItem name="3">
         <Badge dot :offset="[7,0]">
           <Icon type="ios-notifications" size="20"/>
-          通知  {{unread}}
+          通知 {{unread}}
         </Badge>
       </MenuItem>
     </router-link>
@@ -36,10 +36,10 @@
       <MenuItem name="5-2">
         <router-link @click.native="modal1 = true" to="">修改密码</router-link>
         <Modal
-                v-model="modal1"
-                title="修改密码"
-                @on-ok="ok"
-                @on-cancel="cancel">
+          v-model="modal1"
+          title="修改密码"
+          @on-ok="ok"
+          @on-cancel="cancel">
           <div slot="header" style="font-size: 20px">
             <Icon type="ios-lock" size="20"/>
             <span style="font-weight: bold">修改密码 </span>
@@ -49,7 +49,7 @@
               <Input v-model="oldPassWd" style="width: 300px" type="password"/>
             </div>
           </div>
-          <div class="modifyPassword">新密码：
+          <div class="modifyPassword">新密码:
             <div class="enter_password">
               <Input v-model="newPassWd" style="width: 300px" type="password"/>
             </div>
@@ -69,6 +69,7 @@
 
 <script>
   import {MenuItem, Menu, Icon, Submenu, MenuGroup, Badge, Modal, Input} from 'iview'
+  import {mapGetters} from 'vuex';
 
   export default {
     name: "NavBar",
@@ -76,35 +77,32 @@
       return {
         activeName: '1',
         modal1: false,
-        unread:2,
-        oldPassWd:'',
-        newPassWd:',' ,
-        rePassWd:''
+        unread: 2,
+        oldPassWd: '',
+        newPassWd: ',',
+        rePassWd: ''
       }
     },
     methods: {
       ok() {
         //修改密码
-        this.$http.post('teacher/changePasswd ',{
+        this.$http.post('changePasswd ', {
           params: {
-            oldpassword :this.oldPassWd,
-            newpassword:this.newPassWd,
+            oldPassWd: this.oldPassWd,
+            newPassWd: this.newPassWd,
+            rePassWd: this.rePassWd
           }
-        }).then(res =>{
-          if (res.data.code === 0) {
-            this.$Message.error(res.data.msg);
-            this.oldPassWd = '';
-            this.newPassWd = '';
-            this.rePassWd = '';
-          }else{
-            this.$Message.info('修改成功');
-          }
-        });
+        }).then(res => {
 
+        });
+        this.$Message.info('修改成功');
       },
       cancel() {
         this.$Message.info('取消修改');
       }
+    },
+    computed: {
+      ...mapGetters(['currentPath'])
     },
     // mounted: function() {
     //   // this.open = ["5"];
@@ -115,11 +113,7 @@
     //   // })
     //   // this.handleSelect(this.active);
     // },
-    // watch: {
-    //   '$route' () {
-    //     this.$refs.leftMenu.currentActiveName = ''
-    //   }
-    // }
+
   }
 </script>
 

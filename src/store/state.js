@@ -12,5 +12,6 @@ export default {
   },
   schoolArr:[],
   departmentArr:[],
-  positionArr:[]
+  positionArr:[],
+  currentPath: '1'
 }
