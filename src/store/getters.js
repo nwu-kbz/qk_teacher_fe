@@ -12,5 +12,6 @@ export default {
   positionArr(state) {
     return state.positionArr
   },
+  currentPath:state=>state.currentPath
 
 }
