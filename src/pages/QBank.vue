@@ -3,41 +3,16 @@
     <NavBar></NavBar>
     <div class="qb_container">
       <div class="course">
-        <router-link v-for="(course) in courseArr" :key="course.id" :to="course.url">
+        <router-link v-for="(course,index) in courseArr" :key="index" :to="`/courseDetail/${course.id}/${course.name}`">
           <Card class="course_card">
             <img slot="title" src="../assets/course_logo.jpg">
-            <p>{{course.courseName}}</p>
-            <div class="icon">
+            <p>{{course.name}}</p>
+            <div class="icon">`
               <Icon type="ios-create" size="24"/>
               {{course.count}}
             </div>
           </Card>
         </router-link>
-
-        <!--<Card class="course_card">-->
-          <!--<img slot="title" src="../assets/course_logo.jpg">-->
-          <!--<p>C语言程序设计基础</p>-->
-          <!--<div class="icon">-->
-            <!--<Icon type="ios-create" size="24"/>-->
-            <!--3-->
-          <!--</div>-->
-        <!--</Card>-->
-        <!--<Card class="course_card">-->
-          <!--<img slot="title" src="../assets/course_logo.jpg">-->
-          <!--<p>JAVA语言程序设计基础</p>-->
-          <!--<div class="icon">-->
-            <!--<Icon type="ios-create" size="24"/>-->
-            <!--2-->
-          <!--</div>-->
-        <!--</Card>-->
-        <!--<Card class="course_card">-->
-          <!--<img slot="title" src="../assets/course_logo.jpg">-->
-          <!--<p>微积分</p>-->
-          <!--<div class="icon">-->
-            <!--<Icon type="ios-create" size="24"/>-->
-            <!--0-->
-          <!--</div>-->
-        <!--</Card>-->
       </div>
     </div>
   </div>
@@ -52,11 +27,19 @@
     components: {NavBar},
     data() {
       return {
-        courseArr: [{id: 1, courseName: 'C程序设计基础', url: "/courseDetail/1", count: 3},
-          {id: 2, courseName: 'JAVA程序设计基础', url: "/courseDetail/:2", count: 4},
-          {id: 3, courseName: '微积分', url: "/courseDetail/3", count: 0}]
+        courseArr: []
       }
     },
+    mounted() {
+      this.$http.get('qbase/getbasebyteacher/id/10')
+        .then(res=>{
+          if (res.data.code === 0) { //err
+            this.$Message.error("获取题库信息失败");
+          }else {
+            this.courseArr = res.data.data;
+          }
+        })
+    }
 
   }
 </script>

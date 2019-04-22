@@ -3,25 +3,26 @@
     <NavBar></NavBar>
     <div class="qb_bar">
       <div class="qb_bar_left">
-        <span>xxx课程名</span>
-        <Input search enter-button placeholder="search something" class="search"/>
+        <span>{{$route.params.name}}</span>
+        <Input search enter-button placeholder="检索题目" class="search"/>
       </div>
       <div class="qb_bar_right">
         <Dropdown style="margin-left: 20px" @on-click="handleInsert">
           <Button type="primary">
-            录入
+            录入题目
             <Icon type="ios-arrow-down"></Icon>
           </Button>
           <DropdownMenu slot="list">
             <DropdownItem name="1">添加单题</DropdownItem>
             <DropdownItem name="2">上传课件</DropdownItem>
-            <DropdownItem>创建组卷</DropdownItem>
+            <DropdownItem name="3">创建组卷</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </div>
     </div>
-
+    <!--主体-->
     <div class="qb_containter">
+      <!--左边的菜单-->
       <div class="qb_menu">
         <div class="qb_menu_item">
           <Menu theme="light" active-name="1">
@@ -29,7 +30,7 @@
               <MenuItem name="1">
                 <Icon type="ios-infinite"/>
                 所有资源
-                <div class="right_num">{{charpterCount}}</div>
+                <div class="right_num">0</div>
               </MenuItem>
             </div>
             <Menu theme="light">
@@ -39,42 +40,36 @@
                   章节
                 </template>
                 <button class="editor_charpter" @click="handleEditorCharpter">编辑章节</button>
-                <MenuItem v-for="(charpter,index) in charpterArr" :key="index" :name="'2-'+ index">第{{index + 1}}章
+                <MenuItem v-for="(charpter,index) in chapterArr" :key="index" :name="'2-'+ index">第{{index + 1}}章
                 </MenuItem>
                 <MenuItem name="2-0">未指定章节</MenuItem>
               </Submenu>
             </Menu>
-            <div>
-              <MenuItem name="3">
-                <Icon type="md-pint"/>
-                回收站
-                <div class="right_num">{{deleteCount}}</div>
-              </MenuItem>
-            </div>
           </Menu>
         </div>
       </div>
+      <!--中间显示题目-->
       <div class="qb_main">
         <div class="options_container">
-          <div class="options" v-show="typeModel1">
+          <div class="options">
             类型：
             <Select v-model="research.type" style="width:100px">
               <Option v-for="item in type" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </div>
-          <div class="options" v-show="typeModel2">
+          <div class="options" v-show="showQType">
             题型：
             <Select v-model="research.questionType" style="width:100px">
               <Option v-for="item in questionType" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </div>
-          <div class="options" v-show="typeModel3">
+          <div class="options" v-show="showDifficult">
             难度：
             <Select v-model="research.level" style="width:100px">
               <Option v-for="item in level" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </div>
-          <div class="options" v-show="typeModel4">
+          <div class="options" v-show="showFormat">
             格式：
             <Select v-model="research.format" style="width:100px">
               <Option v-for="item in formatType" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -88,20 +83,22 @@
         </div>
       </div>
     </div>
-    <Modal v-model="modal1" title="编辑章节数目" @on-ok="ok" @on-cancel="cancel">
+
+    <!--录入题目-->
+    <Modal v-model="chapterModal" title="编辑章节数目">
       设定章节数目为：
-      <InputNumber :max="30" :min="1" v-model="charpterCount" size="small"></InputNumber>
+      <InputNumber :max="30" :min="1" v-model="chapterCount" size="small"></InputNumber>
     </Modal>
-    <Modal v-model="modal2" width="900" class="addQuestion" :styles="{top: '40px'}" scrollable>
+    <Modal v-model="questionModal" width="900" class="addQuestion" :styles="{top: '40px'}" scrollable>
       <p slot="header" class="addQuestion_header">
         <Icon type="md-pricetags"/>
-        <span>《C程序设计基础》</span>
+        <span>{{$route.params.name}}</span>
       </p>
       <div class="selectCharpter">
-        <span>章节&nbsp</span>
-        <Select style="width:200px">
-          <Option v-for="(item) in charpterArr">第{{item + 1}}章</Option>
-          <Option>未指定章节</Option>
+        <span>章节&nbsp;</span>
+        <Select style="width:200px" v-model="qForm.chapter">
+          <Option value="0">不指定章节</Option>
+          <Option v-for="(item,index) in chapterArr" :key="index" :value="item.id">第{{index + 1}}章  {{item.name}}</Option>
         </Select>
       </div>
 
@@ -111,7 +108,7 @@
           <div class="editer_question">
             <div id="toolbar">
             </div>
-            <div id="editor">
+            <div id="editor" v-model="qForm.qname">
               <p></p>
             </div>
           </div>
@@ -119,45 +116,48 @@
 
         <div class="addQuestion_main_item">
           <span>题型</span>
-          <Select v-model="questionTypeSelected" style="width:100px;margin-right: 110px">
+          <Select v-model="qForm.qType" style="width:100px;margin-right: 110px">
             <Option v-for="item in questionType" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
           <span>难度</span>
-          <Rate v-model="value" style="margin-right: 100px"/>
+          <Rate v-model="qForm.hard" style="margin-right: 100px"/>
           <span style="width:90px">预计答题时间：</span>
-          <InputNumber :max="30" :min="1" v-model="value1"></InputNumber>
+          <InputNumber :max="30" :min="1" v-model="qForm.time"></InputNumber>
           <span>分钟</span>
         </div>
+
+        <!--题型所对应的题目编辑方式-->
+
         <!--单选-->
-        <div class="addQuestion_main_item" v-show="questionTypeSelected==='单选'">
+        <div class="addQuestion_main_item" v-show="qForm.qType==1">
           <span>选项</span>
-          <AnswerRadio :answers.sync="answers" :right-answer.sync="rightAnswer"></AnswerRadio>
+          <AnswerRadio :answers.sync="qForm.answers" :right-answer.sync="qForm.rightAnswer"></AnswerRadio>
         </div>
         <!--多选-->
-        <div class="addQuestion_main_item" v-show="questionTypeSelected==='多选'">
-          <span>选项</span>
-          <AnswerCheckbox :answers.sync="answers" :right-answer.sync="rightAnswer"></AnswerCheckbox>
-        </div>
-        <!--是非-->
-        <div class="addQuestion_main_item" v-show="questionTypeSelected==='是非'">
-          <span>选项</span>
-          <AnswerJudge :right-answer.sync="rightAnswer"></AnswerJudge>
-        </div>
-        <!--填空-->
-        <div class="addQuestion_main_item" v-show="questionTypeSelected==='填空'">
-          <span>选项</span>
-          <AnswerBlank :right-answer.sync="rightAnswer"></AnswerBlank>
-        </div>
-        <!--简答-->
-        <div class="addQuestion_main_item" v-show="questionTypeSelected==='简答'">
-          <span>选项</span>
-          <AnswerCompute :right-answer.sync="rightAnswer"></AnswerCompute>
-        </div>
+        <!--<div class="addQuestion_main_item" v-show="qForm.qType==2">-->
+          <!--<span>选项</span>-->
+          <!--<AnswerCheckbox :answers.sync="qForm.answers" :right-answer.sync="qForm.rightAnswer"></AnswerCheckbox>-->
+        <!--</div>-->
+        <!--&lt;!&ndash;是非&ndash;&gt;-->
+        <!--<div class="addQuestion_main_item" v-show="qForm.qType==3">-->
+          <!--<span>选项</span>-->
+          <!--<AnswerJudge :right-answer.sync="qForm.rightAnswer"></AnswerJudge>-->
+        <!--</div>-->
+        <!--&lt;!&ndash;填空&ndash;&gt;-->
+        <!--<div class="addQuestion_main_item" v-show="qForm.qType==4">-->
+          <!--<span>选项</span>-->
+          <!--<AnswerBlank :right-answer.sync="qForm.rightAnswer"></AnswerBlank>-->
+        <!--</div>-->
+        <!--&lt;!&ndash;简答&ndash;&gt;-->
+        <!--<div class="addQuestion_main_item" v-show="qForm.qType==5">-->
+          <!--<span>选项</span>-->
+          <!--<AnswerCompute :right-answer.sync="qForm.rightAnswer"></AnswerCompute>-->
+        <!--</div>-->
       </div>
 
       <div slot="footer">
-        <Button size="large" :loading="modal_loading" @click="cancel">取消</Button>
-        <Button size="large" type="success" :loading="modal_loading" @click="ok">确认</Button>
+        <Button size="large"  @click="questionModal=false">取消</Button>
+        <Button size="large" type="success" @click="handleSubmit">确认</Button>
       </div>
     </Modal>
   </div>
@@ -178,38 +178,66 @@
   export default {
     name: "CourseDetail",
     components: {NavBar, AnswerCheckbox, AnswerRadio, AnswerCompute, AnswerJudge,AnswerBlank},
+    computed: {
+      showQType(){
+        return this.research.type === 1;
+      },
+      showDifficult() {
+        return this.research.type === 1||this.research.type === 2;
+      },
+      showFormat() {
+        return this.research.type === 3;
+      }
+
+    },
     data() {
       return {
+        // 收集题目数据
+        qForm:{
+          chapter: "0",
+          qname: '',
+          qType: "1",
+          hard: 0,
+          time: 1,
+          answers:{},
+          rightAnswer: null
+        },
+        quill:null,//编辑器实例
+        chapterModal:false,
+        questionModal:true,
         answers: {
         },
         // showQuestionType:[true,false,false,false,false],
         rightAnswer: [],
-        charpterCount: 0,
+        chapterCount: 0,
         resourceCount: 0,
         modal1: false,
         modal2: true,
-        charpterArr: [],
+        chapterArr: [
+          {id: 1, name: "数据类型"},
+          {id: 2, name: "循环"},
+          {id: 3, name: "递归"}
+        ],
         deleteCount: 0,
-        questionTypeSelected: '单选',
         questionType: [
           {
-            value: '单选',
+            value: '1',
             label: '单选'
           },
           {
-            value: '多选',
+            value: '2',
             label: '多选'
           },
           {
-            value: '是非',
+            value: '3',
             label: '是非'
           },
           {
-            value: '填空',
+            value: '4',
             label: '填空'
           },
           {
-            value: '简答',
+            value: '5',
             label: '简答'
           }
 
@@ -232,18 +260,18 @@
             label: 'excel'
           }
 
-        ],          //格式
+        ],      //格式
         type: [
           {
-            value: '单题',
+            value: 1,
             label: '单题'
           },
           {
-            value: '组卷',
+            value: 2,
             label: '组卷'
           },
           {
-            value: '课件',
+            value: 3,
             label: '课件'
           }
         ],          //类型
@@ -265,11 +293,6 @@
             label: '超纲'
           }
         ],  //难度
-        //决定是否显示   类型，题型，难度，格式
-        typeModel1: true,
-        typeModel2: true,
-        typeModel3: true,
-        typeModel4: false,
         //所获取的内容
         research: {
           type: '',        //类型（3）   单题，组卷，课件
@@ -370,7 +393,7 @@
       handleInsert(itemId) {
         switch (parseInt(itemId)) {
           case 1:
-            this.modal2 = true;
+            this.questionModal = true;
             break;
           case 2:
             this.modal1 = true;
@@ -382,34 +405,29 @@
       handleEditorCharpter() {
         this.modal1 = true;
       },
-      ok() {
-        this.$Message.info('Clicked ok');
+      handleSubmit() {
+        this.qForm.qname = this.quill.getText();
+        console.log(this.qForm);
       },
-      cancel() {
-        this.$Message.info('Clicked cancel');
-      },
-      addQuestion() {
-
-      }
 
     },
     watch: {
-      charpterCount: function (newVal) {
-        let arr = [];
-        for (var i = 0; i < newVal; i++) {
-          arr.push(i)
-        }
-        this.charpterArr = arr;
-      },
-      option1: function (newVal) {
-        if (newVal === "组卷") {
-          this.typeModel2 = false;
-        }
-        if (newVal === "课件") {
-          this.typeModel2 = false;
-          this.typeModel3 = false;
-          this.typeModel4 = true;
-        }
+      // charpterCount: function (newVal) {
+      //   let arr = [];
+      //   for (var i = 0; i < newVal; i++) {
+      //     arr.push(i)
+      //   }
+      //   this.chapterArr = arr;
+      // },
+      // option1: function (newVal) {
+      //   if (newVal === "组卷") {
+      //     this.typeModel2 = false;
+      //   }
+      //   if (newVal === "课件") {
+      //     this.typeModel2 = false;
+      //     this.typeModel3 = false;
+      //     this.typeModel4 = true;
+      //   }
       },
       research: {
         handler(newVal) {
@@ -448,9 +466,7 @@
         deep: true
       },
 
-    },
     mounted() {
-
       const options = {
         modules: {
           toolbar: [
@@ -477,7 +493,7 @@
         theme: 'snow',
         scrollingContainer: '#scrolling-container',
       };
-      new Quill('#editor', options);
+      this.quill = new Quill('#editor', options);
     }
 
   }

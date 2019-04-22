@@ -24,5 +24,8 @@ export default {
   },
   updateCurrentPath(state, path) {
     state.currentPath = path;
+  },
+  updateUnread(state, unread) {
+    state.unread = unread;
   }
 }

@@ -2,7 +2,7 @@
   <div>
     <CheckboxGroup v-model="rightAnswer">
       <div class="option-item" v-for="(item,key,index) in items" :key="index">
-          <Checkbox :label="item.label">:</Checkbox>
+          <Checkbox :label="item.text">:</Checkbox>
         <Input v-model="item.text" placeholder="请输入选项"/>
         <Button type="error" ghost class="btn-add" @click="handleDelItem(key)">
           <Icon type="md-remove"/>

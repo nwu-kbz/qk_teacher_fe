@@ -12,17 +12,27 @@
     name: 'App',
     watch: {
       '$route'(val) {
+        this.setNav(val);
+      }
+    },
+    mounted() {
+      this.setNav(this.$route);
+    },
+    methods: {
+      ...mapActions(['updateCurrentPath']),
+      setNav(val) {
         const maps = {
           '/main': 1,
           '/qbank': 2,
           '/inform': 3,
           '/data': 4
         };
-        this.updateCurrentPath(maps[val.path]+'');
+        for (let key in maps) {
+          if (val.path.indexOf(key) >= 0) {
+            this.updateCurrentPath(maps[key] + '');
+          }
+        }
       }
-    },
-    methods: {
-      ...mapActions(['updateCurrentPath'])
     }
   }
 </script>

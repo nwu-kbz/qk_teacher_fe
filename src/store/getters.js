@@ -12,6 +12,7 @@ export default {
   positionArr(state) {
     return state.positionArr
   },
-  currentPath:state=>state.currentPath
+  currentPath:state=>state.currentPath,
+  unread: state => state.unread
 
 }

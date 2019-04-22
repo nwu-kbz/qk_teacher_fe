@@ -53,7 +53,7 @@ export default new Router({
 
     },
     {
-      path: '/courseDetail/:id',
+      path: '/courseDetail/:id/:name',
       name: 'CourseDetail',
       component: CourseDetail,
     },

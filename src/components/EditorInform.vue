@@ -1,53 +1,35 @@
 <template>
-  <div style="height: 96%;width: 100%;">
-    <div id="toolbar">
-    </div>
-    <div id="editor">
-      <p>Hello World!</p>
-    </div>
-  </div>
+  <Form class="form-style">
+    <FormItem label="标题">
+      <Input type="text" placeholder="通知标题">
+        <Icon type="ios-person-outline" slot="prepend"></Icon>
+      </Input>
+    </FormItem>
+    <FormItem label="内容">
+      <Input type="textarea" placeholder="通知内容" :autosize="{minRows: 15,maxRows: 5}">
+        <Icon type="ios-person-outline" slot="prepend"></Icon>
+      </Input>
+    </FormItem>
+    <Button type="primary" style="float: right;" :size="30">确定</Button>
+  </Form>
 </template>
 
 <script>
-  import Quill from 'quill'
+  import {Button, Icon, Input, Form} from 'iview';
 
+  const FormItem = Form.Item;
   export default {
     name: "EditorInform",
-    mounted(){
-
-      const options = {
-        debug: 'info',
-        modules: {
-          toolbar: [
-            ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
-            ['blockquote', 'code-block'],
-
-            [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-            [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-            [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-            [{ 'direction': 'rtl' }],                         // text direction
-
-            [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-
-            [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-            [{ 'font': [] }],
-            [{ 'align': [] }],
-
-            ['clean']                                         // remove formatting button
-          ]
-        },
-        placeholder: 'Compose an epic...',
-        theme: 'snow',
-        scrollingContainer: '#scrolling-container',
-      };
-     new Quill('#editor', options);
-    }
+    mounted() {
+    },
+    components: {FormItem}
   }
 
 
 </script>
 
-<style >
+<style lang="less" scoped>
+  .form-style{
+    padding: 10px 15px;
+  }
 </style>

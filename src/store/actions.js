@@ -17,6 +17,8 @@ export default {
   },
   updateCurrentPath({commit}, path) {
     commit('updateCurrentPath', path);
+  },
+  updateUnread({commit}, val) {
+    commit('updateUnread', val);
   }
-
 }

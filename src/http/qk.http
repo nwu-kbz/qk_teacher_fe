@@ -26,4 +26,7 @@ GET http://qk.heniankj.com/public/index.php/home/teacher/changePasswd
 #Accept: application/json, text/javascript, */*; q=0.01
 X-Requested-With: XMLHttpRequest
 
-###
+### 获取课程列表
+GET http://qk.heniankj.com/public/index.php/home/teacher/getCourse
+#Accept: application/json, text/javascript, */*; q=0.01
+X-Requested-With: XMLHttpRequest

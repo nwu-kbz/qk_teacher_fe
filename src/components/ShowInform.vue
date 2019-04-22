@@ -1,6 +1,9 @@
 <template>
-  <div class="main">
-   {{detail.content}}
+  <div>
+    <Card v-for="(item,index) in details" :key="index" :bordered="true" icon="ios-notifications" style="width: 90%;margin-top: 2%;">
+      <p slot="title">{{item.title}}</p>
+      <p>{{item.content}}</p>
+    </Card>
   </div>
 </template>
 
@@ -11,6 +14,26 @@
       return {
         detail: {},
         details: [
+          {
+            id: 1,
+            title: 'inform001',
+            content: 'this is inform001'
+          },
+          {
+            id: 1,
+            title: 'inform001',
+            content: 'this is inform001'
+          },
+          {
+            id: 1,
+            title: 'inform001',
+            content: 'this is inform001'
+          },
+          {
+            id: 1,
+            title: 'inform001',
+            content: 'this is inform001'
+          },
           {
             id: 1,
             title: 'inform001',
@@ -41,5 +64,7 @@
 </script>
 
 <style scoped>
-
+  .main{
+    margin: 3%;
+  }
 </style>

@@ -3,18 +3,18 @@
     <NavBar ref="navBar"></NavBar>
     <div class="flex-container">
       <div class="inform_menu flex-item">
-        <button class="add_inform">
-          <Icon type="md-add" sixe="30"/>
-          <router-link to="/inform/editorInform">新建通知</router-link>
-        </button>
-        <ul class="inform_items">
-          <li v-for="(inform) in informArr"
-              :key="inform.id" class="inform_item">
-            <router-link :to='`/inform/showInform/${inform.id}`'>
-              {{inform.content}}
-            </router-link>
-          </li>
-        </ul>
+        <Card title="通知列表" icon="ios-options" :padding="0" shadow style="width: 300px;">
+          <Button slot="extra" to="/inform/editorInform" type="primary">
+              <Icon type="md-add" sixe="30"/>
+              新建通知
+          </Button>
+          <CellGroup>
+            <Cell v-for="(item,index) in informArr" :title="item.content" :to="`/inform/showInform/${item.id}`"
+                  :key="index">
+              <Badge :count="10" slot="extra"/>
+            </Cell>
+          </CellGroup>
+        </Card>
       </div>
       <div class="inform_main flex-item">
         <router-view></router-view>
@@ -26,14 +26,14 @@
 
 <script>
   import NavBar from "../components/NavBar";
-  import {Icon} from 'iview'
+  import {Icon, Cell, CellGroup, Badge, Card, Button} from 'iview'
 
   export default {
     name: "Inform",
     components: {NavBar},
     data() {
       return {
-        activeName:'3',
+        activeName: '3',
         informArr: [{id: 1, content: '第一条通知'}, {id: 2, content: '第二条通知'}, {id: 3, content: '第三条通知'}]
       }
     },
@@ -93,8 +93,12 @@
     }
     .inform_main {
       float: left;
-      width: 100%;
-      height: 100%;
+      width: 75%;
+      height: auto;
+      /*overflow: scroll;*/
+      /*background: #000;*/
+      /*background-color: #eee;*/
+
       /*background-color: rebeccapurple;*/
     }
 
@@ -105,7 +109,8 @@
     display: flex;
     width: 100%;
     height: 94%;
-    align-items: flex-end;
+    /*align-items: flex-end;*/
+    justify-content: space-between;
     overflow: hidden;
   }
 </style>

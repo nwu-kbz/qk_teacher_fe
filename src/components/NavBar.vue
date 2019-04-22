@@ -77,7 +77,6 @@
       return {
         activeName: '1',
         modal1: false,
-        unread: 2,
         oldPassWd: '',
         newPassWd: ',',
         rePassWd: ''
@@ -102,7 +101,7 @@
       }
     },
     computed: {
-      ...mapGetters(['currentPath'])
+      ...mapGetters(['currentPath','unread'])
     },
     // mounted: function() {
     //   // this.open = ["5"];

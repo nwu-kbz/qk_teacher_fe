@@ -13,5 +13,6 @@ export default {
   schoolArr:[],
   departmentArr:[],
   positionArr:[],
-  currentPath: '1'
+  currentPath: '1',
+  unread: 0
 }
