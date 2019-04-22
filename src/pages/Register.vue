@@ -99,20 +99,9 @@
             })
 
       },
-        ...mapActions(['schoolInfo','departmentInfo','positionInfo'])
-    },
-    mounted(){
-      this.$http.get('teacher/getInfo')
-          .then(res => {
-            if (res.data.code === 0) { //err
-              this.$Message.error(res.data.msg);
-            } else{
-              this.schoolInfo(res.data.data.school)
-              this.departmentInfo(res.data.data.department)
-              this.positionInfo(res.data.data.position)
-            }
-          }).catch(e => console.error(e))
+
     }
+
 
   }
 </script>
@@ -222,7 +211,5 @@
     bottom: 5px;
     right: 5px;
   }
-  .select_message{
 
-  }
 </style>

@@ -6,55 +6,66 @@
       <hr>
       <div class="setting">
         <div class="setting_item">
-          姓名： <Input v-model="formData.username" prefix="ios-contact" placeholder="Enter name" class="input_item" clearable/>
+          姓名： <Input v-model="formData.username" prefix="ios-contact" placeholder="Enter name" class="input_item"
+                     clearable/>
         </div>
         <div class="setting_item">
           邮箱： <Input v-model="formData.email" prefix="ios-mail" placeholder="Enter email" class="input_item" clearable/>
         </div>
-        <div class="setting_item user_photo">
-          <span>头像： </span>
-          <Upload class="upload_photo"
-                  ref="upload"
-                  :show-upload-list="false"
-                  :default-file-list="defaultList"
-                  :on-success="handleSuccess"
-                  :format="['jpg','jpeg','png']"
-                  :max-size="2048"
-                  :on-format-error="handleFormatError"
-                  :on-exceeded-size="handleMaxSize"
-                  :before-upload="handleBeforeUpload"
-                  multiple
-                  type="drag"
-                  action="//jsonplaceholder.typicode.com/posts/"
-                  style="display: inline-block;width:58px;">
-            <div style="width: 58px;height:58px;line-height: 58px;">
-              <img type="ios-camera" size="20" :src="teacherInfo.avatar"/>
-            </div>
-          </Upload>
+
+        <div class="avatar setting_item">
+          头像：
+          <span class="avatar_img">
+            <img :src="formData.avatar" alt>
+          </span>
+          <div class="changeavatar">
+            <button class="replace" @click="uploadHeadImg">修改头像</button>
+            <input
+                    type="file"
+                    accept="image/jpeg, image/jpg, image/png"
+                    @change.stop="handleFile"
+                    class="hiddenInput"
+            >
+          </div>
         </div>
+
         <div class="setting_item">
           性别：
-          <RadioGroup v-model="sex">
-            <Radio label="男"></Radio>
-            <Radio label="女"></Radio>
+          <RadioGroup v-model="formData.sex">
+            <Radio label="m">男</Radio>
+            <Radio label="f">女</Radio>
           </RadioGroup>
         </div>
         <div class="setting_item">
-          电话： <Input prefix="ios-call" placeholder="Enter telephone" class="input_item" clearable/>
+          学校：
+          <Select class='select_message' v-model="formData.school" prefix="ios-school" placeholder="Enter school"
+                  style="width:300px">
+            <Option v-for="(item, index) in schoolArr" :value="item.name" :key="item.id">{{item.name}}</Option>
+          </Select>
         </div>
         <div class="setting_item">
-          职称： <Select v-model="model1" style="width:200px">
-          <Option v-for="item in title" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
+          部门：
+          <Select class='select_message' v-model="formData.department" prefix="ios-people"
+                  placeholder="Enter department" style="width:300px">
+            <Option v-for="(item, index) in departmentArr" :value="item.name" :key="item.id">{{ item.name }}</Option>
+          </Select>
+        </div>
+
+        <div class="setting_item">
+          职位：
+          <Select class='select_message' v-model="formData.position" prefix="ios-ribbon" placeholder="Enter position"
+                  style="width:300px">
+            <Option v-for="(item, index) in positionArr" :value="item.name" :key="item.id">{{ item.name }}</Option>
+          </Select>
         </div>
       </div>
     </div>
-
   </div>
+
 </template>
 
 <script>
-  import {Tabs, TabPane, Input, Upload, Icon, Radio, RadioGroup,} from 'iview'
+  import {Tabs, TabPane, Input, Upload, Icon, Radio, RadioGroup, Button} from 'iview'
   import NavBar from "../components/NavBar";
   import {mapGetters, mapActions} from 'vuex';
 
@@ -63,36 +74,79 @@
     components: {NavBar},
     data() {
       return {
-        formData:{
-          username:'',
-          email:'',
-          sex:'',
-          tel:'',
-          school:'',
-          department:'',
-          position:''
-        },
-        title: []
+        formData: {},
+        title: [],
       }
     },
     computed: {
-        ...mapGetters(['teacherInfo'])
+      ...mapGetters(['teacherInfo', 'schoolArr', 'departmentArr', 'positionArr'])
     },
-    watch:{
-      teacherInfo:function (value) {
-        this.formData.username = value.username;
-        this.formData.email = value.email;
-        this.formData.sex = value.sex;
-        this.formData.tel = value.tel;
-        this.formData.school = value.school;
-        this.formData.department = value.department;
-        this.formData.position = value.position;
+
+    methods: {
+      // 修改头像
+      uploadHeadImg() {
+        // 点击修改头像，获取文档中 class=”hiddenInput” 的元素
+        this.$el.querySelector(".hiddenInput").click();
+      },
+      handleFile(e) {
+        let $target = e.target || e.srcElement;
+        let file = $target.files[0];
+        var reader = new FileReader();
+        reader.onload = data => {
+          let res = data.target || data.srcElement;
+          // 修改页面和vuex中的图片路径
+          this.formData.avatar = res.result;
+          this.teacherInfo.avatar = res.result;
+        };
+        reader.readAsDataURL(file);
       }
+    },
+
+    mounted() {
+      this.formData = {...this.teacherInfo}
     }
   }
 </script>
 
 <style lang="less" scoped>
+  .avatar {
+    width: 100%;
+    height: 100px;
+    margin: 0 auto;
+    display: flex;
+    .avatar_img {
+      width: 100px;
+      height: 100px;
+
+      img {
+        border-radius: 50%;
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .replace {
+      margin: 65px 0 10px 40px;
+      display: block;
+      font-size: 12px;
+      background-color: #b2b2b2;
+      color: white;
+      padding: 5px;
+      border: 1px solid #fff;
+      border-radius: 30px;
+    }
+  }
+
+  .changeavatar {
+    position: relative;
+    .hiddenInput {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: none;
+    }
+  }
 
   .info {
     margin-top: 40px;
@@ -104,7 +158,8 @@
 
     }
     .user_photo {
-      height: 60px;
+      height: 100px;
+      display: flex;
     }
 
     .setting {
@@ -116,11 +171,6 @@
         margin-bottom: 15px;
         font-size: 15px;
 
-        .upload_photo {
-          position: absolute;
-          top: 0;
-          left: 49px;
-        }
         .input_item {
           width: 65%;
         }
