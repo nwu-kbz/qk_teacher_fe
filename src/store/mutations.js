@@ -11,7 +11,10 @@ export default {
     state.teacherInfo.department = teacherInfo.department;        //部门
     state.teacherInfo.position = teacherInfo.position;              //职称
     state.teacherInfo.id = teacherInfo.id;
+    state.teacherInfo.sex = teacherInfo.sex;
+    state.teacherInfo.phone = teacherInfo.phone;
     state.teacherInfo.avatar = 'http://qk.heniankj.com/public' + (teacherInfo.avatar).replace('\\','');
+
   },
   [School_Info](state, schoolArr) {
     state.schoolArr = schoolArr;

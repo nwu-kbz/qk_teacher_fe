@@ -8,7 +8,9 @@ export default {
     type: '',        //teacher
     school: '',      //学校
     department: '',  //部门
-    position: ''     //职称
+    position: '' ,    //职称
+    sex:'',
+    phone:''
   },
   schoolArr:[],
   departmentArr:[],

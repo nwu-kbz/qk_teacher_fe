@@ -33,7 +33,7 @@
 
 <script>
   import {Checkbox, Icon, Input, Button} from 'iview';
-
+import {mapActions} from 'vuex';
   export default {
     name: "Login",
     components: {Checkbox, Icon, Input, Button},
@@ -45,6 +45,7 @@
       }
     },
     methods: {
+      ...mapActions(['schoolInfo','departmentInfo','positionInfo']),
       handleLogin() {
         this.$http.get('teacher/login', {params: {'username': this.username, 'password': this.password}})
             .then(res => {
@@ -67,6 +68,18 @@
         //   withCredentials: true
         // }).then(res => console.log(res));
       }
+    },
+    mounted(){
+      this.$http.get('teacher/getInfo')
+          .then(res => {
+            if (res.data.code === 0) { //err
+              this.$Message.error(res.data.msg);
+            } else{
+              this.schoolInfo(res.data.data.school)
+              this.departmentInfo(res.data.data.department)
+              this.positionInfo(res.data.data.position)
+            }
+          }).catch(e => console.error(e))
     }
   }
 </script>
