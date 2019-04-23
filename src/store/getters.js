@@ -13,6 +13,7 @@ export default {
     return state.positionArr
   },
   currentPath:state=>state.currentPath,
-  unread: state => state.unread
+  unread: state => state.unread,
+  qForm: state => state.qForm
 
 }

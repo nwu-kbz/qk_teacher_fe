@@ -16,5 +16,9 @@ export default {
   departmentArr:[],
   positionArr:[],
   currentPath: '1',
-  unread: 0
+  unread: 0,
+  qForm:{
+    answers:{},
+    rightAnswer: null
+  },
 }

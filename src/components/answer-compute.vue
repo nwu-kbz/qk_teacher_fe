@@ -5,19 +5,22 @@
 
 </template>
 <script>
-  import {Input} from 'iview'
+  import {Input} from 'iview';
+  import {mapActions} from 'vuex';
+
   export default {
     name: 'AnswerCompute',
-    props: ['rightAnswer'],
     data() {
       return {
-
+        rightAnswer: ''
       }
     },
-    methods: {},
+    methods: {
+      ...mapActions(['updateAnswers','updateRightAnswer'])
+    },
     watch: {
       rightAnswer(val) {
-        this.$emit('update:rightAnswer', val);
+        this.updateRightAnswer(val);
       },
     },
   }

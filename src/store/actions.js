@@ -20,5 +20,17 @@ export default {
   },
   updateUnread({commit}, val) {
     commit('updateUnread', val);
-  }
+  },
+  updateQForm({commit}, val) {
+    commit('updateQForm', val);
+  },
+  updateAnswers({commit}, val) {
+    commit('updateAnswers', val);
+  },
+  updateRightAnswer({commit}, val) {
+    commit('updateRightAnswer', val);
+  },
+  clearQForm({commit}) {
+    commit('clearQForm');
+  },
 }

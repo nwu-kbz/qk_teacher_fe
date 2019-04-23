@@ -30,5 +30,17 @@ export default {
   },
   updateUnread(state, unread) {
     state.unread = unread;
+  },
+  updateQForm(state, val) {
+    state.qForm = val;
+  },
+  updateAnswers(state, val) {
+    state.qForm.answers = val;
+  },
+  updateRightAnswer(state, val) {
+    state.qForm.rightAnswer = val;
+  },
+  clearQForm(state) {
+    state.qForm = {};
   }
 }

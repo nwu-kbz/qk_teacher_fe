@@ -27,30 +27,36 @@
 </template>
 <script>
   import {RadioGroup,Radio,Button,Input} from 'iview'
+  import {mapGetters,mapActions} from 'vuex';
+
   export default {
     name: 'AnswerRadio',
-    props: ['answers', 'rightAnswer'],
     data() {
       return {
-        answer:{}
+        answer:{
+          A:'',
+          B:'',
+          C:'',
+          D:'',
+        },
+        rightAnswer: ''
       }
     },
     mounted() {
-      this.answer = this.answers;
     },
     methods: {
-
+      ...mapActions(['updateAnswers','updateRightAnswer'])
     },
     watch: {
       answer: {
+        deep: true,
         handler(val) {
-          this.$emit('update:answers', val);
-        },
-        deep: true
+          this.updateAnswers(val);
+        }
       },
       rightAnswer(val) {
-        this.$emit('update:rightAnswer', val);
-      },
+        this.updateRightAnswer(val);
+      }
     },
   }
 </script>
