@@ -37,7 +37,7 @@ export default new Router({
       component: UserSettings
     },
     {
-      path: '/courseInfo',
+      path: '/courseInfo/:id',
       name: 'CourseInfo',
       component: CourseInfo
     },
