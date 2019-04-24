@@ -15,7 +15,7 @@
           <DropdownMenu slot="list">
             <DropdownItem name="1">添加单题</DropdownItem>
             <DropdownItem name="2">上传课件</DropdownItem>
-            <DropdownItem name="3">创建组卷</DropdownItem>
+            <!--<DropdownItem name="3">创建组卷</DropdownItem>-->
           </DropdownMenu>
         </Dropdown>
       </div>
@@ -53,13 +53,13 @@
         <div class="options_container">
           <div class="options">
             类型：
-            <Select v-model="research.type" style="width:100px">
+            <Select v-model="research.cate" style="width:100px">
               <Option v-for="item in type" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </div>
           <div class="options" v-show="showQType">
             题型：
-            <Select v-model="research.questionType" style="width:100px">
+            <Select v-model="research.type" style="width:100px">
               <Option v-for="item in questionType" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </div>
@@ -76,26 +76,83 @@
             </Select>
           </div>
         </div>
+        <!-- 展示列表-->
         <div class="result_container">
           <Card :bordered="false" v-for="(item,index) in resultArr" :key="index" class="margin10">
-            <p slot="title">{{item.title}}</p>
-            <p>{{item.answer}}</p>
+            <!---->
+            <div v-show="cate===1">
+              <h5 slot="title">
+                <Icon size="30" type="md-help"/>
+                问题: {{item.title}}
+              </h5>
+              <div class="content">
+                <div class="pull-both">
+                  <span><Icon size="20" type="md-analytics"/>答案: {{item.answer}}</span>
+                  <span><Icon size="20" type="md-star-half"/>评分: <Rate disabled v-model="item.hard"/></span>
+                  <span><Icon size="20" type="ios-time"/>预计答题时间: {{item.time}}</span>
+                </div>
+                <div class="pull-both">
+                  <span><Icon size="20" type="md-apps"/>章节: 第 {{item.chapter}} 章</span>
+                  <span><Icon size="20" type="md-checkmark-circle"/>正确次数: {{item.right}}</span>
+                  <span><Icon size="20" type="md-close-circle"/>错误次数: {{item.wrong}}</span>
+                </div>
+              </div>
+            </div>
+            <div v-show="cate===2">
+              <h5 slot="title">
+                <Icon size="30" type="ios-copy"/>
+                {{item.name}}
+              </h5>
+              <div class="pull-both"><span><Icon size="20" type="ios-time"/>测试时长: {{item.time}} 分钟</span> <span><Icon
+                size="20" type="md-star-half"/>难度: <Rate disabled v-model="item.hard"/></span></div>
+            </div>
+
           </Card>
+          <div v-show="resultArr.length===0" style="text-align: center">
+            <Icon type="ios-alert-outline" size="50"/>
+            <h3>啊哦!暂时没有内容呢~</h3>
+          </div>
         </div>
       </div>
     </div>
 
     <!--章节-->
     <Modal v-model="chapterModal" title="编辑章节数目">
-      设定章节数目为：<InputNumber :max="30" :min="1" v-model="chapterCount" size="small"></InputNumber>
+      设定章节数目为：
+      <InputNumber :max="30" :min="1" v-model="chapterCount" size="small"></InputNumber>
+    </Modal>
+    <!--上传课件-->
+    <Modal v-model="updateModal" title="上传课件">
+      <Form :label-width="80">
+        <FormItem label="选择章节">
+          <Select v-model="uploadForm.chapter">
+            <Option v-for="(item,index) in chapterArr" :key="index" :value="item.id">{{item.name}}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="上传附件">
+          <div><Upload
+            multiple
+            type="drag"
+            action="http://qk.heniankj.com/public/index.php/home/attachment/add">
+            <div style="padding: 20px 0">
+              <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+              <p>拖动文件到此处上传</p>
+            </div>
+          </Upload></div>
+        </FormItem>
+      </Form>
     </Modal>
     <!--题目-->
-    <Modal v-model="questionModal" width="900" class="addQuestion" :styles="{top: '40px'}" scrollable @close="questionModal=false">
-      <p slot="header" class="addQuestion_header"><Icon type="md-pricetags"/><span>{{$route.params.name}}</span></p>
+    <Modal v-model="questionModal" width="900" class="addQuestion" :styles="{top: '40px'}" scrollable
+           @close="questionModal=false">
+      <p slot="header" class="addQuestion_header">
+        <Icon type="md-pricetags"/>
+        <span>{{$route.params.name}}</span></p>
       <div class="selectCharpter"><span>章节&nbsp;</span>
         <Select style="width:200px" v-model="questionForm.chapter">
           <Option value="0">不指定章节</Option>
-          <Option v-for="(item,index) in chapterArr" :key="index" :value="item.id">第{{index + 1}}章  {{item.name}}</Option>
+          <Option v-for="(item,index) in chapterArr" :key="index" :value="item.id">第{{index + 1}}章 {{item.name}}
+          </Option>
         </Select>
       </div>
 
@@ -103,12 +160,12 @@
         <div class="addQuestion_main_item">
           <span>题目</span>
           <div class="editer_question">
-            <Input type="textarea" v-model="questionForm.qname" :autosize="{minRows: 15,maxRows: 15}"/>
+            <Input type="textarea" v-model="questionForm.title" :autosize="{minRows: 15,maxRows: 15}"/>
           </div>
         </div>
         <div class="addQuestion_main_item">
           <span>题型</span>
-          <Select v-model="questionForm.qType" style="width:100px;margin-right: 110px" @change="clearQuestionForm">
+          <Select v-model="questionForm.type" style="width:100px;margin-right: 110px" @change="clearQuestionForm">
             <Option v-for="item in questionType" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
           <span>难度</span>
@@ -121,34 +178,34 @@
         <!--题型所对应的题目编辑方式-->
 
         <!--单选-->
-        <div class="addQuestion_main_item" v-show="questionForm.qType==1">
+        <div class="addQuestion_main_item" v-show="questionForm.type==1">
           <span>选项</span>
           <AnswerRadio></AnswerRadio>
         </div>
         <!--多选-->
-        <div class="addQuestion_main_item" v-show="questionForm.qType==2">
+        <div class="addQuestion_main_item" v-show="questionForm.type==2">
           <span>选项</span>
           <AnswerCheckbox></AnswerCheckbox>
         </div>
         <!--是非-->
-        <div class="addQuestion_main_item" v-show="questionForm.qType==3">
+        <div class="addQuestion_main_item" v-show="questionForm.type==3">
           <span>选项</span>
           <AnswerJudge></AnswerJudge>
         </div>
         <!--填空-->
-        <!--<div class="addQuestion_main_item" v-show="questionForm.qType==4">-->
-          <!--<span>选项</span>-->
-          <!--<AnswerBlank ></AnswerBlank>-->
+        <!--<div class="addQuestion_main_item" v-show="questionForm.type==4">-->
+        <!--<span>选项</span>-->
+        <!--<AnswerBlank ></AnswerBlank>-->
         <!--</div>-->
         <!--简答-->
-        <div class="addQuestion_main_item" v-show="questionForm.qType==5">
+        <div class="addQuestion_main_item" v-show="questionForm.type==4">
           <span>选项</span>
-          <AnswerCompute ></AnswerCompute>
+          <AnswerCompute></AnswerCompute>
         </div>
       </div>
 
       <div slot="footer">
-        <Button size="large"  @click="questionModal=false">取消</Button>
+        <Button size="large" @click="questionModal=false">取消</Button>
         <Button size="large" type="success" @click="handleSubmit">确认</Button>
       </div>
     </Modal>
@@ -158,7 +215,7 @@
 
 <script>
   import NavBar from "../components/NavBar";
-  import {MenuItem, Icon, Menu, Modal, Button, Option, Rate, InputNumber} from 'iview'
+  import {MenuItem, Icon, Menu, Modal, Button, Option, Rate, InputNumber,Form,Select} from 'iview'
   import AnswerCheckbox from '../components/answer-checkbox';
   import AnswerRadio from '../components/answer-radio';
   import AnswerJudge from '../components/answer-judge';
@@ -166,34 +223,42 @@
   import AnswerBlank from '../components/answer-blank';
   import {mapActions, mapGetters} from 'vuex';
 
+  const FormItem = Form.Item;
+
   export default {
     name: "CourseDetail",
-    components: {NavBar, AnswerCheckbox, AnswerRadio, AnswerCompute, AnswerJudge,AnswerBlank},
+    components: {NavBar, AnswerCheckbox, AnswerRadio, AnswerCompute, AnswerJudge, AnswerBlank},
     computed: {
-      showQType(){
-        return this.research.type === 1;
+      showQType() {
+        return this.research.cate === 1;
       },
       showDifficult() {
-        return this.research.type === 1||this.research.type === 2;
+        return this.research.cate === 1 || this.research.cate === 2;
       },
       showFormat() {
-        return this.research.type === 3;
+        return this.research.cate === 3;
+      },
+      cate() {
+        return this.research.cate;
       },
       ...mapGetters(['qForm'])
     },
     data() {
       return {
+        uploadForm:{
+          chapter: ''
+        },
         questionForm: {
           chapter: "0",
-          qname: '',
-          qType: "1",
+          title: '',
+          type: "1",
           hard: 0,
           time: 1,
         },// 收集题目数据
-        chapterModal:false,
-        questionModal:false,
-        answers: {
-        },
+        chapterModal: false,
+        questionModal: false,
+        updateModal: false,
+        answers: {},
         // showQuestionType:[true,false,false,false,false],
         rightAnswer: [],
         chapterCount: 0,
@@ -224,7 +289,7 @@
           //   label: '填空'
           // },
           {
-            value: '5',
+            value: '4',
             label: '简答'
           }
 
@@ -264,26 +329,26 @@
         ],          //类型
         level: [
           {
-            value: '简单',
+            value: 1,
             label: '简单'
           },
           {
-            value: '中等',
+            value: 2,
             label: '中等'
           },
           {
-            value: '困难',
+            value: 3,
             label: '困难'
           },
           {
-            value: '超纲',
+            value: 4,
             label: '超纲'
           }
         ],  //难度
         //所获取的内容
         research: {
-          type: '',        //类型（3）   单题，组卷，课件
-          questionType: '',//题型（5）   1.单选   2.多选    3.是非   4.填空    5.简答;
+          cate: 1,        //类型（3）   单题，组卷，课件
+          type: 1,//题型（5）   1.单选   2.多选    3.是非   4.填空    5.简答;
           level: '',       //难度（4）   1.简单   2.中等    3.困难   4.超纲
           format: '',      //格式（4）   'ppt','pdf','word','excel'
         },
@@ -383,28 +448,86 @@
             this.questionModal = true;
             break;
           case 2:
-            this.chapterModal = true;
+            this.updateModal = true;
             break;
         }
       },
       handleSubmit() {
-        let obj = Object.assign({}, this.qForm, this.questionForm);
-
+        let obj = Object.assign({}, this.questionForm, {answer: this.qForm.rightAnswer, questions: this.qForm.answers,user:1,bid:1});
+        this.addQuestion(obj);
       },
       clearQuestionForm() {
         this.clearQForm();
       },
-      ...mapActions(['updateQForm','clearQForm'])
+      handleFilter(e) {
+        console.log(e);
+      },
+      getQList(params) {
+        this.commonGetList('questions/getQuestionsFromTeacher', params);
+      },
+      getEList(params) {
+        this.commonGetList('exam/getExamFromTeacher', params);
+      },
+      getDList(params) {
+        this.commonGetList('document/getDocument', params);
+      },
+      addQuestion(params) {
+        this.$http.post('/questions/add', params)
+          .then(res => {
+            if (res.data.code === 0) {
+              this.$Message.error(' 添加题目失败');
+            } else {
+              this.$Message.success(' 添加题目成功');
+              this.questionModal = false;
+            }
+          })
+      },
+      commonGetList(url, params) {
+        this.$http.get(url, {params})
+          .then(res => {
+            if (res.data.code === 0) {
+              this.$Message.error('获取题目列表失败');
+            } else {
+              this.resultArr = res.data.data;
+            }
+          })
+      },
+      ...mapActions(['updateQForm', 'clearQForm'])
     },
     mounted() {
-      this.$http.get('questions/getQuestionsFromTeacher',{params:{id:10}})
-        .then(res=>{
-          if (res.data.code === 0) {
-            this.$Message.error('获取题目列表失败');
-          }else {
-            this.resultArr = res.data.data;
+      this.getQList({id: 10})
+    },
+    watch: {
+      cate(val) {
+        this.research = {
+          cate: val,
+          type: '',
+          level: '',
+          format: '',
+        };
+        this.resultArr = [];
+      },
+      research: {
+        deep: true,
+        handler(val) {
+          for (let key in val) {
+            !val[key] && delete val[key];
           }
-        })
+          switch (val.cate) {
+            case 1:
+              val && this.getQList({id: 10, ...val});
+              break;
+            case 2:
+              val && this.getEList({id: 10, ...val});
+              break;
+            case 3:
+              val && this.getDList({...val});
+              break;
+
+          }
+
+        }
+      }
     }
   }
 
@@ -508,8 +631,21 @@
     }
   }
 
-.margin10{
-  margin:20px;
-}
+  .margin10 {
+    margin: 20px;
+  }
+
+  .pull-both {
+    display: flex;
+    margin-top: 15px;
+    justify-content: space-between;
+  }
+
+  .result_container {
+    .content {
+      margin-top: 20px;
+    }
+    padding: 30px;
+  }
 
 </style>

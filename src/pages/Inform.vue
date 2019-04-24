@@ -3,14 +3,13 @@
     <NavBar ref="navBar"></NavBar>
     <div class="flex-container">
       <div class="inform_menu flex-item">
-        <Card title="通知列表" icon="ios-options" :padding="0" shadow style="width: 300px;">
+        <Card title="通知列表" icon="ios-options" :padding="0" shadow >
           <Button slot="extra" to="/inform/editorInform" type="primary">
               <Icon type="md-add" sixe="30"/>
               新建通知
           </Button>
           <CellGroup>
-            <Cell v-for="(item,index) in informArr" :title="item.content" :to="`/inform/showInform/${item.id}`"
-                  :key="index">
+            <Cell v-for="(item,index) in informArr" :title="item.content" :to="`/inform/showInform/${item.id}`" :key="index">
               <Badge :count="10" slot="extra"/>
             </Cell>
           </CellGroup>
@@ -38,20 +37,7 @@
       }
     },
     mounted: function () {
-      // this.open = ["5"];
-      this.activeName = ['3'];
-      // this.$nextTick(function () {
-      //   this.$refs.menu.updateOpened();
-      //   this.$refs.menu.updateActiveName();
-      // })
-      // // this.handleSelect(this.active);
     },
-    watch: {
-      '$route'() {
-        this.$refs.leftMenu.currentActiveName = ''
-      }
-
-    }
   }
 </script>
 

@@ -19,7 +19,7 @@
     components:{RadioGroup,Radio},
     data() {
       return {
-        rightAnswer: true
+        rightAnswer: 'true'
       }
     },
     methods: {

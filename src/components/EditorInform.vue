@@ -1,7 +1,12 @@
 <template>
   <Form class="form-style">
-    <FormItem label="标题">
-      <Input type="text" placeholder="通知标题">
+    <FormItem label="接受者">
+      <Input type="text" placeholder="接受者">
+        <Icon type="ios-person-outline" slot="prepend"></Icon>
+      </Input>
+    </FormItem>
+    <FormItem label="主题">
+      <Input type="text" placeholder="通知主题">
         <Icon type="ios-person-outline" slot="prepend"></Icon>
       </Input>
     </FormItem>
@@ -10,7 +15,7 @@
         <Icon type="ios-person-outline" slot="prepend"></Icon>
       </Input>
     </FormItem>
-    <Button type="primary" style="float: right;" :size="30">确定</Button>
+    <Button type="primary" style="float: right;" >确定</Button>
   </Form>
 </template>
 
