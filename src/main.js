@@ -8,6 +8,9 @@ import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
 import axios from 'axios';
+import ElementUI from 'element-ui'
+
+import 'element-ui/lib/theme-chalk/index.css'
 // import Fly from 'node_modules/flyio/dist/npm./';
 
 import store from './store';
@@ -19,7 +22,7 @@ axios.defaults.baseURL = 'http://qk.heniankj.com/public/index.php/home/';
 // axios.defaults.withCredentials = false;
 Vue.prototype.$http = axios;
 Vue.use(iView);
-
+Vue.use(ElementUI);
 /* eslint-disable no-new */
 
 new Vue({
@@ -29,3 +32,5 @@ new Vue({
   template: '<App/>',
   store
 });
+
+

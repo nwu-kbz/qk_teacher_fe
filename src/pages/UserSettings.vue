@@ -102,7 +102,23 @@
         this.$el.querySelector(".hiddenInput").click();
       },
       submitChange(){
+        this.$http.post(`teacher/changeInfo/id/${this.formData.id}`,{
+              username: this.formData.username,    //用户名
+              email: this.formData.email,       //邮箱
+              school: this.schoolArr.find(item => item.name.trim() === this.formData.school.trim()).id  ,      //学校
+              department:  this.departmentArr.find(item => item.name.trim()===this.formData.department.trim()).id ,  //部门
+              position:  this.positionArr.find(item => item.name.trim() === this.formData.position.trim()).id    //职称
+        }).then(res => {
+          if (res.data.code === 0) { //err
+            this.$Message.error(res.data.msg);
 
+          } else {
+
+            this.$Message.info('修改成功！');
+
+
+          }
+        }).catch(e => console.error(e))
       }
     },
 

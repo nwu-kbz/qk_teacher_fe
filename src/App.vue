@@ -17,7 +17,8 @@
     },
     mounted() {
       this.setNav(this.$route);
-    },
+      [].sort()
+      },
     methods: {
       ...mapActions(['updateCurrentPath']),
       setNav(val) {

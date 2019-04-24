@@ -64,7 +64,9 @@
       <MenuItem name="5-3">
         <router-link to="/login">退出登录</router-link>
       </MenuItem>
-      <MenuItem name="5-4">关于我们</MenuItem>
+      <MenuItem name="5-4">
+        <router-link to="/about">关于我们</router-link>
+      </MenuItem>
     </Submenu>
   </Menu>
 </template>

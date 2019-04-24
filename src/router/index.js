@@ -12,6 +12,9 @@ import ShowInform from '../components/ShowInform'
 import Data from '../pages/Data'
 import QBank from '../pages/QBank'
 import CourseDetail from '../pages/CourseDetail'
+import Loginin from '../pages/Loginin'
+import About from '../pages/About'
+
 Vue.use(Router)
 
 export default new Router({
@@ -20,6 +23,11 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/loginin',
+      name: 'UserLogin',
+      component: Loginin
     },
     {
       path: '/register',
@@ -77,6 +85,11 @@ export default new Router({
       path: '/data',
       name: 'Data',
       component: Data
+    },
+    {
+      path: '/about',
+      name: 'About',
+      component: About
     },
 
     {  //默认页面
