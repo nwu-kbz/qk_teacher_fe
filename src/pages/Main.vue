@@ -30,7 +30,11 @@
     },
     computed: {
       teacherInfo() {
-        return this.$store.getters.teacherInfo
+        let info = this.$store.getters.teacherInfo;
+        // if (!Object.keys(info).length) {
+        //   info = JSON.parse(localStorage.getItem("userInfo"));
+        // }
+        return info;
       }
     },
     data() {

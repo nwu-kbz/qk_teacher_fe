@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from '../pages/Login'
+// import Login from '../pages/Login'
 import Main from '../pages/Main'
 import Register from '../pages/Register'
 import UserSettings from '../pages/UserSettings'
@@ -12,22 +12,23 @@ import ShowInform from '../components/ShowInform'
 import Data from '../pages/Data'
 import QBank from '../pages/QBank'
 import CourseDetail from '../pages/CourseDetail'
-import Loginin from '../pages/Loginin'
+import Login from '../pages/Loginin'
 import About from '../pages/About'
+import store from '../store';
 
 Vue.use(Router)
 
-export default new Router({
+let router = new Router({
   routes: [
+    // {
+    //   path: '/login',
+    //   name: 'Login',
+    //   component: Login
+    // },
     {
       path: '/login',
-      name: 'Login',
+      name: 'login',
       component: Login
-    },
-    {
-      path: '/loginin',
-      name: 'UserLogin',
-      component: Loginin
     },
     {
       path: '/register',
@@ -36,65 +37,92 @@ export default new Router({
     },
     {
       path: '/main',
-      name: 'Main',
-      component: Main
+      name: 'main',
+      component: Main,
+      meta:{needLogin: true}
     },
     {
       path: '/userSettings',
       name: 'UserSettings',
-      component: UserSettings
+      component: UserSettings,
+      meta:{needLogin: true}
     },
     {
       path: '/courseInfo/:id',
       name: 'CourseInfo',
-      component: CourseInfo
+      component: CourseInfo,
+      meta:{needLogin: true}
     },
     {
       path: '/classBegin',
       name: 'ClassBegin',
-      component: ClassBegin
+      component: ClassBegin,
+      meta:{needLogin: true}
     },
     {
       path: '/qbank',
       name: 'QBank',
       component: QBank,
-
+      meta:{needLogin: true}
     },
     {
       path: '/courseDetail/:id/:name',
       name: 'CourseDetail',
       component: CourseDetail,
+      meta:{needLogin: true}
     },
 
     {
       path: '/inform',
       name: 'Inform',
       component: Inform,
+      meta:{needLogin: true},
       children: [
         {
           path: '/inform/showInform/:id',
           component: ShowInform,
+          meta:{needLogin: true}
         },
         {
           path: '/inform/editorInform',
           component: EditorInform,
+          meta:{needLogin: true}
         }
       ]
     },
     {
       path: '/data',
       name: 'Data',
-      component: Data
+      component: Data,
+      meta:{needLogin: true}
     },
     {
       path: '/about',
       name: 'About',
-      component: About
+      component: About,
+      meta:{needLogin: true}
     },
 
     {  //默认页面
       path: '/',
-      redirect: '/loginin',
+      redirect: '/main',
     }
   ]
-})
+});
+
+router.beforeEach((to, from, next) => { //全局钩子函数
+  let isLogin = localStorage.getItem('userInfo')||(store.state.teacherInfo&&Object.keys(store.state.teacherInfo).length);
+  to.matched.some((route) => {
+    if (route.meta.needLogin) { //通过此操作可以判断哪些页面需要登录
+      if (isLogin) {
+        next();
+      } else {
+        next({name: 'login', params: {path: route.path}})
+      }
+    } else {
+      next();
+    }
+  });
+
+});
+export default router;

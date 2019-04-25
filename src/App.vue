@@ -17,8 +17,13 @@
     },
     mounted() {
       this.setNav(this.$route);
-      [].sort()
-      },
+      let info = this.$store.getters.teacherInfo;
+      if (!Object.keys(info).length) {
+        info = JSON.parse(localStorage.getItem("userInfo"));
+        // console.log(this.$store);
+        info&&this.$store.dispatch('saveInfo', info);
+      }
+    },
     methods: {
       ...mapActions(['updateCurrentPath']),
       setNav(val) {

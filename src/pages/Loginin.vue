@@ -78,27 +78,27 @@
         // params.append('username', this.username);
         // params.append('password', this.password);
         this.$http.get('teacher/login', {params: {'username': this.username, 'password': this.password}})
-            .then(res => {
-              console.log(res);
-              if (res.data.code === 0) { //err
-                this.$Message.error(res.data.msg);
-                this.username = '';
-                this.password = '';
-              } else {
-                  if(this.isChecked ===false){
-                    this.clearCookie();
-                  }else{
-                    //调用配置cookie方法,传入账号名，密码，和保存天数3个参数
-                    this.setCookie(this.username, this.password, 7, true);
-                  }
-                  //获取教师的个人信息添加到vuex中
-                  this.$store.dispatch('saveInfo', res.data.data);
-                  // console.log("username: " + res.data.data.user.username);
-                  //成功登录
-                  this.$router.push('/main');
-                }
+          .then(res => {
+            if (res.data.code === 0) { //err
+              this.$Message.error(res.data.msg);
+              this.username = '';
+              this.password = '';
+            } else {
+              if (this.isChecked === false) {
+                this.clearCookie();
+              } else { //调用配置cookie方法,传入账号名，密码，和保存天数3个参数
+                this.setCookie(this.username, this.password, 7, true);
+              }
+              if ((res.data.code === 1)) {
+                //获取教师的个人信息添加到vuex中
+                this.$store.dispatch('saveInfo', res.data.data);
+                localStorage.setItem("userInfo", JSON.stringify(res.data.data));
+              }
+              //成功登录
+              this.$router.push('/main');
+            }
 
-            }).catch(e => console.error(e))
+          }).catch(e => console.error(e))
       },
       //设置cookie
       setCookie(u_name, u_pwd, exdays, isChecked) {
@@ -113,14 +113,14 @@
       //读取cookie
       getCookie: function () {
         //把cookie中的字符串转为对象
-        let ck = JSON.parse("{" + window.document.cookie.trim().replace(/=/g,':').replace(/;/g,',') + "}");
+        let ck = JSON.parse("{" + window.document.cookie.trim().replace(/=/g, ':').replace(/;/g, ',') + "}");
         if (ck != null) {
           this.username = ck.userName;
           this.password = ck.userPwd;
         }
       },
       //清除cookie
-      clearCookie: function() {
+      clearCookie: function () {
         this.setCookie("", "", -1, false); //修改2值都为空，天数为负1天就好了
       }
     },
@@ -128,15 +128,15 @@
       //页面加载调用cookie值
       this.getCookie();
       this.$http.get('teacher/getInfo')
-          .then(res => {
-            if (res.data.code === 0) { //err
-              this.$Message.error(res.data.msg);
-            } else {
-              this.schoolInfo(res.data.data.school)
-              this.departmentInfo(res.data.data.department)
-              this.positionInfo(res.data.data.position)
-            }
-          }).catch(e => console.error(e))
+        .then(res => {
+          if (res.data.code === 0) { //err
+            this.$Message.error(res.data.msg);
+          } else {
+            this.schoolInfo(res.data.data.school)
+            this.departmentInfo(res.data.data.department)
+            this.positionInfo(res.data.data.position)
+          }
+        }).catch(e => console.error(e))
     }
   }
 

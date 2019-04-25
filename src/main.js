@@ -20,6 +20,42 @@ import store from './store';
 Vue.config.productionTip = false;
 axios.defaults.baseURL = 'http://qk.heniankj.com/public/index.php/home/';
 // axios.defaults.withCredentials = false;
+//设置拦截参数
+axios.interceptors.request.use(
+  config => {
+    let localStore = JSON.parse(localStorage.getItem("userInfo"));
+    let token = localStore && localStore.token || (store.getters.teacherInfo&&store.getters.teacherInfo.token) || null;
+    if (config.method == 'post') {
+      config.data = {
+        ...config.data,
+        token
+      }
+    } else if (config.method == 'get') {
+      config.params = {
+        ...config.params,
+        token
+      }
+    }
+    return config
+  }, function (error) {
+    return Promise.reject(error)
+  }
+);
+
+axios.interceptors.response.use(function (response) {
+// token 已过期，重定向到登录页面
+  if (response.data.code == 8) {
+    localStorage.clear();
+    router.replace({
+      path: '/login',
+      query: {redirect: router.currentRoute.fullPath}
+    })
+  }
+  return response
+}, function (error) {
+  return Promise.reject(error)
+});
+
 Vue.prototype.$http = axios;
 Vue.use(iView);
 Vue.use(ElementUI);
@@ -28,7 +64,7 @@ Vue.use(ElementUI);
 new Vue({
   el: '#app',
   router,
-  components: { App },
+  components: {App},
   template: '<App/>',
   store
 });

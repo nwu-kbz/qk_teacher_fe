@@ -63,7 +63,7 @@
           </Modal>
         </MenuItem>
         <MenuItem name="5-3">
-          <router-link to="/loginin">退出登录</router-link>
+          <router-link to="" @click.native="handleLogout">退出登录</router-link>
         </MenuItem>
         <MenuItem name="5-4">
           <router-link to="/about">关于我们</router-link>
@@ -90,6 +90,11 @@
       }
     },
     methods: {
+      handleLogout() {
+        localStorage.removeItem("userInfo");
+        this.$store.dispatch('saveInfo', {});
+        this.$router.replace('/login');
+      },
       ok() {
         //修改密码
         this.$http.post('changePasswd ', {
