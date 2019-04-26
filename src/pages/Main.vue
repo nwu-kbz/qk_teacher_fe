@@ -59,7 +59,8 @@
               for (let course of res.data.data) {
                 let arr = course.day.split(',').map(x => parseInt(x));
                 for (let x of arr) {
-                  if (course.name) courseTable[course.week - 1][x-1] = `${course.name}@${course.id} -> ${course.place} [${course.type}]`;
+                  if (course.name)
+                    courseTable[course.week - 1][x-1] = `${course.name}@${course.id} -> ${course.place} [${course.type}]`;
                 }
               }
               this.courseList = courseTable;
@@ -104,7 +105,7 @@
           },
           gridOnClick: (e) => {
             let ret = e.name.match(/(.*)@(\d+) -> (.*) \[(.*)]/);
-            this.$router.push('/courseInfo/7');
+            this.$router.push(`courseInfo/${ret[2]}`);
           },
         });
       }

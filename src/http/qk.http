@@ -37,5 +37,13 @@ GET http://qk.heniankj.com/public/index.php/home/teacher/changeInfo?id=13
 X-Requested-With: XMLHttpRequest
 
 ###
+GET http://qk.heniankj.com/public/index.php/home/teacher/getCourse?id=13
+X-Requested-With: XMLHttpRequest
+
+###
+GET http://qk.heniankj.com/public/index.php/home/coursedetail/getdetailbyid/id/4
+X-Requested-With: XMLHttpRequest
+
+###
 
 

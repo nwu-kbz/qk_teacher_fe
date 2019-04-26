@@ -10,16 +10,18 @@
             <img src="../assets/course.jpg">
           </div>
           <div class="course_describe">
-            <div class="describe1"><span><Icon size="24" type="md-paper" />课程名：程序设计语言</span></div>
-            <div class="describe1"><span><Icon size="24" type="ios-clock" />课时：54课时</span></div>
-            <div class="describe1"><span><Icon size="24" type="md-contact" />班长：张小明</span></div>
-            <div class="describe1"><span><Icon size="24" type="ios-happy" />班级人数：40人</span></div>
-            <div class="describe1"><span><Icon size="24" type="md-cog" />上课时间：周二8:00-10:00，周四10:00-12:00</span></div>
-            <div class="describe1"><span><Icon size="24" type="ios-home" />教室：1-3505</span></div>
-            <div class="describe1"><span><Icon size="24" type="ios-contacts" />班群QQ：352689452</span></div>
+            <div class="describe1"><span><Icon size="24" type="md-paper"/>课程名称：{{classDetail.name}}</span></div>
+            <div class="describe1"><span><Icon size="24" type="ios-clock"/>课时：{{classDetail.course_t}}课时</span></div>
+            <div class="describe1"><span><Icon size="24" type="md-contact"/>班长：{{classDetail.leader}}</span></div>
+            <div class="describe1"><span><Icon size="24" type="ios-happy"/>班级人数：{{classDetail.num}}</span></div>
+            <div class="describe1"><span><Icon size="24" type="md-cog"/>上课时间：{{classDetail['0'][0].week}}-{{classDetail['0'][0].day}}</span></div>
+            <div class="describe1"><span><Icon size="24" type="ios-home"/>教室：{{classDetail['0'][0].place}}</span></div>
+            <div class="describe1"><span><Icon size="24" type="ios-contacts"/>班群QQ：{{classDetail.chat}}</span></div>
           </div>
-          <Button @click="begin_class" @mouseover="button_style" @mouseout="button_style1" class="begin_class" type="success">
-            <Icon type="ios-people-outline" size="24"/>  开始上课
+          <Button @click="begin_class" @mouseover="button_style" @mouseout="button_style1" class="begin_class"
+                  type="success">
+            <Icon type="ios-people-outline" size="24"/>
+            开始上课
           </Button>
         </div>
       </div>
@@ -31,29 +33,24 @@
             <Panel name="1">
               <Icon type="md-menu" size="30" color="pink"/>
               课程介绍
-              <p slot="content">
-                程序设计是一门基础课程。对于计算机相关专业而言，程序设计是专业基础知识，是进一步学习其他专业知识的第一步阶梯；对于非计算机专业而言，程序设计的学习有助于理解计算机的能力所在，理解哪些是计算机擅长解决的问题，怎样的方式方法是计算机擅长的手段，从而能更好地利用计算机来解决本专业领域内的问题。程序设计是一门基础课程。对于计算机相关专业而言，程序设计是专业基础知识，是进一步学习其他专业知识的第一步阶梯；对于非计算机专业而言，程序设计的学习有助于理解计算机的能力所在，理解哪些是计算机擅长解决的问题，怎样的方式方法是计算机擅长的手段，从而能更好地利用计算机来解决本专业领域内的问题。</p>
+              <p slot="content">{{classDetail.introduce}}</p>
             </Panel>
             <Panel name="2">
               <Icon type="ios-list-box" size="30" color="LightGreen"/>
               课程目标
-              <p slot="content">斯蒂夫·盖瑞·沃兹尼亚克（Stephen Gary
-                Wozniak），美国电脑工程师，曾与史蒂夫·乔布斯合伙创立苹果电脑（今之苹果公司）。斯蒂夫·盖瑞·沃兹尼亚克曾就读于美国科罗拉多大学，后转学入美国著名高等学府加州大学伯克利分校（UC
-                Berkeley）并获得电机工程及计算机（EECS）本科学位（1987年）。</p>
+              <p slot="content">{{classDetail.target}}</p>
             </Panel>
             <Panel name="3">
               <Icon type="ios-calendar" size="30" color="PaleTurquoise"/>
               课程计划
-              <p slot="content">
-                乔纳森·伊夫是一位工业设计师，现任Apple公司设计师兼资深副总裁，英国爵士。他曾参与设计了iPod，iMac，iPhone，iPad等众多苹果产品。除了乔布斯，他是对苹果那些著名的产品最有影响力的人。</p>
+              <p slot="content">{{classDetail.plan}}</p>
             </Panel>
             <Panel name="4">
               <Icon type="ios-school" size="30" color="LightSalmon"/>
               评估方式
-              <p slot="content">
-                乔纳森·伊夫是一位工业设计师，现任Apple公司设计师兼资深副总裁，英国爵士。他曾参与设计了iPod，iMac，iPhone，iPad等众多苹果产品。除了乔布斯，他是对苹果那些著名的产品最有影响力的人。</p>
+              <p slot="content">{{classDetail.evaluation}} </p>
             </Panel>
-          </Collapse>
+            </Collapse>
         </div>
         <div class="course_upload_detail course_upload_right">
           <span><Icon type="ios-paper" size="40"/>资料库</span>
@@ -107,21 +104,36 @@
 
 <script>
   import NavBar from "../components/NavBar";
-  import {Panel, Collapse, Upload,Button} from 'iview'
+  import {Panel, Collapse, Upload, Button} from 'iview'
 
   export default {
     name: "CourseInfo",
     components: {NavBar, Panel, Collapse, Upload},
-    methods:{
-      begin_class(){
+    data() {
+      return {
+        classDetail: {}
+      }
+    },
+    methods: {
+      begin_class() {
         this.$router.push('/classBegin')
       },
-      button_style(e){
+      button_style(e) {
         e.target.style.boxShadow = '2px 2px 5px #B35A3E'
       },
-      button_style1(e){
+      button_style1(e) {
         e.target.style.boxShadow = 'none'
       }
+    },
+    //http://qk.heniankj.com/public/index.php/home/coursedetail/getdetailbyid/id/4
+    mounted() {
+      // console.log(this.$route.params.id);
+      this.$http.get(`coursedetail/getdetailbyid/id/${this.$route.params.id}`)
+          .then(res => {
+            this.classDetail = res.data.data;
+          })
+
+
     }
   }
 </script>
@@ -139,7 +151,7 @@
     height: 100%;
     background-color: #e5e5e5;
     position: relative;
-    .header-info{
+    .header-info {
       background-color: rebeccapurple;
       height: 50%;
       width: 100%;
@@ -149,7 +161,7 @@
       position: absolute;
       top: 7%;
       left: 22%;
-      .begin_class{
+      .begin_class {
         position: absolute;
         bottom: 3%;
         right: 1%;
@@ -215,13 +227,12 @@
     }
     .course_upload_right {
       float: right;
-      .describe_right{
+      .describe_right {
         margin-left: 35px;
 
       }
     }
   }
-
 
 
 </style>
