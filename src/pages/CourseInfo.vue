@@ -147,7 +147,7 @@
     .course_info {
       height: 220px;
       position: absolute;
-      top: 3%;
+      top: 7%;
       left: 22%;
       .begin_class{
         position: absolute;

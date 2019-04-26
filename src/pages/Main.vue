@@ -116,7 +116,10 @@
 </script>
 
 <style lang="less" scoped>
-
+  .main-page{
+    font-size: 16px;
+    font-weight: lighter;
+  }
   #courseTable {
     width: 70%;
     margin: 10px auto;
@@ -159,9 +162,9 @@
     position: absolute;
     height: 15px;
     bottom: 70px;
-    width: 600px;
+    width: 800px;
     left: 50%;
-    margin-left: -300px;
+    margin-left: -400px;
     .user_info {
       margin: 0 5px;
       color: white;

@@ -50,17 +50,16 @@ import {mapActions} from 'vuex';
         this.$http.get('teacher/login', {params: {'username': this.username, 'password': this.password}})
             .then(res => {
               console.log(res);
-              if (res.data.code === 0) { //err
+              if (res.data.code === 0) {
                 this.$Message.error(res.data.msg);
                 this.username = '';
                 this.password = '';
-              } else {
+              } else{
                 //获取教师的个人信息添加到vuex中
                 this.$store.dispatch('saveInfo',res.data.data);
-                //成功登录
+                //成功登录,转到首页
                 this.$router.push('/main');
-
-              }
+                }
             }).catch(e => console.error(e))
 
         // this.$http('teacher/login', {

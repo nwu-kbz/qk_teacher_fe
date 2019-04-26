@@ -3,7 +3,7 @@
     <NavBar></NavBar>
     <div class="qb_container">
       <div class="course">
-        <router-link v-for="(course,index) in courseArr" :key="index" :to="`/courseDetail/${course.id}/${course.name}`">
+        <router-link v-for="(course,index) in courseArr" :key="index" :to="`/courseDetail/${course.id}`">
           <Card class="course_card">
             <img slot="title" src="../assets/course_logo.jpg">
             <p>{{course.name}}</p>
@@ -31,7 +31,7 @@
       }
     },
     mounted() {
-      this.$http.get('qbase/getbasebyteacher/id/10')
+      this.$http.get('qbase/getbasebyteacher/id/13')
         .then(res=>{
           if (res.data.code === 0) { //err
             this.$Message.error("获取题库信息失败");

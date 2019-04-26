@@ -3,15 +3,15 @@
     <div class="user-login-bg"></div>
     <div class="content-wrapper">
       <h2 class="slogan">
-        欢迎使用 <br /> ICE 内容管理系统
+        欢迎使用 <br/> 轻课教学管理系统
       </h2>
       <div class="form-container">
         <h4 class="form-title">登录</h4>
-        <el-form ref="form"  label-width="0">
+        <el-form ref="form" label-width="0">
           <div class="form-items">
             <el-row class="form-item">
               <el-col>
-                <el-form-item  :rules="[ { required: true, message: '会员名/邮箱/手机号不能为空'}]">
+                <el-form-item :rules="[ { required: true, message: '会员名/邮箱/手机号不能为空'}]">
                   <div class="form-line">
                     <i class="el-icon-edit-outline input-icon"></i>
                     <!--<el-input placeholder="会员名/邮箱/手机号" v-model="user.username"></el-input>-->
@@ -34,7 +34,7 @@
             <el-row class=form-item>
               <el-col>
                 <el-form-item>
-                  <el-checkbox class="checkbox" v-model="rememberPasswd">记住账号</el-checkbox>
+                  <el-checkbox class="checkbox" v-model="isChecked">记住账号</el-checkbox>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -60,19 +60,23 @@
 <script>
   import BasicContainer from '@vue-materials/basic-container';
   import {mapActions} from 'vuex';
+
   export default {
     name: "Loginin",
     components: {BasicContainer},
     data() {
       return {
-        rememberPasswd: false,
+        isChecked: true,
         username: '',
         password: '',
       }
     },
     methods: {
-      ...mapActions(['schoolInfo','departmentInfo','positionInfo']),
+      ...mapActions(['schoolInfo', 'departmentInfo', 'positionInfo']),
       handleLogin() {
+        // var params = new URLSearchParams();
+        // params.append('username', this.username);
+        // params.append('password', this.password);
         this.$http.get('teacher/login', {params: {'username': this.username, 'password': this.password}})
             .then(res => {
               console.log(res);
@@ -81,30 +85,62 @@
                 this.username = '';
                 this.password = '';
               } else {
-                //获取教师的个人信息添加到vuex中
-                this.$store.dispatch('saveInfo',res.data.data);
-                //成功登录
-                this.$router.push('/main');
+                  if(this.isChecked ===false){
+                    this.clearCookie();
+                  }else{
+                    //调用配置cookie方法,传入账号名，密码，和保存天数3个参数
+                    this.setCookie(this.username, this.password, 7, true);
+                  }
+                  //获取教师的个人信息添加到vuex中
+                  this.$store.dispatch('saveInfo', res.data.data);
+                  // console.log("username: " + res.data.data.user.username);
+                  //成功登录
+                  this.$router.push('/main');
+                }
 
-              }
             }).catch(e => console.error(e))
+      },
+      //设置cookie
+      setCookie(u_name, u_pwd, exdays, isChecked) {
+        let exdate = new Date(); //获取时间
+        exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays); //保存的天数
+        //字符串拼接cookie
+        window.document.cookie = "\"userName\"" + "=\"" + u_name + "\";path=/;expires=" + exdate.toUTCString();
+        window.document.cookie = "\"userPwd\"" + "=\"" + u_pwd + "\";path=/;expires=" + exdate.toUTCString();
+        window.document.cookie = "\"rememberFlag\"" + "=" + isChecked + ";path=/;expires=" + exdate.toUTCString();
+      },
 
+      //读取cookie
+      getCookie: function () {
+        //把cookie中的字符串转为对象
+        let ck = JSON.parse("{" + window.document.cookie.trim().replace(/=/g,':').replace(/;/g,',') + "}");
+        if (ck != null) {
+          this.username = ck.userName;
+          this.password = ck.userPwd;
+        }
+      },
+      //清除cookie
+      clearCookie: function() {
+        this.setCookie("", "", -1, false); //修改2值都为空，天数为负1天就好了
       }
     },
-    mounted(){
+    mounted() {
+      //页面加载调用cookie值
+      this.getCookie();
       this.$http.get('teacher/getInfo')
           .then(res => {
             if (res.data.code === 0) { //err
               this.$Message.error(res.data.msg);
-            } else{
+            } else {
               this.schoolInfo(res.data.data.school)
               this.departmentInfo(res.data.data.department)
               this.positionInfo(res.data.data.position)
             }
           }).catch(e => console.error(e))
     }
+  }
 
-  };
+
 </script>
 
 <style lang="scss" scoped>

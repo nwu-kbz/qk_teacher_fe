@@ -1,5 +1,5 @@
 <template>
-  <Menu ref="menu" mode="horizontal" theme='light' :activeName="currentPath">
+  <Menu ref="menu" mode="horizontal" theme='light' :activeName="currentPath" class="menuBar">
     <router-link to="/main">
       <MenuItem name="1">
         <Icon type="ios-home" size="20"/>
@@ -26,48 +26,50 @@
         数据分析
       </MenuItem>
     </router-link>
-    <Submenu name="5" class="user_item">
-      <template slot="title">
-        <img type="md-contact" size="30" :src="teacherInfo.avatar" class="avatar_logo"/>
-      </template>
-      <MenuItem name="5-1">
-        <router-link to="/userSettings">用户信息</router-link>
-      </MenuItem>
-      <MenuItem name="5-2">
-        <router-link @click.native="modal1 = true" to="">修改密码</router-link>
-        <Modal
-                v-model="modal1"
-                title="修改密码"
-                @on-ok="ok"
-                @on-cancel="cancel">
-          <div slot="header" style="font-size: 20px">
-            <Icon type="ios-lock" size="20"/>
-            <span style="font-weight: bold">修改密码 </span>
-          </div>
-          <div class="modifyPassword">旧密码：
-            <div class="enter_password">
-              <Input v-model="oldPassWd" style="width: 300px" type="password"/>
+    <div class="userInfoBlock">
+      <Submenu name="5" class="user_item" style="float: right">
+        <template slot="title">
+          <img type="md-contact" size="30" :src="teacherInfo.avatar" class="avatar_logo"/>
+        </template>
+        <MenuItem name="5-1">
+          <router-link to="/userSettings">用户信息</router-link>
+        </MenuItem>
+        <MenuItem name="5-2">
+          <router-link @click.native="modal1 = true" to="">修改密码</router-link>
+          <Modal
+                  v-model="modal1"
+                  title="修改密码"
+                  @on-ok="ok"
+                  @on-cancel="cancel">
+            <div slot="header" style="font-size: 20px">
+              <Icon type="ios-lock" size="20"/>
+              <span style="font-weight: bold">修改密码 </span>
             </div>
-          </div>
-          <div class="modifyPassword">新密码:
-            <div class="enter_password">
-              <Input v-model="newPassWd" style="width: 300px" type="password"/>
+            <div class="modifyPassword">旧密码：
+              <div class="enter_password">
+                <Input v-model="oldPassWd" style="width: 300px" type="password"/>
+              </div>
             </div>
-          </div>
-          <div class="modifyPassword ">确认密码：
-            <div class="confirm_password">
-              <Input v-model="rePassWd" style="width: 300px" type="password"/>
+            <div class="modifyPassword">新密码:
+              <div class="enter_password">
+                <Input v-model="newPassWd" style="width: 300px" type="password"/>
+              </div>
             </div>
-          </div>
-        </Modal>
-      </MenuItem>
-      <MenuItem name="5-3">
-        <router-link to="/login">退出登录</router-link>
-      </MenuItem>
-      <MenuItem name="5-4">
-        <router-link to="/about">关于我们</router-link>
-      </MenuItem>
-    </Submenu>
+            <div class="modifyPassword ">确认密码：
+              <div class="confirm_password">
+                <Input v-model="rePassWd" style="width: 300px" type="password"/>
+              </div>
+            </div>
+          </Modal>
+        </MenuItem>
+        <MenuItem name="5-3">
+          <router-link to="/loginin">退出登录</router-link>
+        </MenuItem>
+        <MenuItem name="5-4">
+          <router-link to="/about">关于我们</router-link>
+        </MenuItem>
+      </Submenu>
+    </div>
   </Menu>
 </template>
 
@@ -163,6 +165,14 @@
     .confirm_password {
       display: inline-block;
       margin-left: 5px;
+    }
+  }
+
+  .menuBar{
+    position: relative;
+    .userInfoBlock{
+      position: absolute;
+      right: 10px;
     }
   }
 </style>
