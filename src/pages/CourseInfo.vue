@@ -6,23 +6,24 @@
       <!--<div class="black_bg"></div>-->
       <div class="header-info">
         <div class="course_info">
-          <div class="course_picture">
-            <img src="../assets/course.jpg">
+          <div>
+            <img src="../assets/course.jpg" alt="课程">
+            <Button @click="begin_class" @mouseover="button_style" @mouseout="button_style1" class="begin_class"
+                    type="success">
+              <Icon type="ios-people-outline" size="30"/>
+              开始上课
+            </Button>
           </div>
-          <div class="course_describe">
-            <div class="describe1"><span><Icon size="24" type="md-paper"/>课程名称：{{classDetail.name}}</span></div>
-            <div class="describe1"><span><Icon size="24" type="ios-clock"/>课时：{{classDetail.course_t}}课时</span></div>
-            <div class="describe1"><span><Icon size="24" type="md-contact"/>班长：{{classDetail.leader}}</span></div>
-            <div class="describe1"><span><Icon size="24" type="ios-happy"/>班级人数：{{classDetail.num}}</span></div>
-            <div class="describe1"><span><Icon size="24" type="md-cog"/>上课时间：{{classDetail['0'][0].week}}-{{classDetail['0'][0].day}}</span></div>
-            <div class="describe1"><span><Icon size="24" type="ios-home"/>教室：{{classDetail['0'][0].place}}</span></div>
-            <div class="describe1"><span><Icon size="24" type="ios-contacts"/>班群QQ：{{classDetail.chat}}</span></div>
+          <div>
+            <div><span><Icon size="24" type="md-paper"/>课程名称：{{classDetail.name}}</span></div>
+            <div><span><Icon size="24" type="ios-clock"/>课时：{{classDetail.course_t}}课时</span></div>
+            <div><span><Icon size="24" type="md-contact"/>班长：{{classDetail.leader}}</span></div>
+            <div><span><Icon size="24" type="ios-happy"/>班级人数：{{classDetail.num}}</span></div>
+            <div><span><Icon size="24" type="md-cog"/>上课时间：{{classDetail['baseinfo'][0].week}}-{{classDetail['baseinfo'][0].day}}</span></div>
+            <div><span><Icon size="24" type="ios-home"/>教室：{{classDetail['baseinfo'][0].place}}</span></div>
+            <div><span><Icon size="24" type="ios-contacts"/>班群QQ：{{classDetail.chat}}</span></div>
           </div>
-          <Button @click="begin_class" @mouseover="button_style" @mouseout="button_style1" class="begin_class"
-                  type="success">
-            <Icon type="ios-people-outline" size="24"/>
-            开始上课
-          </Button>
+
         </div>
       </div>
       <div class="course_upload">
@@ -131,6 +132,8 @@
       this.$http.get(`coursedetail/getdetailbyid/id/${this.$route.params.id}`)
           .then(res => {
             this.classDetail = res.data.data;
+            console.log(this.classDetail);
+
           })
 
 
@@ -157,14 +160,42 @@
       width: 100%;
     }
     .course_info {
-      height: 220px;
-      position: absolute;
-      top: 7%;
-      left: 22%;
-      .begin_class {
-        position: absolute;
-        bottom: 3%;
-        right: 1%;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &>div{
+        width: 40%;
+        box-sizing: border-box;
+        &:nth-child(1){
+          text-align: right;
+          position: relative;
+
+          img{
+            border-radius: 4px;
+            &:hover{
+              filter: blur(10px);
+            }
+          }
+          .begin_class{
+            top: 45%;
+            left: 45%;
+            position: absolute;
+            height: 50px;
+            font-size: 18px;
+          }
+        }
+        &:nth-child(2){
+          font-size: 20px;
+          color: #ffffff;
+          padding-left: 4%;
+          &>div{
+            border-bottom: 1px white dashed;
+            margin-bottom: 7px;
+          }
+        }
+
       }
     }
 
@@ -193,12 +224,13 @@
       display: inline-block;
       float: left;
       width: 50%;
-      .describe1 {
+      &>div {
         color: white;
         width: 90%;
         height: 30px;
         margin-left: 30px;
         border-bottom: 1px white dashed;
+        margin-top: 10px;
         span {
           line-height: 25px;
           word-break: break-all;

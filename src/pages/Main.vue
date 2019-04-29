@@ -6,11 +6,11 @@
         <img class='ivu-avatar' :src="teacherInfo.avatar"/>
       </div>
       <div class="user_label">
-        <label class="user_info">{{teacherInfo.username}}</label>
-        <label class="user_info">{{teacherInfo.position}}</label>
-        <label class="user_info">{{teacherInfo.school}}</label>
-        <label class="user_info">{{teacherInfo.department}}</label>
-        <label class="user_info">{{teacherInfo.email}}</label>
+        <span><Icon type="md-person" /><span>{{teacherInfo.username}}</span></span>
+        <span><Icon type="ios-book" /><span>{{teacherInfo.position}}</span></span>
+        <span><Icon type="md-school" /><span>{{teacherInfo.school}}</span></span>
+        <span><Icon type="md-home" /><span>{{teacherInfo.department}}</span></span>
+        <span><Icon type="md-mail" /><span>{{teacherInfo.email}}</span></span>
       </div>
     </div>
     <div id="courseTable"></div>
@@ -23,7 +23,7 @@
   import NavBar from "../components/NavBar";
 
   export default {
-    name: "main",
+    name: "index",
     components: {
       NavBar,
       MenuItem, Menu, Icon, Submenu, MenuGroup, Avatar
@@ -73,13 +73,6 @@
           })
       },
       initCourseTable() {
-        // let courseList = [
-        //   ['大学英语(Ⅳ)@10203', '大学英语(Ⅳ)@10203', '', '', '', '', '毛概@14208', '毛概@14208', '', '', '', '选修'],
-        //   ['', '', '信号与系统@11302', '信号与系统@11302', '模拟电子技术基础@16204', '模拟电子技术基础@16204', '', '', '', '', '', ''],
-        //   ['大学体育(Ⅳ)', '大学体育(Ⅳ)', '形势与政策(Ⅳ)@15208', '形势与政策(Ⅳ)@15208', '', '', '电路、信号与系统实验', '电路、信号与系统实验', '', '', '', ''],
-        //   ['', '', '', '', '电装实习@11301', '电装实习@11301', '', '', '', '大学体育', '大学体育', ''],
-        //   ['', '', '数据结构与算法分析', '数据结构与算法分析', '', '', '', '', '信号与系统', '信号与系统', '', ''],
-        // ];
         let week = window.innerWidth > 360 ? ['周一', '周二', '周三', '周四', '周五'] : ['一', '二', '三', '四', '五'];
         let day = new Date().getDay();
         let courseType = [
@@ -104,7 +97,7 @@
           highlightWeek: day,
           styles: {
             Gheight: 50,
-            // leftHandWidth: 50,
+            leftHandWidth: 70,
             // palette: ['#ff6633', '#eeeeee']
           },
           gridOnClick: (e) => {
@@ -133,19 +126,30 @@
   }
 
   .user_page {
-    position: relative;
     width: 100%;
     height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
     background-image: linear-gradient(0deg, #8755ff 0%, #30AFED 51%, #03DDE4 100%);
     .ivu-avatar-large {
       line-height: 65px;
     }
     .user_photo {
       width: 200px;
-      position: absolute;
-      left: 50%;
-      top: 30%;
-      margin-left: -100px;
+    }
+    .user_label {
+      width: 100%;
+      font-size: 20px;
+      text-align: center;
+      span {
+        margin: 0 5px;
+        color: white;
+        span{
+          margin-left: 5px;
+        }
+      }
     }
   }
 
@@ -162,17 +166,8 @@
     }
   }
 
-  .user_label {
-    text-align: center;
-    position: absolute;
-    height: 15px;
-    bottom: 70px;
-    width: 800px;
-    left: 50%;
-    margin-left: -400px;
-    .user_info {
-      margin: 0 5px;
-      color: white;
-    }
+  #courseWrapper{
+    background-color: gray;
   }
+
 </style>

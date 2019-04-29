@@ -46,10 +46,10 @@
           </div>
           <el-row class="tips">
             <router-link to="/register">立即注册</router-link>
-            <span class="line">|</span>
-            <a href="/" class="link">
-              忘记密码
-            </a>
+            <!--<span class="line">|</span>-->
+            <!--<a href="/" class="link">-->
+              <!--忘记密码-->
+            <!--</a>-->
           </el-row>
         </el-form>
       </div>

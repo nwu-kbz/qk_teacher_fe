@@ -15,6 +15,7 @@ import CourseDetail from '../pages/CourseDetail'
 import Login from '../pages/Loginin'
 import About from '../pages/About'
 import store from '../store';
+import VideoShare from '../pages/VideoShare';
 
 Vue.use(Router)
 
@@ -37,9 +38,15 @@ let router = new Router({
     },
     {
       path: '/main',
-      name: 'main',
+      name: 'Main',
       component: Main,
       meta:{needLogin: true}
+    },
+    {
+      path: '/video',
+      name: 'video',
+      component: VideoShare,
+      meta:{needLogin: false}
     },
     {
       path: '/userSettings',
