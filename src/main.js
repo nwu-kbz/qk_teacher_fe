@@ -14,7 +14,8 @@ import 'element-ui/lib/theme-chalk/index.css';
 // import Fly from 'node_modules/flyio/dist/npm./';
 
 import store from './store';
-
+Vue.use(iView);
+Vue.use(ElementUI);
 // let fly = new Fly();
 // fly.config.baseURL = 'http://qk.heniankj.com/public/index.php/home/';
 Vue.config.productionTip = false;
@@ -43,7 +44,7 @@ axios.interceptors.request.use(
 );
 
 axios.interceptors.response.use(function (response) {
-// token 已过期，重定向到登录页面
+  // token 已过期，重定向到登录页面
   if (response.data.code == 8) {
     localStorage.clear();
     router.replace({
@@ -51,15 +52,16 @@ axios.interceptors.response.use(function (response) {
       query: {redirect: router.currentRoute.fullPath}
     })
   }
-  return response
+  // 请求失败
+  if (response.data.code !== 1) {
+    this.$Message.error(response.data.msg);
+  }
+  return response;
 }, function (error) {
   return Promise.reject(error)
 });
 
 Vue.prototype.$http = axios;
-Vue.use(iView);
-Vue.use(ElementUI);
-/* eslint-disable no-new */
 
 new Vue({
   el: '#app',

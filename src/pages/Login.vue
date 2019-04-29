@@ -33,7 +33,8 @@
 
 <script>
   import {Checkbox, Icon, Input, Button} from 'iview';
-import {mapActions} from 'vuex';
+  import {mapActions} from 'vuex';
+
   export default {
     name: "Login",
     components: {Checkbox, Icon, Input, Button},
@@ -45,22 +46,24 @@ import {mapActions} from 'vuex';
       }
     },
     methods: {
-      ...mapActions(['schoolInfo','departmentInfo','positionInfo']),
+      ...mapActions(['schoolInfo', 'departmentInfo', 'positionInfo']),
       handleLogin() {
         this.$http.get('teacher/login', {params: {'username': this.username, 'password': this.password}})
-            .then(res => {
-              console.log(res);
-              if (res.data.code === 0) {
-                this.$Message.error(res.data.msg);
-                this.username = '';
-                this.password = '';
-              } else{
-                //获取教师的个人信息添加到vuex中
-                this.$store.dispatch('saveInfo',res.data.data);
-                //成功登录,转到首页
-                this.$router.push('/main');
-                }
-            }).catch(e => console.error(e))
+          .then(res => {
+            console.log(res);
+            if (res.data.code === 0) {
+              this.$Message.error(res.data.msg);
+              this.username = '';
+              this.password = '';
+            } else if (res.data.code === 1) {
+              //获取教师的个人信息添加到vuex中
+              this.$store.dispatch('saveInfo', res.data.data);
+              //成功登录,转到首页
+            } else if (res.data.code === 2) {
+
+            }
+            this.$router.push('/main');
+          }).catch(e => console.error(e))
 
         // this.$http('teacher/login', {
         //   method: 'post',
@@ -68,17 +71,17 @@ import {mapActions} from 'vuex';
         // }).then(res => console.log(res));
       }
     },
-    mounted(){
+    mounted() {
       this.$http.get('teacher/getInfo')
-          .then(res => {
-            if (res.data.code === 0) { //err
-              this.$Message.error(res.data.msg);
-            } else{
-              this.schoolInfo(res.data.data.school)
-              this.departmentInfo(res.data.data.department)
-              this.positionInfo(res.data.data.position)
-            }
-          }).catch(e => console.error(e))
+        .then(res => {
+          if (res.data.code === 0) { //err
+            this.$Message.error(res.data.msg);
+          } else {
+            this.schoolInfo(res.data.data.school)
+            this.departmentInfo(res.data.data.department)
+            this.positionInfo(res.data.data.position)
+          }
+        }).catch(e => console.error(e))
     }
   }
 </script>

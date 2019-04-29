@@ -3,7 +3,7 @@
     <ClassBar></ClassBar>
     <div class="main">
       <div class='courseware'>
-        <Card title="课程列表" icon="ios-options">
+        <!--<Card title="课程列表" icon="ios-options">-->
               <Collapse simple>
                 <Panel name="1">
                   第一章：程序设计入门
@@ -34,7 +34,7 @@
                   <p slot="content">...</p>
                 </Panel>
               </Collapse>
-        </Card>
+        <!--</Card>-->
       </div>
       <div class="show_area">
         <div class="show_courseware">
@@ -76,6 +76,8 @@
       justify-content: space-between;
       .courseware{
         width: 18%;
+        height: 100%;
+        background-color: #fff;
       }
       .show_area {
         margin-top: 2%;

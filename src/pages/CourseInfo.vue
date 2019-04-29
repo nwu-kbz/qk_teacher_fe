@@ -8,21 +8,22 @@
         <div class="course_info">
           <div>
             <img src="../assets/course.jpg" alt="课程">
-            <Button @click="begin_class" @mouseover="button_style" @mouseout="button_style1" class="begin_class"
-                    type="success">
-              <Icon type="ios-people-outline" size="30"/>
-              开始上课
-            </Button>
+
           </div>
           <div>
             <div><span><Icon size="24" type="md-paper"/>课程名称：{{classDetail.name}}</span></div>
             <div><span><Icon size="24" type="ios-clock"/>课时：{{classDetail.course_t}}课时</span></div>
             <div><span><Icon size="24" type="md-contact"/>班长：{{classDetail.leader}}</span></div>
             <div><span><Icon size="24" type="ios-happy"/>班级人数：{{classDetail.num}}</span></div>
-            <div><span><Icon size="24" type="md-cog"/>上课时间：{{classDetail['baseinfo'][0].week}}-{{classDetail['baseinfo'][0].day}}</span></div>
-            <div><span><Icon size="24" type="ios-home"/>教室：{{classDetail['baseinfo'][0].place}}</span></div>
+            <div><span><Icon size="24" type="md-cog"/>上课时间：{{classDetail.week}} - {{classDetail.day}}</span></div>
+            <div><span><Icon size="24" type="ios-home"/>教室：{{classDetail.place}}</span></div>
             <div><span><Icon size="24" type="ios-contacts"/>班群QQ：{{classDetail.chat}}</span></div>
           </div>
+          <Button @click="begin_class" @mouseover="button_style" @mouseout="button_style1" class="begin_class"
+                  type="success">
+            <Icon type="ios-people-outline" size="30"/>
+            开始上课
+          </Button>
 
         </div>
       </div>
@@ -33,25 +34,25 @@
           <Collapse simple>
             <Panel name="1">
               <Icon type="md-menu" size="30" color="pink"/>
-              课程介绍
+              <span class="panel-title">课程介绍</span>
               <p slot="content">{{classDetail.introduce}}</p>
             </Panel>
             <Panel name="2">
               <Icon type="ios-list-box" size="30" color="LightGreen"/>
-              课程目标
+              <span class="panel-title">课程目标</span>
               <p slot="content">{{classDetail.target}}</p>
             </Panel>
             <Panel name="3">
               <Icon type="ios-calendar" size="30" color="PaleTurquoise"/>
-              课程计划
+              <span class="panel-title">课程计划</span>
               <p slot="content">{{classDetail.plan}}</p>
             </Panel>
             <Panel name="4">
               <Icon type="ios-school" size="30" color="LightSalmon"/>
-              评估方式
+              <span class="panel-title">评估方式</span>
               <p slot="content">{{classDetail.evaluation}} </p>
             </Panel>
-            </Collapse>
+          </Collapse>
         </div>
         <div class="course_upload_detail course_upload_right">
           <span><Icon type="ios-paper" size="40"/>资料库</span>
@@ -59,41 +60,39 @@
           <Collapse simple>
             <Panel name="5">
               <Icon type="ios-browsers" size="30" color="pink"/>
-              课件
-
-              <div slot="content" class="describe_right">
-                <Upload
-                        multiple
-                        action="//jsonplaceholder.typicode.com/posts/">
-                  <Button icon="ios-cloud-upload-outline">Upload files</Button>
-                </Upload>
+              <span class="panel-title">课件</span>
+              <div slot="content">
+                <CellGroup >
+                  <Cell v-for="(item,index) in [1,2,3,4]" :key="index" :title="`C 语言程序设计${item}`"  extra="查看详情" to="https://www.baidu.com" target="_blank" />
+                </CellGroup>
               </div>
-              <div slot="content" class="describe_right">
-                课件1
-              </div>
-              <div slot="content" class="describe_right">
-                课件2
-              </div>
-
             </Panel>
             <Panel name="6">
               <Icon type="ios-book" size="30" color="LightGreen"/>
-              资料
-              <p slot="content">斯蒂夫·盖瑞·沃兹尼亚克（Stephen Gary
-                Wozniak），美国电脑工程师，曾与史蒂夫·乔布斯合伙创立苹果电脑（今之苹果公司）。斯蒂夫·盖瑞·沃兹尼亚克曾就读于美国科罗拉多大学，后转学入美国著名高等学府加州大学伯克利分校（UC
-                Berkeley）并获得电机工程及计算机（EECS）本科学位（1987年）。</p>
+              <span class="panel-title">资料</span>
+              <div slot="content">
+                  <CellGroup >
+                    <Cell v-for="(item,index) in [1,2,3,4]" :key="index" :title="`C 语言程序设计${item}`"  extra="查看详情" to="https://www.baidu.com" target="_blank" />
+                  </CellGroup>
+              </div>
             </Panel>
             <Panel name="7">
               <Icon type="ios-checkbox" size="30" color="PaleTurquoise"/>
-              测验
-              <p slot="content">
-                乔纳森·伊夫是一位工业设计师，现任Apple公司设计师兼资深副总裁，英国爵士。他曾参与设计了iPod，iMac，iPhone，iPad等众多苹果产品。除了乔布斯，他是对苹果那些著名的产品最有影响力的人。</p>
+              <span class="panel-title">测验</span>
+              <div slot="content">
+                <CellGroup >
+                  <Cell v-for="(item,index) in [1,2,3,4]" :key="index" :title="`C 语言程序设计${item}`"  extra="查看详情" to="https://www.baidu.com" target="_blank" />
+                </CellGroup>
+              </div>
             </Panel>
             <Panel name="8">
               <Icon type="ios-cloud" size="30" color="LightSalmon"/>
-              题库
-              <p slot="content">
-                乔纳森·伊夫是一位工业设计师，现任Apple公司设计师兼资深副总裁，英国爵士。他曾参与设计了iPod，iMac，iPhone，iPad等众多苹果产品。除了乔布斯，他是对苹果那些著名的产品最有影响力的人。</p>
+              <span class="panel-title">题库</span>
+              <div slot="content">
+                <CellGroup >
+                  <Cell v-for="(item,index) in [1,2,3,4]" :key="index" :title="`C 语言程序设计${item}`"  extra="查看详情" to="https://www.baidu.com" target="_blank" />
+                </CellGroup>
+              </div>
             </Panel>
           </Collapse>
         </div>
@@ -106,13 +105,21 @@
 <script>
   import NavBar from "../components/NavBar";
   import {Panel, Collapse, Upload, Button} from 'iview'
+  import {mapGetters} from 'vuex';
 
   export default {
     name: "CourseInfo",
     components: {NavBar, Panel, Collapse, Upload},
+    computed: {
+      ...mapGetters(['teacherInfo'])
+    },
     data() {
       return {
-        classDetail: {}
+        classDetail: {},
+        docList: [],
+        courseWare: [],
+        examList: [],
+        qbaseList: []
       }
     },
     methods: {
@@ -124,19 +131,49 @@
       },
       button_style1(e) {
         e.target.style.boxShadow = 'none'
+      },
+      getDocument(pub) {
+        this.$http.get("/document/getDocument",  {params:{id: this.teacherInfo.id, public: pub}})
+          .then(res => {
+            if (res.data.code === 1) {
+              this.docList = res.data.data;
+            }
+          });
+      },
+      getExamList() {
+        this.$http.get("/exam/getExam", {params: {id: this.teacherInfo.id}})
+          .then(res => {
+            if (res.data.code === 1) {
+              this.examList = res.data.data;
+            }
+          });
+      },
+      getqBaseList() {
+        this.$http.get("/Qbase/getBase", {params: {id: this.teacherInfo.id}})
+          .then(res => {
+            if (res.data.code === 1) {
+              this.qbaseList = res.data.data;
+            }
+          });
+      },
+      getDetail() {
+        this.$http.get(`coursedetail/getDetailById/id/${this.$route.params.id}`)
+          .then(res => {
+            if (res.data.code === 1) {
+              this.classDetail = res.data.data;
+              this.classDetail.week=this.classDetail.baseinfo[0].week;
+              this.classDetail.day=this.classDetail.baseinfo[0].day;
+              this.classDetail.place=this.classDetail.baseinfo[0].place;
+              // this.classDetail.week=this.classDetail.baseinfo[0].week;
+            }
+          })
       }
     },
-    //http://qk.heniankj.com/public/index.php/home/coursedetail/getdetailbyid/id/4
     mounted() {
-      // console.log(this.$route.params.id);
-      this.$http.get(`coursedetail/getdetailbyid/id/${this.$route.params.id}`)
-          .then(res => {
-            this.classDetail = res.data.data;
-            console.log(this.classDetail);
-
-          })
-
-
+      this.getDetail();
+      this.getDocument();
+      this.getqBaseList();
+      this.getExamList();
     }
   }
 </script>
@@ -147,6 +184,7 @@
   .main_page {
     height: 95%;
     width: 100%;
+    min-height: 650px;
   }
 
   .info {
@@ -154,48 +192,51 @@
     height: 100%;
     background-color: #e5e5e5;
     position: relative;
+
     .header-info {
       background-color: rebeccapurple;
       height: 50%;
       width: 100%;
     }
+
     .course_info {
       height: 100%;
       width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      &>div{
+
+      & > div {
         width: 40%;
         box-sizing: border-box;
-        &:nth-child(1){
-          text-align: right;
-          position: relative;
 
-          img{
+        &:nth-child(1) {
+          text-align: center;
+
+          img {
             border-radius: 4px;
-            &:hover{
-              filter: blur(10px);
-            }
           }
-          .begin_class{
-            top: 45%;
-            left: 45%;
-            position: absolute;
-            height: 50px;
-            font-size: 18px;
-          }
+
         }
-        &:nth-child(2){
+
+        &:nth-child(2) {
           font-size: 20px;
           color: #ffffff;
-          padding-left: 4%;
-          &>div{
+          position: relative;
+          width: 25%;
+
+          & > div {
             border-bottom: 1px white dashed;
             margin-bottom: 7px;
           }
         }
+      }
 
+      .begin_class {
+        height: 50px;
+        font-size: 18px;
+        margin-left: 5%;
+        margin-top: 11%;
       }
     }
 
@@ -207,11 +248,13 @@
       top: 0;
       left: 0;
     }
+
     .course_picture {
       display: inline-block;
       width: 36%;
       height: 95%;
       float: left;
+
       img {
         display: inline-block;
         height: 100%;
@@ -219,18 +262,21 @@
         border-radius: 9px;
       }
     }
+
     .course_describe {
       font-size: 16px;
       display: inline-block;
       float: left;
       width: 50%;
-      &>div {
+
+      & > div {
         color: white;
         width: 90%;
         height: 30px;
         margin-left: 30px;
         border-bottom: 1px white dashed;
         margin-top: 10px;
+
         span {
           line-height: 25px;
           word-break: break-all;
@@ -247,18 +293,23 @@
     margin-top: 2%;
     background-color: #e5e5e5;
     padding-bottom: 30px;
+
     .course_upload_detail {
       background-color: white;
       min-height: 400px;
       padding: 30px;
       border-radius: 2%;
       width: 40%;
+
       span {
-        font-size: 30px;
+        font-size: 20px;
+        color: black;
       }
     }
+
     .course_upload_right {
       float: right;
+
       .describe_right {
         margin-left: 35px;
 
