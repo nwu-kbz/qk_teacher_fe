@@ -7,13 +7,12 @@
       <div class="header-info">
         <div class="course_info">
           <div>
-            <img src="../assets/course.jpg" alt="课程">
-
+            <img :src="urlPath" alt="课程">
           </div>
           <div>
             <div><span><Icon size="24" type="md-paper"/>课程名称：{{classDetail.name}}</span></div>
             <div><span><Icon size="24" type="ios-clock"/>课时：{{classDetail.course_t}}课时</span></div>
-            <div><span><Icon size="24" type="md-contact"/>班长：{{classDetail.leader}}</span></div>
+            <div><span><Icon size="24" type="md-contact"/>班长：{{classDetail.monitor}}</span></div>
             <div><span><Icon size="24" type="ios-happy"/>班级人数：{{classDetail.num}}</span></div>
             <div><span><Icon size="24" type="md-cog"/>上课时间：{{classDetail.week}} - {{classDetail.day}}</span></div>
             <div><span><Icon size="24" type="ios-home"/>教室：{{classDetail.place}}</span></div>
@@ -63,7 +62,7 @@
               <span class="panel-title">课件</span>
               <div slot="content">
                 <CellGroup >
-                  <Cell v-for="(item,index) in [1,2,3,4]" :key="index" :title="`C 语言程序设计${item}`"  extra="查看详情" to="https://www.baidu.com" target="_blank" />
+                  <Cell v-for="(item,index) in courseWare" :key="index" :title="`${item.name}`"  extra="查看详情" :to="`#/docPreview?url=${publicPath}${item.url}`" target="_blank" />
                 </CellGroup>
               </div>
             </Panel>
@@ -72,7 +71,7 @@
               <span class="panel-title">资料</span>
               <div slot="content">
                   <CellGroup >
-                    <Cell v-for="(item,index) in [1,2,3,4]" :key="index" :title="`C 语言程序设计${item}`"  extra="查看详情" to="https://www.baidu.com" target="_blank" />
+                    <Cell v-for="(item,index) in docList" :key="index" :title="`${item.name}`"  extra="查看详情" :to="`#/docPreview?url=${publicPath}${item.url}`" target="_blank" />
                   </CellGroup>
               </div>
             </Panel>
@@ -81,7 +80,7 @@
               <span class="panel-title">测验</span>
               <div slot="content">
                 <CellGroup >
-                  <Cell v-for="(item,index) in [1,2,3,4]" :key="index" :title="`C 语言程序设计${item}`"  extra="查看详情" to="https://www.baidu.com" target="_blank" />
+                  <Cell v-for="(item,index) in examList" :key="index" :title="`${item.name}`"  extra="查看详情" to="https://www.baidu.com" target="_blank" />
                 </CellGroup>
               </div>
             </Panel>
@@ -90,7 +89,7 @@
               <span class="panel-title">题库</span>
               <div slot="content">
                 <CellGroup >
-                  <Cell v-for="(item,index) in [1,2,3,4]" :key="index" :title="`C 语言程序设计${item}`"  extra="查看详情" to="https://www.baidu.com" target="_blank" />
+                  <Cell v-for="(item,index) in qBaseList" :key="index" :title="`${item.name}`"  extra="查看详情" :to="`/courseDetail/${item.id}/${item.name}`" target="_blank" />
                 </CellGroup>
               </div>
             </Panel>
@@ -106,20 +105,43 @@
   import NavBar from "../components/NavBar";
   import {Panel, Collapse, Upload, Button} from 'iview'
   import {mapGetters} from 'vuex';
+  import config from '../config'
 
   export default {
     name: "CourseInfo",
     components: {NavBar, Panel, Collapse, Upload},
     computed: {
-      ...mapGetters(['teacherInfo'])
+      ...mapGetters(['teacherInfo']),
+      urlPath(){
+        return config.urls.picUrl + this.classDetail.path;
+      },
+      publicPath() {
+        return config.urls.publicUrl;
+      },
+      courseWare() {
+        if (this.classDetail['document']) {
+          return this.classDetail['document'].filter(x => x.public === 0);
+        }else {
+          return [];
+        }
+      },
+      docList() {
+        if (this.classDetail['document']) {
+          return this.classDetail['document'].filter(x => x.public === 1);
+        }else {
+          return [];
+        }
+      },
+      qBaseList() {
+        return this.classDetail['qbase'];
+      },
+      examList() {
+        return this.classDetail['exam'];
+      }
     },
     data() {
       return {
         classDetail: {},
-        docList: [],
-        courseWare: [],
-        examList: [],
-        qbaseList: []
       }
     },
     methods: {
@@ -132,32 +154,8 @@
       button_style1(e) {
         e.target.style.boxShadow = 'none'
       },
-      getDocument(pub) {
-        this.$http.get("/document/getDocument",  {params:{id: this.teacherInfo.id, public: pub}})
-          .then(res => {
-            if (res.data.code === 1) {
-              this.docList = res.data.data;
-            }
-          });
-      },
-      getExamList() {
-        this.$http.get("/exam/getExam", {params: {id: this.teacherInfo.id}})
-          .then(res => {
-            if (res.data.code === 1) {
-              this.examList = res.data.data;
-            }
-          });
-      },
-      getqBaseList() {
-        this.$http.get("/Qbase/getBase", {params: {id: this.teacherInfo.id}})
-          .then(res => {
-            if (res.data.code === 1) {
-              this.qbaseList = res.data.data;
-            }
-          });
-      },
       getDetail() {
-        this.$http.get(`coursedetail/getDetailById/id/${this.$route.params.id}`)
+        this.$http.get(`course/getDetail/id/${this.$route.params.id}`)
           .then(res => {
             if (res.data.code === 1) {
               this.classDetail = res.data.data;
@@ -171,9 +169,6 @@
     },
     mounted() {
       this.getDetail();
-      this.getDocument();
-      this.getqBaseList();
-      this.getExamList();
     }
   }
 </script>
@@ -195,6 +190,7 @@
 
     .header-info {
       background-color: rebeccapurple;
+      min-height:  50%;
       height: 50%;
       width: 100%;
     }
@@ -215,6 +211,8 @@
 
           img {
             border-radius: 4px;
+            height: 65%;
+            width: 65%;
           }
 
         }

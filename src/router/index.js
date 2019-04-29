@@ -16,6 +16,7 @@ import Login from '../pages/Loginin'
 import About from '../pages/About'
 import store from '../store';
 import VideoShare from '../pages/VideoShare';
+import DocPreview from "../pages/DocPreview";
 
 Vue.use(Router)
 
@@ -47,6 +48,12 @@ let router = new Router({
       name: 'video',
       component: VideoShare,
       meta:{needLogin: false}
+    },
+    {
+      path: '/docPreview',
+      name: 'docPreview',
+      component: DocPreview,
+      meta:{needLogin: true}
     },
     {
       path: '/userSettings',
