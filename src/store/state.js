@@ -10,5 +10,6 @@ export default {
     answers:{},
     rightAnswer: null
   },
-  qBank:[]
+  qBank:[],
+  documents: []
 }

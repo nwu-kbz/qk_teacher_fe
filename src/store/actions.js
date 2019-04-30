@@ -36,4 +36,7 @@ export default {
   saveQbank({commit}, qBank) {
     commit('savaQbank', qBank)
   },
+  saveDocument({commit}, val) {
+    commit('saveDocument', val);
+  }
 }

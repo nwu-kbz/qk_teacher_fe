@@ -2,8 +2,6 @@
   <div class="main_page">
     <NavBar></NavBar>
     <div class="info">
-      <!--<div class="bg bg-blur"></div>-->
-      <!--<div class="black_bg"></div>-->
       <div class="header-info">
         <div class="course_info">
           <div>
@@ -104,7 +102,7 @@
 <script>
   import NavBar from "../components/NavBar";
   import {Panel, Collapse, Upload, Button} from 'iview'
-  import {mapGetters} from 'vuex';
+  import {mapGetters,mapActions} from 'vuex';
   import config from '../config'
 
   export default {
@@ -125,6 +123,9 @@
           return [];
         }
       },
+      //瑾瑾是世界上最可爱的女孩子
+      //瑾瑾最好看了   身上也香香的    我好喜欢他啊
+      //我要做一个乖宝宝   听瑾瑾话
       docList() {
         if (this.classDetail['document']) {
           return this.classDetail['document'].filter(x => x.public === 1);
@@ -145,8 +146,9 @@
       }
     },
     methods: {
+      ...mapActions(['saveDocument']),
       begin_class() {
-        this.$router.push('/classBegin')
+        this.$router.push(`/classBegin?id=${this.$route.params.id}`)
       },
       button_style(e) {
         e.target.style.boxShadow = '2px 2px 5px #B35A3E'
@@ -159,10 +161,7 @@
           .then(res => {
             if (res.data.code === 1) {
               this.classDetail = res.data.data;
-              this.classDetail.week=this.classDetail.baseinfo[0].week;
-              this.classDetail.day=this.classDetail.baseinfo[0].day;
-              this.classDetail.place=this.classDetail.baseinfo[0].place;
-              // this.classDetail.week=this.classDetail.baseinfo[0].week;
+              this.saveDocument(res.data.data.document);
             }
           })
       }
@@ -211,7 +210,7 @@
 
           img {
             border-radius: 4px;
-            height: 65%;
+            height: 50%;
             width: 65%;
           }
 

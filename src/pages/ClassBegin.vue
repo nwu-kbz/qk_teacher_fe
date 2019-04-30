@@ -7,16 +7,23 @@
 
         <!-- 章节列表-->
         <Collapse simple>
-          <Panel name="1" v-for="(item,index) in chapter">
-            <span class="chapter_title">第一章：程序设计入门</span>
-            <p slot="content">...</p>
+          <Panel :name="index+''" v-for="(item,index) in chapter" :key="index">
+            <span class="chapter_title">第{{index+1}}章：{{item.name}}</span>
+            <p slot="content">
+              <CellGroup>
+                <span v-for="(doc,index) in item.docs" :key="index" @click="handleShowWare(doc.url)">
+                  <Cell  :title="`${doc.name}`" />
+                </span>
+              </CellGroup>
+            </p>
           </Panel>
         </Collapse>
       </div>
       <div class="show_area">
         <div class="show_courseware">
-          <h2>请在右侧选择课件进行展示</h2>
-          <iframe v-if="url" width="100%" height="100%" :src="`https://view.officeapps.live.com/op/view.aspx?src=${url}`"></iframe>
+          <h2 v-if="!url">请在右侧选择课件进行展示</h2>
+          <iframe v-if="office" width="100%" height="100%" :src="`https://view.officeapps.live.com/op/view.aspx?src=${url}`"></iframe>
+          <iframe v-if="pdf" width="100%" height="100%" :src="`./static/pdf/web/viewer.html?file=${url}`"></iframe>
         </div>
       </div>
       <div class="talk_area">
@@ -29,10 +36,25 @@
 <script>
   import NavBar from "../components/NavBar";
   import {Cell, CellGroup, Card, Collapse, Panel, ButtonGroup} from 'iview' ;
+  import {mapGetters} from 'vuex';
+  import config from '../config';
 
   export default {
     name: "ClassBegin",
     components: {NavBar, Cell, CellGroup, Card, Collapse, Panel, ButtonGroup},
+    computed: {
+      ...mapGetters(['documents']),
+      publicUrl() {
+        return config.urls.publicUrl;
+      },
+      office() {
+        let format = ['ppt', 'pptx', 'doc', 'docx', 'xls', 'xlsx'];
+        return this.url && format.some(f => this.url.endsWith(f));
+      },
+      pdf() {
+        return this.url && this.url.endsWith('pdf');
+      }
+    },
     data() {
       return {
         url: '',
@@ -40,17 +62,33 @@
       }
     },
     methods: {
-      getChapters(){
-        this.$http.get('/chapter/getChapterByCourse',{params:{id:this.$route.query.id}})
-          .then(res=>{
+      getChapters() {
+        this.$http.get('/chapter/getChapterByCourse', {params: {id: this.$route.query.id}})
+          .then(res => {
             if (res.data.code === 1) {
               let chapter = res.data.data;
+              this.documents.map(doc => {
+                chapter.map(cha => {
+                  if (doc.chapter + '' === cha.id + '') {
+                    if (!cha['docs']) {
+                      cha['docs'] = [];
+                    } else {
+                      cha['docs'].push(doc);
+                    }
+                  }
+                })
+              });
 
-            }else {
+              this.chapter = chapter.sort((x, y) => x.sort - y.sort);
+            } else {
               this.$Message.error(res.data.msg);
             }
           })
       },
+      handleShowWare(url) {
+        console.log(url);
+        this.url = this.publicUrl + url;
+      }
     },
     mounted() {
       this.getChapters();
@@ -76,6 +114,7 @@
         width: 18%;
         height: 100%;
         background-color: #fff;
+
         .chapter_title {
           font-size: 18px;
         }
@@ -98,7 +137,8 @@
           right: 0;
           margin: auto;
           text-align: center;
-          h2{
+
+          h2 {
             color: #dfdfdf;
             line-height: 500px;
           }

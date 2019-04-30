@@ -37,5 +37,8 @@ export default {
   },
   savaQbank(state,qb){
     state.qBank = qb;
+  },
+  saveDocument(state, val) {
+    state.documents = val;
   }
 }
