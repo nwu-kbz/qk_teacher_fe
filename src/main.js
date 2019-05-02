@@ -51,11 +51,12 @@ axios.interceptors.response.use(function (response) {
       path: '/login',
       query: {redirect: router.currentRoute.fullPath}
     })
+
   }
-  // 请求失败
-  if (response.data.code !== 1) {
-    this.$Message.error(response.data.msg);
-  }
+  // // 请求失败
+  // if (response.data.code !== 1) {
+  //   this.$Message.error(response.data.msg);
+  // }
   return response;
 }, function (error) {
   return Promise.reject(error)

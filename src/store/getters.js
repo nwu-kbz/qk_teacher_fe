@@ -14,6 +14,7 @@ export default {
   },
   currentPath:state=>state.currentPath,
   unread: state => state.unread,
-  qForm: state => state.qForm
+  qForm: state => state.qForm,
+  qBank: state => state.qBank
 
 }

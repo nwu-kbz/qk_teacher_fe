@@ -10,4 +10,5 @@ export default {
     answers:{},
     rightAnswer: null
   },
+  qBank:[]
 }

@@ -45,5 +45,11 @@ GET http://qk.heniankj.com/public/index.php/home/coursedetail/getdetailbyid/id/4
 X-Requested-With: XMLHttpRequest
 
 ###
+GET http://qk.heniankj.com/public/index.php/home/Qbase/getQuestionFromBase?id=1&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMywiaXNzIjoicWsuaGVuaWFua2ouY29tIiwiYXVkIjoicWsuaGVuaWFua2ouY29tIiwiaWF0IjoxNTU2NzU2ODg1LCJuYmYiOjE1NTY3NTY4ODUsImV4cGlyZSI6MTU1Njc3MTI4NX0.fcJjCrZPZ5SB4PkhJ_wyoflli5kOhx3iF37zzLEzPAU
+X-Requested-With: XMLHttpRequest
 
+### charpter
+GET http://qk.heniankj.com/public/index.php/home/Chapter/getChapterByCourse?id=4&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMywiaXNzIjoicWsuaGVuaWFua2ouY29tIiwiYXVkIjoicWsuaGVuaWFua2ouY29tIiwiaWF0IjoxNTU2NzgzNTU3LCJuYmYiOjE1NTY3ODM1NTcsImV4cGlyZSI6MTU1Njc5Nzk1N30.FTxnJo2cT8P8a0hJVcilEVyuS3SJlA-Lo87_e0myneE
+X-Requested-With: XMLHttpRequest
+###
 

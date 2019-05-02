@@ -3,11 +3,11 @@
     <NavBar></NavBar>
     <div class="qb_container">
       <div class="course">
-        <router-link v-for="(course,index) in courseArr" :key="index" :to="`/courseDetail/${course.id}`">
+        <router-link v-for="(course,index) in courseArr" :key="index" :to="`/courseDetail/${course.id}/${course.name}`">
           <Card class="course_card">
             <img slot="title" src="../assets/course_logo.jpg">
             <p>{{course.name}}</p>
-            <div class="icon">`
+            <div class="icon">
               <Icon type="ios-create" size="24"/>
               {{course.count}}
             </div>
@@ -21,6 +21,7 @@
 <script>
   import NavBar from "../components/NavBar";
   import {Card} from 'iview'
+  import {mapGetters,mapActions} from 'vuex'
 
   export default {
     name: "QBank",
@@ -30,15 +31,23 @@
         courseArr: []
       }
     },
+    computed: {
+      ...mapGetters(['teacherInfo','qBank'])
+    },
+    methods:{
+        ...mapActions(['saveQbank'])
+    },
     mounted() {
-      this.$http.get('qbase/getbasebyteacher/id/13')
-        .then(res=>{
-          if (res.data.code === 0) { //err
-            this.$Message.error("获取题库信息失败");
-          }else {
-            this.courseArr = res.data.data;
-          }
-        })
+      this.$http.get(`qbase/getbasebyteacher/id/${this.teacherInfo.id}`)
+          .then(res => {
+            if (res.data.code === 0) { //err
+              this.$Message.error("获取题库信息失败");
+            } else {
+              this.courseArr = res.data.data;
+              //将该教师所有的题库存在vuex中
+              this.$store.dispatch('saveQbank', res.data.data);
+            }
+          })
     }
 
   }

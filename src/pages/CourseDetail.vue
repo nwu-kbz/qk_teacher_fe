@@ -39,8 +39,8 @@
                   <Icon type="ios-paper"/>
                   章节
                 </template>
-                <button class="editor_charpter" @click="chapterModal=true">编辑章节</button>
-                <MenuItem v-for="(charpter,index) in chapterArr" :key="index" :name="'2-'+ index">第{{index + 1}}章
+                <button class="editor_charpter" @click="chapterModal=true">添加章节</button>
+                <MenuItem v-for="(chapter,index) in chapterArr" :key="index" :name="'2-'+ index">第{{index + 1}}章-{{chapter.name}}
                 </MenuItem>
                 <MenuItem name="2-0">未指定章节</MenuItem>
               </Submenu>
@@ -104,7 +104,7 @@
                 {{item.name}}
               </h5>
               <div class="pull-both"><span><Icon size="20" type="ios-time"/>测试时长: {{item.time}} 分钟</span> <span><Icon
-                size="20" type="md-star-half"/>难度: <Rate disabled v-model="item.hard"/></span></div>
+                      size="20" type="md-star-half"/>难度: <Rate disabled v-model="item.hard"/></span></div>
             </div>
 
           </Card>
@@ -130,15 +130,17 @@
           </Select>
         </FormItem>
         <FormItem label="上传附件">
-          <div><Upload
-            multiple
-            type="drag"
-            action="http://qk.heniankj.com/public/index.php/home/attachment/add">
-            <div style="padding: 20px 0">
-              <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-              <p>拖动文件到此处上传</p>
-            </div>
-          </Upload></div>
+          <div>
+            <Upload
+                    multiple
+                    type="drag"
+                    action="http://qk.heniankj.com/public/index.php/home/attachment/add">
+              <div style="padding: 20px 0">
+                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                <p>拖动文件到此处上传</p>
+              </div>
+            </Upload>
+          </div>
         </FormItem>
       </Form>
     </Modal>
@@ -160,12 +162,12 @@
         <div class="addQuestion_main_item">
           <span>题目</span>
           <div class="editer_question">
-            <Input type="textarea" v-model="questionForm.title" :autosize="{minRows: 15,maxRows: 15}"/>
+            <Input type="textarea" v-model="questionForm.title" :autosize="{minRows: 3,maxRows: 15}"/>
           </div>
         </div>
-        <div class="addQuestion_main_item">
+        <div class="addQuestion_main_item " style="width:100%;margin-top: 30px;">
           <span>题型</span>
-          <Select v-model="questionForm.type" style="width:100px;margin-right: 110px" @change="clearQuestionForm">
+          <Select v-model="questionForm.type" style="width:100px;margin-right: 110px;" @change="clearQuestionForm">
             <Option v-for="item in questionType" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
           <span>难度</span>
@@ -215,7 +217,7 @@
 
 <script>
   import NavBar from "../components/NavBar";
-  import {MenuItem, Icon, Menu, Modal, Button, Option, Rate, InputNumber,Form,Select} from 'iview'
+  import {MenuItem, Icon, Menu, Modal, Button, Option, Rate, InputNumber, Form, Select} from 'iview'
   import AnswerCheckbox from '../components/answer-checkbox';
   import AnswerRadio from '../components/answer-radio';
   import AnswerJudge from '../components/answer-judge';
@@ -229,8 +231,9 @@
     name: "CourseDetail",
     components: {NavBar, AnswerCheckbox, AnswerRadio, AnswerCompute, AnswerJudge, AnswerBlank},
     computed: {
+      ...mapGetters(['teacherInfo', 'qBank', 'qForm']),
       showQType() {
-        return this.research.cate === 1;
+        return this.research.cate === 1 || true;
       },
       showDifficult() {
         return this.research.cate === 1 || this.research.cate === 2;
@@ -241,13 +244,13 @@
       cate() {
         return this.research.cate;
       },
-      ...mapGetters(['qForm'])
     },
     data() {
       return {
-        uploadForm:{
+        uploadForm: {
           chapter: ''
         },
+        questionList: {},
         questionForm: {
           chapter: "0",
           title: '',
@@ -258,18 +261,14 @@
         chapterModal: false,
         questionModal: false,
         updateModal: false,
-        answers: {},
         // showQuestionType:[true,false,false,false,false],
         rightAnswer: [],
-        chapterCount: 0,
+        // chapterCount: 0,
         resourceCount: 0,
         modal1: false,
         modal2: true,
-        chapterArr: [
-          {id: 1, name: "数据类型"},
-          {id: 2, name: "循环"},
-          {id: 3, name: "递归"}
-        ],
+        //章节
+        chapterArr: [],
         deleteCount: 0,
         questionType: [
           {
@@ -453,7 +452,12 @@
         }
       },
       handleSubmit() {
-        let obj = Object.assign({}, this.questionForm, {answer: this.qForm.rightAnswer, questions: this.qForm.answers,user:1,bid:1});
+        let obj = Object.assign({}, this.questionForm, {
+          answer: this.qForm.rightAnswer,
+          questions: this.qForm.answers,
+          user: 1,
+          bid: 1
+        });
         this.addQuestion(obj);
       },
       clearQuestionForm() {
@@ -473,30 +477,48 @@
       },
       addQuestion(params) {
         this.$http.post('/questions/add', params)
-          .then(res => {
-            if (res.data.code === 0) {
-              this.$Message.error(' 添加题目失败');
-            } else {
-              this.$Message.success(' 添加题目成功');
-              this.questionModal = false;
-            }
-          })
+            .then(res => {
+              if (res.data.code === 0) {
+                this.$Message.error(' 添加题目失败');
+              } else {
+                this.$Message.success(' 添加题目成功');
+                this.questionModal = false;
+              }
+            })
       },
       commonGetList(url, params) {
         this.$http.get(url, {params})
-          .then(res => {
-            if (res.data.code === 0) {
-              this.$Message.error('获取题目列表失败');
-            } else {
-              this.resultArr = res.data.data;
-            }
-          })
+            .then(res => {
+              if (res.data.code === 0) {
+                this.$Message.info(res.data.msg);
+              } else {
+                this.resultArr = res.data.data;
+              }
+            })
       },
       ...mapActions(['updateQForm', 'clearQForm'])
     },
     mounted() {
-      this.getQList({id: 10})
-    },
+      this.getQList({id: this.teacherInfo.id});
+      //获取章节
+      let qb = this.qBank.find((item) => {
+        return item.id === parseInt(this.$route.params.id)
+      });
+      // console.log(qb);
+      let sku = qb ? qb['course_sku']['sku'] : 1;
+      this.$http.get('Chapter/getChapterByCourse', {params: {id: sku}})
+          .then(res => {
+            //给chapterArr赋值
+            if(res.data.code ===1){
+              this.chapterArr = res.data.data;
+            }else{
+              this.$Message.info("该课程未指定章节！")
+            }
+
+          })
+    }
+    ,
+
     watch: {
       cate(val) {
         this.research = {
@@ -506,7 +528,8 @@
           format: '',
         };
         this.resultArr = [];
-      },
+      }
+      ,
       research: {
         deep: true,
         handler(val) {
@@ -573,14 +596,20 @@
         width: 241px;
         min-width: 241px;
         height: 100%;
-        background-color: rgba(214, 214, 214, 0.42);
+        min-height: 630px;
+        background-color: white;
         .qb_menu_item {
           width: 99%;
           .editor_charpter {
-            width: 60%;
+            padding-left: 43px;
+            width: 100%;
             border: none;
             background-color: white;
-            height: 30px;
+            height: 48px;
+            text-align: left;
+            &:hover {
+              color: #4dc8a9;
+            }
           }
         }
         .right_num {
@@ -591,6 +620,7 @@
       .qb_main {
         width: 1300px;
         height: 100%;
+        min-height: 630px;
         /*background-color: #e9ebecd9;*/
         .options_container {
           width: 50%;
@@ -609,9 +639,6 @@
     }
     .addQuestion_main {
       flex-wrap: wrap;
-      /*height: 700px;*/
-      /*align-items: center;*/
-      /*display: flex;*/
       align-items: flex-start;
       .addQuestion_main_item {
         display: flex;

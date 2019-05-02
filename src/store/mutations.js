@@ -34,5 +34,8 @@ export default {
   },
   clearQForm(state) {
     state.qForm = {};
+  },
+  savaQbank(state,qb){
+    state.qBank = qb;
   }
 }

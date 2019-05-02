@@ -21,7 +21,7 @@
   import {MenuItem, Menu, Icon, Submenu, MenuGroup, Avatar} from 'iview'
   import Timetables from 'timetables';
   import NavBar from "../components/NavBar";
-
+  import {mapGetters,mapActions} from 'vuex'
   export default {
     name: "index",
     components: {
@@ -29,6 +29,7 @@
       MenuItem, Menu, Icon, Submenu, MenuGroup, Avatar
     },
     computed: {
+        ...mapGetters(['teacherInfo']),
       teacherInfo() {
         let info = this.$store.getters.teacherInfo;
         // if (!Object.keys(info).length) {
@@ -48,7 +49,7 @@
         this.$router.push('/courseInfo')
       },
       getCourse() {
-        this.$http.get('teacher/getCourse', {params: {id: 13}})
+        this.$http.get('teacher/getCourse', {params: {id: this.teacherInfo.id}})
           .then(res => {
             if (res.data.code === 0) {
               this.$Message.error('获取课程列表失败');

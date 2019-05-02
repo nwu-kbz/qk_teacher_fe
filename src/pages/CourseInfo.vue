@@ -2,8 +2,6 @@
   <div class="main_page">
     <NavBar></NavBar>
     <div class="info">
-      <!--<div class="bg bg-blur"></div>-->
-      <!--<div class="black_bg"></div>-->
       <div class="header-info">
         <div class="course_info">
           <div>
@@ -169,12 +167,7 @@
           })
       }
     },
-    mounted() {
-      this.getDetail();
-      this.getDocument();
-      this.getqBaseList();
-      this.getExamList();
-    }
+
   }
 </script>
 

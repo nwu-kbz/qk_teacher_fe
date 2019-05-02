@@ -33,4 +33,7 @@ export default {
   clearQForm({commit}) {
     commit('clearQForm');
   },
+  saveQbank({commit}, qBank) {
+    commit('savaQbank', qBank)
+  },
 }
