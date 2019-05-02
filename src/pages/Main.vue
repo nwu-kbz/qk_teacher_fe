@@ -65,7 +65,7 @@
                 let arr = course.day.split(',').map(x => parseInt(x));
                 for (let x of arr) {
                   if (course.name)
-                    courseTable[course.week - 1][x-1] = `${course.name}@${course['course_sku']} -> ${course.place} [${course.type}]`;
+                    courseTable[course.week - 1][x-1] = `${course.name}@${course.id} -> ${course.place} [${course.type}]`;
                 }
               }
               this.courseList = courseTable;
