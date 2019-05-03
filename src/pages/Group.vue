@@ -12,11 +12,12 @@
         </CellGroup>
       </Card>
     </div>
+    <Button type="success" size="large" class="submit-btn">提交修改</Button>
 
     <!--选择学生的modal-->
     <Modal v-model="modalShow" title="选择学生" @on-ok="handleDoAdd" @on-cancel="handleCancel">
       <div class="stu-list">
-        <Table border @on-selection-change="handleSelect" :columns="stuCols" :data="studentList"></Table>
+        <Table border @on-selection-change="handleSelect" :columns="stuCols" :data="unSelectedStu"></Table>
       </div>
     </Modal>
   </div>
@@ -24,16 +25,20 @@
 
 <script>
   import NavBar from '../components/NavBar';
+  import _ from 'lodash';
 
   export default {
     name: "Group",
     components: {NavBar},
     computed: {
+      unSelectedStu() {
+        return this.studentList.filter(s => !s.selected);
+      }
     },
     methods:{
       handleDoAdd() {
         this.groupList.splice(this.toGroup,1,this.groupList[this.toGroup].concat(this.selectedIds));
-
+        this.studentList = this.selectedStu;
       },
       handleCancel() {
         this.modalShow = false;
@@ -48,10 +53,13 @@
         this.modalShow = true;
       },
       handleSelect(records) {
+        let stuList = _.cloneDeep(this.studentList);
         this.selectedIds = records.map(r => {
-          r.selected = true;
+          let ins = stuList.findIndex(st => st.id === r.id);
+          stuList[ins].selected = true;
           return r.id;
         });
+        this.selectedStu = stuList;
       },
       findStuById(id) {
         return this.studentList.find(s => s.id === id)||{};
@@ -106,6 +114,13 @@
   .main {
     min-height: 100%;
     width: 100%;
+    position: relative;
+    .submit-btn{
+     font-size: 23px;
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+    }
     .content {
       height: 90%;
       width: 100%;
