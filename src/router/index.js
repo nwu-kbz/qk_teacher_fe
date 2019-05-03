@@ -19,6 +19,7 @@ import VideoShare from '../pages/VideoShare';
 import DocPreview from "../pages/DocPreview";
 import Signin from "../pages/Signin";
 import Group from "../pages/Group";
+import Point from "../pages/Point";
 
 Vue.use(Router)
 
@@ -61,6 +62,11 @@ let router = new Router({
       path: '/group',
       name: 'group',
       component: Group,
+      meta:{needLogin: false}
+    },{
+      path: '/point',
+      name: 'point',
+      component: Point,
       meta:{needLogin: false}
     },
     {

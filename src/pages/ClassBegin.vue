@@ -51,7 +51,7 @@
             <Card style="width:92%">
               <div style="text-align:center">
                 <Icon type="md-stats" size="40" color="#0081ff"/>
-                <h4>点答</h4>
+                <router-link to="/point"><h4>点答</h4></router-link>
               </div>
             </Card>
           </Col>
