@@ -4,7 +4,7 @@
     <div class="qb_bar">
       <div class="qb_bar_left">
         <span>{{$route.params.name}}</span>
-        <Input search enter-button placeholder="检索题目" class="search"/>
+        <Input search enter-button placeholder="检索题目" class="search" v-model="contentSearch"/>
       </div>
       <div class="qb_bar_right">
         <Dropdown style="margin-left: 20px" @on-click="handleInsert">
@@ -33,14 +33,15 @@
                 <div class="right_num">0</div>
               </MenuItem>
             </div>
-            <Menu theme="light">
+            <Menu theme="light" @on-select="menuSelect">
               <Submenu name="2">
                 <template slot="title">
                   <Icon type="ios-paper"/>
                   章节
                 </template>
                 <button class="editor_charpter" @click="chapterModal=true">添加章节</button>
-                <MenuItem v-for="(chapter,index) in chapterArr" :key="index" :name="'2-'+ index">第{{index + 1}}章-{{chapter.name}}
+                <MenuItem v-for="(chapter,index) in chapterArr" :key="index+1" :name="'2-'+ (index+1)">
+                  第{{index + 1}}章-{{chapter.name}}
                 </MenuItem>
                 <MenuItem name="2-0">未指定章节</MenuItem>
               </Submenu>
@@ -59,19 +60,19 @@
           </div>
           <div class="options" v-show="showQType">
             题型：
-            <Select v-model="research.type" style="width:100px">
+            <Select clearable v-model="research.type" style="width:100px">
               <Option v-for="item in questionType" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </div>
           <div class="options" v-show="showDifficult">
             难度：
-            <Select v-model="research.level" style="width:100px">
+            <Select clearable v-model="research.hard" style="width:100px">
               <Option v-for="item in level" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </div>
           <div class="options" v-show="showFormat">
             格式：
-            <Select v-model="research.format" style="width:100px">
+            <Select clearable v-model="research.format" style="width:100px">
               <Option v-for="item in formatType" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </div>
@@ -83,7 +84,8 @@
             <div v-show="cate===1">
               <h5 slot="title">
                 <Icon size="30" type="md-help"/>
-                问题: {{item.title}}
+                <!--JSON.parse(item.content)[content]-->
+                问题: {{jsonParse(item["content"])}}
               </h5>
               <div class="content">
                 <div class="pull-both">
@@ -117,9 +119,14 @@
     </div>
 
     <!--章节-->
-    <Modal v-model="chapterModal" title="编辑章节数目">
-      设定章节数目为：
-      <InputNumber :max="30" :min="1" v-model="chapterCount" size="small"></InputNumber>
+    <Modal v-model="chapterModal" title="添加章节" @on-ok="addChapter">
+      <div>章节名称：
+        <!--字段信息 id, name(章节名），course（课程名id），order（顺序），pid（父章节）-->
+        <Input v-model="newChapter" placeholder="指定的章节名称..." style="width: 300px"/>
+      </div>
+      <div>章节权重 ：
+        <Input v-model="newOrder" placeholder="指定的章节权重..." style="width: 300px"/>
+      </div>
     </Modal>
     <!--上传课件-->
     <Modal v-model="updateModal" title="上传课件">
@@ -250,6 +257,8 @@
         uploadForm: {
           chapter: ''
         },
+        // 所有资源
+
         questionList: {},
         questionForm: {
           chapter: "0",
@@ -258,11 +267,16 @@
           hard: 0,
           time: 1,
         },// 收集题目数据
+        contentSearch: '',
         chapterModal: false,
         questionModal: false,
         updateModal: false,
         // showQuestionType:[true,false,false,false,false],
         rightAnswer: [],
+        //新添加的章节名
+        newChapter: '',
+        newOrder: 1,
+        sku: 1,
         // chapterCount: 0,
         resourceCount: 0,
         modal1: false,
@@ -270,29 +284,7 @@
         //章节
         chapterArr: [],
         deleteCount: 0,
-        questionType: [
-          {
-            value: '1',
-            label: '单选'
-          },
-          {
-            value: '2',
-            label: '多选'
-          },
-          {
-            value: '3',
-            label: '是非'
-          },
-          // {
-          //   value: '4',
-          //   label: '填空'
-          // },
-          {
-            value: '4',
-            label: '简答'
-          }
-
-        ],    //题型
+        questionType: [{value: '1', label: '单选'}, {value: '2', label: '多选'}, {value: '3', label: '是非'}, /* { value: '4', label: '填空' },*/ {value: '4', label: '简答'}],    //题型
         formatType: [
           {
             value: 'ppt',
@@ -347,100 +339,25 @@
         //所获取的内容
         research: {
           cate: 1,        //类型（3）   单题，组卷，课件
-          type: 1,//题型（5）   1.单选   2.多选    3.是非   4.填空    5.简答;
-          level: '',       //难度（4）   1.简单   2.中等    3.困难   4.超纲
+          type: '',//题型（5）   1.单选   2.多选    3.是非  4.简答;
+          hard: '',       //难度（4）   1.简单   2.中等    3.困难   4.超纲
           format: '',      //格式（4）   'ppt','pdf','word','excel'
+          chapter: ''
         },
-        //结果数据
+        //结果数据  当前的题目
         resultArr: [],
-        //假的题目数据
-        //单题
-        singleQuestionArr: [
-          {
-            id: 1,      //题目编号
-            questionType: 1,    //1.单选   2.多选    3.是非   4.填空    5.简答;
-            level: 1,  //1.简单   2.中等    3.困难   4.超纲
-            name: '这是一道单选题',   //题目
-            answerOptions: ['选项A', '选项B', '选项C', '选项D'],
-            rightAnswer: 0,
-            analyze: '因为第一题，所以选择A'
-          },
-          {
-            id: 2,      //题目编号
-            questionType: 2,    //1.单选   2.多选    3.是非   4.填空    5.简答;
-            level: 1,  //1.简单   2.中等    3.困难   4.超纲
-            name: '这是一道多选题',   //题目
-            answer: ['选项A', '选项B', '选项C', '选项D'],
-            analyze: '因为第二题，所以选择A和B'
-          },
-          {
-            id: 3,      //题目编号
-            questionType: 3,    //1.单选   2.多选    3.是非   4.填空    5.简答;
-            level: 1,  //1.简单   2.中等    3.困难   4.超纲
-            name: '这是一道判断题',   //题目
-            answer: ['对', '错'],
-            analyze: '因为是判断题，所以选择对'
-          },
-          {
-            id: 4,      //题目编号
-            questionType: 4,    //1.单选   2.多选    3.是非   4.填空    5.简答;
-            level: 1,  //1.简单   2.中等    3.困难   4.超纲
-            name: '这是一道填空',   //题目
-            answer: [''],
-            analyze: '因为是填空题，所以选择0'
-          },
-          {
-            id: 5,      //题目编号
-            questionType: 5,    //1.单选   2.多选    3.是非   4.填空    5.简答;
-            level: 1,  //1.简单   2.中等    3.困难   4.超纲
-            name: '这是一道简答题',   //题目
-            answer: [''],
-            analyze: '因为是简答题，所以尽情发挥'
-          }
-        ],
-        //组卷
-        paperArr: [
-          {
-            id: 1,
-            level: 1,  //1.简单   2.中等    3.困难   4.超纲
-            name: '试卷1',   //试卷名
-          },
-          {
-            id: 2,
-            level: 2,  //1.简单   2.中等    3.困难   4.超纲
-            name: '试卷2',   //试卷名
-          },
-          {
-            id: 3,
-            level: 3,  //1.简单   2.中等    3.困难   4.超纲
-            name: '试卷3',   //试卷名
-          }
-        ],
-        //课件
-        courseWareArr: [
-          {
-            id: 1,
-            type: 2,                       //['ppt','pdf','word','excel']
-            name: 'charpter 1',
-            description: '1111111'
-          },
-          {
-            id: 2,
-            type: 1,
-            name: 'charpter 2',
-            description: '2222222'
-          },
-          {
-            id: 3,
-            type: 3,
-            name: 'charpter 3',
-            description: '3333333'
-          }
-        ]
+
       }
 
     },
     methods: {
+      jsonParse(str) {
+        if (str && JSON.parse(str)) {
+          return JSON.parse(str)["content"]
+        } else {
+          return "";
+        }
+      },
       handleInsert(itemId) {
         switch (parseInt(itemId)) {
           case 1:
@@ -467,7 +384,7 @@
         console.log(e);
       },
       getQList(params) {
-        this.commonGetList('questions/getQuestionsFromTeacher', params);
+        this.commonGetList('Qbase/getQuestions', params);
       },
       getEList(params) {
         this.commonGetList('exam/getExamFromTeacher', params);
@@ -491,27 +408,51 @@
             .then(res => {
               if (res.data.code === 0) {
                 this.$Message.info(res.data.msg);
+                this.resultArr = [];
               } else {
                 this.resultArr = res.data.data;
               }
             })
       },
+      addChapter() {
+        let newItem = {
+          id: this.chapterArr.length + 1,
+          name: this.newChapter,
+          pid: 0,
+          order: this.newOrder,
+          course: this.sku
+        };
+
+        this.$http.get('Chapter/addChapterTocourse', {params: newItem}
+        )
+            .then(res => {
+              this.newChapter = '';
+              this.chapterArr.push(newItem)
+            })
+      },
+      menuSelect(index) {
+        this.research.chapter = index.toString().substring(2)
+      },
       ...mapActions(['updateQForm', 'clearQForm'])
     },
     mounted() {
-      this.getQList({id: this.teacherInfo.id});
+      console.log(this, 'sss');
+      //初始获取所有资源
+      this.getQList({q_base: this.$route.params.id});
+
       //获取章节
       let qb = this.qBank.find((item) => {
         return item.id === parseInt(this.$route.params.id)
       });
-      // console.log(qb);
-      let sku = qb ? qb['course_sku']['sku'] : 1;
-      this.$http.get('Chapter/getChapterByCourse', {params: {id: sku}})
+      console.log(qb);
+      this.sku = qb ? qb['course_sku']['sku'] : 1;
+      this.$http.get('Chapter/getChapterByCourse', {params: {id: this.sku}})
           .then(res => {
             //给chapterArr赋值
-            if(res.data.code ===1){
+            if (res.data.code === 1) {
               this.chapterArr = res.data.data;
-            }else{
+              this.chapterArr.sort((a, b) => a.order - b.order);
+            } else {
               this.$Message.info("该课程未指定章节！")
             }
 
@@ -524,13 +465,13 @@
         this.research = {
           cate: val,
           type: '',
-          level: '',
+          hard: '',
           format: '',
         };
         this.resultArr = [];
       }
       ,
-      research: {
+      research: {   //cate,chapter,type,hard,format
         deep: true,
         handler(val) {
           for (let key in val) {
@@ -538,7 +479,7 @@
           }
           switch (val.cate) {
             case 1:
-              val && this.getQList({id: 10, ...val});
+              val && this.getQList(val);
               break;
             case 2:
               val && this.getEList({id: 10, ...val});
@@ -546,8 +487,8 @@
             case 3:
               val && this.getDList({...val});
               break;
-
           }
+
 
         }
       }
