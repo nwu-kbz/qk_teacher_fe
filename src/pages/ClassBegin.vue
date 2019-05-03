@@ -4,7 +4,58 @@
     <div class="main">
       <div class='courseware'>
         <!--功能模块-->
-
+        <Row class="row">
+          <Col span="8">
+            <Card style="width:92%">
+              <div style="text-align:center">
+                <Icon type="ios-analytics" size="40" color="#9c26b0"/>
+                <router-link to="/signin"><h4>签到</h4></router-link>
+              </div>
+            </Card>
+          </Col>
+          <Col span="8">
+            <Card style="width:92%">
+              <div style="text-align:center">
+                <Icon type="md-apps"  size="40" color="#e54d42"/>
+                <router-link to="/group"><h4>分组</h4></router-link>
+              </div>
+            </Card>
+          </Col>
+          <Col span="8">
+            <Card style="width:92%">
+              <div style="text-align:center">
+                <Icon type="ios-filing"size="40" color="#fbbd08" />
+                <h4>学生</h4>
+              </div>
+            </Card>
+          </Col>
+        </Row>
+        <Row class="row">
+          <Col span="8">
+            <Card style="width:92%">
+              <div style="text-align:center">
+                <Icon type="ios-paper" size="40" color="#39b54a" />
+                <h4>答题</h4>
+              </div>
+            </Card>
+          </Col>
+          <Col span="8">
+            <Card style="width:92%">
+              <div style="text-align:center">
+                <Icon type="logo-reddit" size="40" color="#1cbbb4"/>
+                <h4>讨论</h4>
+              </div>
+            </Card>
+          </Col>
+          <Col span="8">
+            <Card style="width:92%">
+              <div style="text-align:center">
+                <Icon type="md-stats" size="40" color="#0081ff"/>
+                <h4>点答</h4>
+              </div>
+            </Card>
+          </Col>
+        </Row>
         <!-- 章节列表-->
         <Collapse simple>
           <Panel :name="index+''" v-for="(item,index) in chapter" :key="index">
@@ -12,7 +63,7 @@
             <p slot="content">
               <CellGroup>
                 <span v-for="(doc,index) in item.docs" :key="index" @click="handleShowWare(doc.url)">
-                  <Cell  :title="`${doc.name}`" />
+                  <Cell :title="`${doc.name}`"/>
                 </span>
               </CellGroup>
             </p>
@@ -22,7 +73,8 @@
       <div class="show_area">
         <div class="show_courseware">
           <h2 v-if="!url">请在右侧选择课件进行展示</h2>
-          <iframe v-if="office" width="100%" height="100%" :src="`https://view.officeapps.live.com/op/view.aspx?src=${url}`"></iframe>
+          <iframe v-if="office" width="100%" height="100%"
+                  :src="`https://view.officeapps.live.com/op/view.aspx?src=${url}`"></iframe>
           <iframe v-if="pdf" width="100%" height="100%" :src="`./static/pdf/web/viewer.html?file=${url}`"></iframe>
         </div>
       </div>
@@ -115,6 +167,10 @@
         height: 100%;
         background-color: #fff;
 
+        .row{
+          margin: 3%;
+        }
+
         .chapter_title {
           font-size: 18px;
         }
@@ -125,7 +181,7 @@
         height: 100%;
         margin-top: 3px;
         min-height: 600px;
-        background-color: #fff;
+        /*background-color: #fff;*/
 
         .show_courseware {
           background-color: #515a6e;

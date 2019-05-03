@@ -17,6 +17,8 @@ import About from '../pages/About'
 import store from '../store';
 import VideoShare from '../pages/VideoShare';
 import DocPreview from "../pages/DocPreview";
+import Signin from "../pages/Signin";
+import Group from "../pages/Group";
 
 Vue.use(Router)
 
@@ -47,6 +49,18 @@ let router = new Router({
       path: '/video',
       name: 'video',
       component: VideoShare,
+      meta:{needLogin: false}
+    },
+    {
+      path: '/signin',
+      name: 'signin',
+      component: Signin,
+      meta:{needLogin: false}
+    },
+    {
+      path: '/group',
+      name: 'group',
+      component: Group,
       meta:{needLogin: false}
     },
     {
