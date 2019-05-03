@@ -16,6 +16,7 @@ export default {
   unread: state => state.unread,
   qForm: state => state.qForm,
   qBank: state => state.qBank,
-  documents: state => state.documents
+  documents: state => state.documents,
+  allResource: state => state.allResource
 
 }

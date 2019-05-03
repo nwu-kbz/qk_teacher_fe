@@ -26,7 +26,7 @@ axios.interceptors.request.use(
   config => {
     let localStore = JSON.parse(localStorage.getItem("userInfo"));
     let token = localStore && localStore.token || (store.getters.teacherInfo&&store.getters.teacherInfo.token) || null;
-    if (config.method == 'post') {
+    if (config.method == 'post'||config.method == 'options') {
       config.data = {
         ...config.data,
         token

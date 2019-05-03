@@ -11,5 +11,6 @@ export default {
     rightAnswer: null
   },
   qBank:[],
-  documents: []
+  documents: [],
+  allResource:[]
 }

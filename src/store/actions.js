@@ -38,5 +38,8 @@ export default {
   },
   saveDocument({commit}, val) {
     commit('saveDocument', val);
-  }
+  },
+  saveAllResource({commit}, val) {
+    commit('saveAllResource', val);
+  },
 }

@@ -40,5 +40,8 @@ export default {
   },
   saveDocument(state, val) {
     state.documents = val;
-  }
+  },
+  saveAllResource(state, val) {
+    state.allResource = val;
+  },
 }
