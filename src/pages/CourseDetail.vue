@@ -4,7 +4,7 @@
     <div class="qb_bar">
       <div class="qb_bar_left">
         <span>{{$route.params.name}}</span>
-        <Input search enter-button placeholder="检索题目" class="search" v-model="contentSearch"/>
+        <Input search enter-button placeholder="检索题目" class="search" v-model="contentSearch" @on-search="searchByContent"/>
       </div>
       <div class="qb_bar_right">
         <Dropdown style="margin-left: 20px" @on-click="handleInsert">
@@ -25,15 +25,13 @@
       <!--左边的菜单-->
       <div class="qb_menu">
         <div class="qb_menu_item">
-          <Menu theme="light" active-name="1">
-            <div>
-              <MenuItem name="1">
+
+            <Menu theme="light" @on-select="menuSelect">
+              <MenuItem name="1" >
                 <Icon type="ios-infinite"/>
                 所有资源
-                <div class="right_num">0</div>
+                <div class="right_num">{{this.allResource.length}}</div>
               </MenuItem>
-            </div>
-            <Menu theme="light" @on-select="menuSelect">
               <Submenu name="2">
                 <template slot="title">
                   <Icon type="ios-paper"/>
@@ -46,7 +44,7 @@
                 <MenuItem name="2-0">未指定章节</MenuItem>
               </Submenu>
             </Menu>
-          </Menu>
+
         </div>
       </div>
       <!--中间显示题目,筛选条件-->
@@ -90,7 +88,7 @@
               <div class="content">
                 <div class="pull-both">
                   <span><Icon size="20" type="md-analytics"/>答案: {{item.answer}}</span>
-                  <span><Icon size="20" type="md-star-half"/>评分: <Rate disabled v-model="item.hard"/></span>
+                  <span><Icon size="20" type="md-star-half"/>评分: <Rate :count="4" disabled v-model="item.hard"/></span>
                   <span><Icon size="20" type="ios-time"/>预计答题时间: {{item.time}}</span>
                 </div>
                 <div class="pull-both">
@@ -106,7 +104,7 @@
                 {{item.name}}
               </h5>
               <div class="pull-both"><span><Icon size="20" type="ios-time"/>测试时长: {{item.time}} 分钟</span> <span><Icon
-                      size="20" type="md-star-half"/>难度: <Rate disabled v-model="item.hard"/></span></div>
+                      size="20" type="md-star-half"/>难度: <Rate :count="4" disabled v-model="item.hard"/></span></div>
             </div>
 
           </Card>
@@ -153,7 +151,7 @@
     </Modal>
     <!--题目-->
     <Modal v-model="questionModal" width="900" class="addQuestion" :styles="{top: '40px'}" scrollable
-           @close="questionModal=false">
+           @close="questionModal=false" >
       <p slot="header" class="addQuestion_header">
         <Icon type="md-pricetags"/>
         <span>{{$route.params.name}}</span></p>
@@ -178,7 +176,7 @@
             <Option v-for="item in questionType" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
           <span>难度</span>
-          <Rate v-model="questionForm.hard" style="margin-right: 100px"/>
+          <Rate  :count="4" :value="1" v-model="questionForm.hard" style="margin-right: 100px"/>
           <span style="width:90px">预计答题时间：</span>
           <InputNumber :max="30" :min="1" v-model="questionForm.time"></InputNumber>
           <span>分钟</span>
@@ -201,12 +199,7 @@
           <span>选项</span>
           <AnswerJudge></AnswerJudge>
         </div>
-        <!--填空-->
-        <!--<div class="addQuestion_main_item" v-show="questionForm.type==4">-->
-        <!--<span>选项</span>-->
-        <!--<AnswerBlank ></AnswerBlank>-->
-        <!--</div>-->
-        <!--简答-->
+
         <div class="addQuestion_main_item" v-show="questionForm.type==4">
           <span>选项</span>
           <AnswerCompute></AnswerCompute>
@@ -238,7 +231,7 @@
     name: "CourseDetail",
     components: {NavBar, AnswerCheckbox, AnswerRadio, AnswerCompute, AnswerJudge, AnswerBlank},
     computed: {
-      ...mapGetters(['teacherInfo', 'qBank', 'qForm']),
+      ...mapGetters(['teacherInfo', 'qBank', 'qForm','allResource']),
       showQType() {
         return this.research.cate === 1 || true;
       },
@@ -267,7 +260,7 @@
           hard: 0,
           time: 1,
         },// 收集题目数据
-        contentSearch: '',
+
         chapterModal: false,
         questionModal: false,
         updateModal: false,
@@ -346,11 +339,18 @@
         },
         //结果数据  当前的题目
         resultArr: [],
-
+        contentSearch: '',
       }
 
     },
     methods: {
+      searchByContent(){
+        //contentSearch
+        this.getQList({q_base: this.$route.params.id,content:this.contentSearch});
+      },
+      handleAllResource(){
+        this.resultArr = this.allResource
+      },
       jsonParse(str) {
         if (str && JSON.parse(str)) {
           return JSON.parse(str)["content"]
@@ -383,8 +383,8 @@
       handleFilter(e) {
         console.log(e);
       },
-      getQList(params) {
-        this.commonGetList('Qbase/getQuestions', params);
+      getQList(params,callback) {
+        this.commonGetList('Qbase/getQuestions', params,callback);
       },
       getEList(params) {
         this.commonGetList('exam/getExamFromTeacher', params);
@@ -393,7 +393,7 @@
         this.commonGetList('document/getDocument', params);
       },
       addQuestion(params) {
-        this.$http.post('/questions/add', params)
+        this.$http.get('/questions/add', params)
             .then(res => {
               if (res.data.code === 0) {
                 this.$Message.error(' 添加题目失败');
@@ -403,7 +403,7 @@
               }
             })
       },
-      commonGetList(url, params) {
+       commonGetList(url, params,callback) {
         this.$http.get(url, {params})
             .then(res => {
               if (res.data.code === 0) {
@@ -411,6 +411,9 @@
                 this.resultArr = [];
               } else {
                 this.resultArr = res.data.data;
+                // console.log(this.resultArr)
+                //把所有资源存储
+                callback&&callback();
               }
             })
       },
@@ -431,20 +434,23 @@
             })
       },
       menuSelect(index) {
-        this.research.chapter = index.toString().substring(2)
+        if (index + '' === '1') {
+          this.handleAllResource();
+          return;
+        }
+        this.research.chapter = index.toString().substring(2);
       },
-      ...mapActions(['updateQForm', 'clearQForm'])
+      ...mapActions(['updateQForm', 'clearQForm','saveAllResource']),
+
     },
     mounted() {
-      console.log(this, 'sss');
       //初始获取所有资源
-      this.getQList({q_base: this.$route.params.id});
-
+      this.getQList({q_base: this.$route.params.id},()=>this.saveAllResource(this.resultArr));
       //获取章节
       let qb = this.qBank.find((item) => {
         return item.id === parseInt(this.$route.params.id)
       });
-      console.log(qb);
+      // console.log(qb);
       this.sku = qb ? qb['course_sku']['sku'] : 1;
       this.$http.get('Chapter/getChapterByCourse', {params: {id: this.sku}})
           .then(res => {
