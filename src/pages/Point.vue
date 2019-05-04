@@ -1,5 +1,6 @@
 <template>
   <div class="main bg-grey ">
+    <NavBar></NavBar>
     <div class="drawer">
       <Drawer title="Basic Drawer" placement="left" :closable="false" v-model="isOpen" :styles="styles">
         <h5 slot="header">
@@ -51,6 +52,7 @@
 
   export default {
     name: "Point",
+    components: {NavBar},
     data() {
       return {
         isOpen: false,
