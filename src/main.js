@@ -8,12 +8,15 @@ import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 import './theme/index.less';
 import axios from 'axios';
+import VCharts from 'v-charts'
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 // import Fly from 'node_modules/flyio/dist/npm./';
 
 import store from './store';
+import qs from 'qs';
+
 Vue.use(iView);
 Vue.use(ElementUI);
 // let fly = new Fly();
@@ -30,7 +33,8 @@ axios.interceptors.request.use(
       config.data = {
         ...config.data,
         token
-      }
+      };
+      config.data = qs.stringify(config.data);
     } else if (config.method == 'get') {
       config.params = {
         ...config.params,
@@ -64,6 +68,7 @@ axios.interceptors.response.use(function (response) {
 
 Vue.prototype.$http = axios;
 
+Vue.use(VCharts);
 new Vue({
   el: '#app',
   router,

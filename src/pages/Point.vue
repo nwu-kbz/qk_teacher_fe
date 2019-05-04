@@ -2,7 +2,7 @@
   <div class="main bg-grey ">
     <NavBar></NavBar>
     <div class="drawer">
-      <Drawer title="Basic Drawer" placement="left" :closable="false" v-model="isOpen" :styles="styles">
+      <Drawer title="Basic Drawer" placement="left" :closable="false" v-model="isOpen" :styles="styles" :width='280'>
         <h5 slot="header">
           <Icon type="md-medal" size="25"/>
           评分记录
@@ -11,11 +11,10 @@
           <div class="time">
             <Icon type="md-radio-button-on"/>
             <span>2019年5月5日</span></div>
-          <div class="aRecord">
-            <div class="itemBorder"></div>
+          <div class="aRecord" v-for="(item,index) in recordList" :key="index">
             <div class="itemContainer">
-              <div class="stars"><img src="../../static/img/two.png"></div>
-              <span>徐鹏飞</span>
+              <div class="stars"><img :src="starImage(item.star)"></div>
+              <span>{{item.nickname}}</span>
             </div>
             <div class="delete"><Icon type="md-trash" size="25" class="icon"/></div>
           </div>
@@ -23,17 +22,19 @@
       </Drawer>
     </div>
     <div class="studentList">
-      <div class="student" v-for="(item,index) in [1,2,4,4]" :key="index" @click="handleModal">
-        <img class='ivu-avatar' :src="teacherInfo.avatar"/>
-        <h6>飞飞</h6>
+      <div class="student" v-for="(item,index) in studentList" :key="index" @click="handleModal(index)">
+        <img class='ivu-avatar' :src="publicUrl+item.avatar"/>
+        <h6>{{item.nickname}}</h6>
       </div>
       <Modal v-model="studentModal" :width="350">
         <div class="studentInfo">
-          <img class='ivu-avatar' :src="teacherInfo.avatar"/>
+          <img class='ivu-avatar' :src="publicUrl+current.avatar"/>
+          <h3>{{current.nickname}}</h3>
         </div>
+
         <div slot="footer" class="modelFooter">
-          评价：<Rate v-model="value" :count="3"/>
-          <button>评分</button>
+          评价：<Rate v-model="star" :count="3"/>
+          <Button type="success" @click="handleRate">评分</Button>
         </div>
       </Modal>
     </div>
@@ -48,6 +49,7 @@
 <script>
   import NavBar from "../components/NavBar";
   import {Modal} from 'iview' ;
+  import config from '../config'
   import {mapGetters} from 'vuex'
 
   export default {
@@ -58,24 +60,51 @@
         isOpen: false,
         styles: {
           background: '#303133',
-          color: 'white'
+          color: 'white',
         },
         openedDrawer: false,
         // ["md-arrow-round-forward",'md-arrow-round-back']
         btnLogo: "md-arrow-round-forward",
         studentArr: [],
-        studentModal:false
+        studentModal:false,
+        index: -1,
+        star: 1,
+        recordList: []
       }
     },
     computed: {
-      ...mapGetters(['teacherInfo'])
+      ...mapGetters(['teacherInfo','studentList']),
+      publicUrl() {
+        return config.urls.publicUrl
+      },
+      current() {
+        if (this.index >= 0) {
+          return this.studentList[this.index];
+        }else{
+          return {};
+        }
+      }
     },
     methods: {
+      starImage(star) {
+        let maps=[
+          '../../static/img/one.png',
+          '../../static/img/two.png',
+          '../../static/img/three.png',
+        ];
+        return maps[star - 1];
+      },
+      handleRate() {
+        this.recordList.push({...this.current, star: this.star});
+        this.star = 1;
+        this.studentModal = false;
+      },
       openDraw() {
         this.isOpen = !this.isOpen;
         this.openedDrawer = !this.openedDrawer;
       },
-      handleModal(){
+      handleModal(index){
+        this.index = index;
         this.studentModal = true
       }
     },
@@ -96,31 +125,30 @@
 <style lang="less" scoped>
   .record-item {
     border: 0;
-    width: 280px;
+    width: 260px;
     height: 100px;
     margin: 5px auto;
-    &:hover{
-      .delete{
-        margin-left: -50px;
-        /*display: inline-block;*/
-        visibility: visible;
-        /*background-color: rebeccapurple;*/
-
-      }
-
+    /*.aRecord{*/
+      /*margin-top: 5px;*/
+      /*.itemContainer{*/
+        /*margin-top: 5px;*/
+      /*}*/
     }
+    /*&:hover{*/
+      /*.delete{*/
+        /*margin-left: -50px;*/
+        /*!*display: inline-block;*!*/
+        /*visibility: visible;*/
+        /*!*background-color: rebeccapurple;*!*/
+
+      /*}*/
+
+    /*}*/
     .time {
       margin: 10px 0;
     }
-    .itemBorder {
-      background: #717171;
-      width: 8px;
-      height: 38px;
-      display: inline-block;
-      float: left;
-
-    }
     .itemContainer {
+      border-left: #666666 5px solid;
       background: white;
       width: 215px;
       height: 38px;
@@ -154,7 +182,7 @@
 
       /*margin-left: -50px;*/
     }
-  }
+
 
   .main {
     width: 100%;
@@ -195,12 +223,13 @@
     }
     .openedDrawer {
       transition: transform 340ms ease-in-out;
-      transform: translateX(256px);
+      transform: translateX(280px);
     }
   }
   .studentInfo{
     width: 100%;
     height: 320px;
+    text-align: center;
     /*background: plum;*/
     /*background-image: url("");*/
     /*filter:blur(3px);*/

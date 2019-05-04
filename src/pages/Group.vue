@@ -6,13 +6,18 @@
         <p slot="title">分组{{index+1}}</p>
         <span class="text-green text-lg" slot="extra" @click="handleAddStudent(index)"><Icon type="md-add-circle" size="30"/></span>
         <CellGroup>
-          <Cell :title="findStuById(stu)['name']"  v-for="(stu,ins) in item" :key="ins">
+          <Cell :title="findStuById(stu)['nickname']"  v-for="(stu,ins) in item" :key="ins">
             <span slot="extra" class="text-red" @click="handleRemoveStudent(index,ins)"><Icon type="ios-trash" size="20"/></span>
           </Cell>
         </CellGroup>
       </Card>
     </div>
-    <Button type="success" size="large" class="submit-btn">提交修改</Button>
+    <div class="submit-btn">
+      <Button type="success" size="large" @click="handleAddGroup">添加组</Button>
+      <Button type="success" size="large" @click="handleSubGroup">删除组</Button>
+      <Button type="success" size="large" @click="handleSubmitGroup">提交修改</Button>
+
+    </div>
 
     <!--选择学生的modal-->
     <Modal v-model="modalShow" title="选择学生" @on-ok="handleDoAdd" @on-cancel="handleCancel">
@@ -26,19 +31,33 @@
 <script>
   import NavBar from '../components/NavBar';
   import _ from 'lodash';
+  import {mapGetters,mapActions} from 'vuex';
 
   export default {
     name: "Group",
     components: {NavBar},
     computed: {
       unSelectedStu() {
-        return this.studentList.filter(s => !s.selected);
-      }
+        return this.students.filter(s => !s.selected);
+      },
+      ...mapGetters(['studentList'])
     },
     methods:{
+      handleAddGroup() {
+        this.groupList.push([]);
+      },
+      handleSubmitGroup() {
+        this.$router.back();
+      },
+      handleSubGroup() {
+        let stuIds = this.groupList.pop();
+        stuIds.map(id=>{
+          this.students.find(st => st.id === id)['selected'] = false;
+        })
+      },
       handleDoAdd() {
         this.groupList.splice(this.toGroup,1,this.groupList[this.toGroup].concat(this.selectedIds));
-        this.studentList = this.selectedStu;
+        this.students = this.selectedStu;
       },
       handleCancel() {
         this.modalShow = false;
@@ -53,7 +72,7 @@
         this.modalShow = true;
       },
       handleSelect(records) {
-        let stuList = _.cloneDeep(this.studentList);
+        let stuList = _.cloneDeep(this.students);
         this.selectedIds = records.map(r => {
           let ins = stuList.findIndex(st => st.id === r.id);
           stuList[ins].selected = true;
@@ -62,45 +81,30 @@
         this.selectedStu = stuList;
       },
       findStuById(id) {
-        return this.studentList.find(s => s.id === id)||{};
-      }
+        return this.students.find(s => s.id === id)||{};
+      },
+      ...mapActions(['saveStudentList'])
+    },
+    mounted() {
+      this.students = _.cloneDeep(this.studentList);
     },
     data() {
       return {
         groupList:[
-          [1,2,3,4,5,5,6,7,7,5,5,6,7,7],
-          [1,2,3,4,5,5,6,7,7,5,5,6,7,7],
-          [1,2,3,4,5,5,6,7,7,5,5,6,7,7],
-          [1,2,3,4,5,5,6,7,7],
-          [1,2,3,4,5,5,6,7,7],
-          [1,2,3,4,5,5,6,7,7],
+          [],
+          [],
+          [],
+          [],
+          [],
+          [],
         ],
-        studentList:[
-          {id:1,name:'aaa2',selected:false},
-          {id:2,name:'aaa1',selected:false},
-          {id:3,name:'aaa3',selected:false},
-          {id:4,name:'aaa44',selected:false},
-          {id:5,name:'aaa5',selected:false},
-          {id:6,name:'aa34a',selected:false},
-          {id:7,name:'aaa',selected:false},
-          {id:8,name:'aaa',selected:false},
-          {id:9,name:'aaa',selected:false},
-          {id:10,name:'aaa',selected:false},
-          {id:1,name:'aaa',selected:false},
-          {id:1,name:'aaa',selected:false},
-          {id:1,name:'aaa',selected:false},
-          {id:1,name:'aaa',selected:false},
-          {id:1,name:'aaa',selected:false},
-          {id:1,name:'aaa',selected:false},
-          {id:1,name:'aaa',selected:false},
-          {id:1,name:'aaa',selected:false},
-          ],
+        students:[],
         toGroup: 0,
         modalShow: false,
         stuCols:[
           {type: 'selection', width: 60, align: 'center'},
           {title:'Id',key:'id'},
-          {title:'姓名',key:'name'},
+          {title:'姓名',key:'nickname'},
           {title:'是否被选择',key:'selected'},
         ],
         selectedStu: [],

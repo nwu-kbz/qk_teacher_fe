@@ -20,7 +20,8 @@ import DocPreview from "../pages/DocPreview";
 import Signin from "../pages/Signin";
 import Group from "../pages/Group";
 import Point from "../pages/Point";
-import Discuss from "../pages/Discuss";
+import DoPractice from "../pages/DoPractice";
+import Comment from "../pages/Comment";
 
 Vue.use(Router)
 
@@ -54,6 +55,18 @@ let router = new Router({
       meta:{needLogin: false}
     },
     {
+      path: '/doPractice',
+      name: 'doPractice',
+      component: DoPractice,
+      meta:{needLogin: false}
+    },
+    {
+      path: '/comment',
+      name: 'comment',
+      component: Comment,
+      meta:{needLogin: false}
+    },
+    {
       path: '/signin',
       name: 'signin',
       component: Signin,
@@ -64,17 +77,10 @@ let router = new Router({
       name: 'group',
       component: Group,
       meta:{needLogin: false}
-    },
-    {
+    },{
       path: '/point',
       name: 'point',
       component: Point,
-      meta:{needLogin: false}
-    },
-    {
-      path: '/discuss',
-      name: 'discuss',
-      component: Discuss,
       meta:{needLogin: false}
     },
     {

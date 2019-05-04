@@ -35,7 +35,7 @@
             <Card style="width:92%">
               <div style="text-align:center">
                 <Icon type="ios-paper" size="40" color="#39b54a" />
-                <h4>答题</h4>
+                <router-link :to="`/doPractice?sku=${$route.query.id}`"><h4>答题</h4></router-link>
               </div>
             </Card>
           </Col>
@@ -43,7 +43,7 @@
             <Card style="width:92%">
               <div style="text-align:center">
                 <Icon type="logo-reddit" size="40" color="#1cbbb4"/>
-                <router-link to="/point"><h4>讨论</h4></router-link>
+                <router-link to="/comment"><h4>讨论</h4></router-link>
               </div>
             </Card>
           </Col>
@@ -111,7 +111,6 @@
       return {
         stuCols: [
           {title: 'Id', key: 'id'},
-          {title: '头像', key: 'avatar'},
           {title: '姓名', key: 'nickname'},
           {title: '用户名', key: 'username'},
           {title: '学号', key: 'number'},
@@ -126,9 +125,12 @@
     methods: {
       getStudentList() {
         if (!this.studentList || this.studentList.length === 0) {
-          this.$http.get('/student/list').then(res => {
+          this.$http.get('/students/getUserList',{params:{id:this.$route.query.id}}).then(res => {
             if (res.data.code === 1) {
-              this.saveStudentList(res.data.data);
+              let stu = res.data.data;
+              stu.map(s=>{s.selected=false;
+                return s;});
+              this.saveStudentList(stu);
             }
           });
         }

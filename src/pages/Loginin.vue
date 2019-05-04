@@ -87,7 +87,7 @@
               if (this.isChecked === false) {
                 this.clearCookie();
               } else { //调用配置cookie方法,传入账号名，密码，和保存天数3个参数
-                this.setCookie(this.username, this.password, 7, true);
+                // this.setCookie(this.username, this.password, 7, true);
               }
               if ((res.data.code === 1)) {
                 //获取教师的个人信息添加到vuex中
@@ -126,7 +126,7 @@
     },
     mounted() {
       //页面加载调用cookie值
-      this.getCookie();
+      // this.getCookie();
       this.$http.get('teacher/getInfo')
         .then(res => {
           if (res.data.code === 0) { //err

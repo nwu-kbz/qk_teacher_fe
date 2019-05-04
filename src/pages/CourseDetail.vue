@@ -153,8 +153,9 @@
           <div>
             <Upload
               type="drag"
+              :multiple="false"
               :data="{token: teacherInfo.token,'user_id':teacherInfo.id}"
-              @on-success="handleUploadSuccess"
+              :on-success="handleUploadSuccess"
               action="http://qk.heniankj.com/public/index.php/home/Attachment/add">
               <div style="padding: 20px 0">
                 <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
@@ -362,6 +363,8 @@
           })
       },
       handleUploadDoc() {
+        this.uploadForm['user'] = this.teacherInfo.id;
+        this.uploadForm['course'] = this.sku;
         this.$http.post('Document/add',this.uploadForm).then(res=>{
           if (res.data.code === 1) {
             this.success('添加文档成功');
@@ -384,8 +387,9 @@
         })
       },
       handleUploadSuccess(res, file, fileList) {
-        if (res.data.code === 1) {
-          this.uploadForm.attachment = res.data.data;
+        console.log(res, file, fileList);
+        if (res.code === 1) {
+          this.uploadForm.attachment = res.data;
         } else {
           this.$Notice.error({
             title: '失败',
