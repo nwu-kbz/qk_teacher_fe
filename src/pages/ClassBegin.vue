@@ -43,7 +43,7 @@
             <Card style="width:92%">
               <div style="text-align:center">
                 <Icon type="logo-reddit" size="40" color="#1cbbb4"/>
-                <router-link to="/comment"><h4>讨论</h4></router-link>
+                <router-link to="/discuss"><h4>讨论</h4></router-link>
               </div>
             </Card>
           </Col>
@@ -111,6 +111,7 @@
       return {
         stuCols: [
           {title: 'Id', key: 'id'},
+          {title: '头像', key: 'avatar'},
           {title: '姓名', key: 'nickname'},
           {title: '用户名', key: 'username'},
           {title: '学号', key: 'number'},
@@ -125,12 +126,9 @@
     methods: {
       getStudentList() {
         if (!this.studentList || this.studentList.length === 0) {
-          this.$http.get('/students/getUserList',{params:{id:this.$route.query.id}}).then(res => {
+          this.$http.get('/student/list').then(res => {
             if (res.data.code === 1) {
-              let stu = res.data.data;
-              stu.map(s=>{s.selected=false;
-                return s;});
-              this.saveStudentList(stu);
+              this.saveStudentList(res.data.data);
             }
           });
         }
