@@ -16,7 +16,7 @@
               <div class="stars"><img :src="starImage(item.star)"></div>
               <span>{{item.nickname}}</span>
             </div>
-            <div class="delete"><Icon type="md-trash" size="25" class="icon"/></div>
+            <!--<div class="delete"><Icon type="md-trash" size="25" class="icon"/></div>-->
           </div>
         </div>
       </Drawer>
@@ -128,22 +128,6 @@
     width: 260px;
     height: 100px;
     margin: 5px auto;
-    /*.aRecord{*/
-      /*margin-top: 5px;*/
-      /*.itemContainer{*/
-        /*margin-top: 5px;*/
-      /*}*/
-    }
-    /*&:hover{*/
-      /*.delete{*/
-        /*margin-left: -50px;*/
-        /*!*display: inline-block;*!*/
-        /*visibility: visible;*/
-        /*!*background-color: rebeccapurple;*!*/
-
-      /*}*/
-
-    /*}*/
     .time {
       margin: 10px 0;
     }
@@ -156,6 +140,7 @@
       float: left;
       color: black;
       font-size: 18px;
+      margin-top: 3px;
       .stars{
         width: 38px;
         height: 38px;
