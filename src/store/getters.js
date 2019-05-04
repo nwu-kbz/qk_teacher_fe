@@ -17,6 +17,8 @@ export default {
   qForm: state => state.qForm,
   qBank: state => state.qBank,
   documents: state => state.documents,
-  allResource: state => state.allResource
+  allResource: state => state.allResource,
+  docCateList: state => state.docCateList,
+
 
 }

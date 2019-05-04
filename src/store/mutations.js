@@ -44,4 +44,7 @@ export default {
   saveAllResource(state, val) {
     state.allResource = val;
   },
+  saveDocCateList(state, val) {
+    state.docCateList = val;
+  },
 }

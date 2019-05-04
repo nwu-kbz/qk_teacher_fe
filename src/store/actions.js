@@ -42,4 +42,7 @@ export default {
   saveAllResource({commit}, val) {
     commit('saveAllResource', val);
   },
+  saveDocCateList({commit}, val) {
+    commit('saveDocCateList', val);
+  },
 }

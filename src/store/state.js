@@ -12,5 +12,6 @@ export default {
   },
   qBank:[],
   documents: [],
-  allResource:[]
+  allResource:[],
+  docCateList: []
 }
