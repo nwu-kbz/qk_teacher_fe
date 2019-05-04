@@ -33,7 +33,8 @@
         </div>
 
         <div slot="footer" class="modelFooter">
-          评价：<Rate v-model="star" :count="3"/>
+          评价：
+          <Rate v-model="star" :count="3"/>
           <Button type="success" @click="handleRate">评分</Button>
         </div>
       </Modal>
@@ -66,28 +67,28 @@
         // ["md-arrow-round-forward",'md-arrow-round-back']
         btnLogo: "md-arrow-round-forward",
         studentArr: [],
-        studentModal:false,
+        studentModal: false,
         index: -1,
         star: 1,
         recordList: []
       }
     },
     computed: {
-      ...mapGetters(['teacherInfo','studentList']),
+      ...mapGetters(['teacherInfo', 'studentList']),
       publicUrl() {
         return config.urls.publicUrl
       },
       current() {
         if (this.index >= 0) {
           return this.studentList[this.index];
-        }else{
+        } else {
           return {};
         }
       }
     },
     methods: {
       starImage(star) {
-        let maps=[
+        let maps = [
           '../../static/img/one.png',
           '../../static/img/two.png',
           '../../static/img/three.png',
@@ -103,7 +104,7 @@
         this.isOpen = !this.isOpen;
         this.openedDrawer = !this.openedDrawer;
       },
-      handleModal(index){
+      handleModal(index) {
         this.index = index;
         this.studentModal = true
       }
@@ -128,9 +129,11 @@
     width: 260px;
     height: 100px;
     margin: 5px auto;
+
     .time {
       margin: 10px 0;
     }
+
     .itemContainer {
       border-left: #666666 5px solid;
       background: white;
@@ -141,19 +144,21 @@
       color: black;
       font-size: 18px;
       margin-top: 3px;
-      .stars{
+
+      .stars {
         width: 38px;
         height: 38px;
         display: inline-block;
         margin: 0 6px;
 
-        img{
+        img {
           width: 38px;
-          height:38px;
+          height: 38px;
         }
       }
     }
-    .delete{
+
+    .delete {
       background-color: rgba(212, 0, 0, 1);
       width: 50px;
       height: 38px;
@@ -161,7 +166,8 @@
       visibility: hidden;
       float: left;
       transition: all 300ms ease-in-out;
-      .icon{
+
+      .icon {
         margin: 5px 12px;
       }
 
@@ -169,69 +175,78 @@
     }
 
 
-  .main {
-    width: 100%;
-    height: 100%;
-    position: relative;
-
-    .studentList {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
+    .main {
       width: 100%;
       height: 100%;
-      .student {
-        margin: 10px;
-        width: 100px;
-        height: 130px;
-        text-align: center;
-        &:hover {
-          background-color: rgba(67, 67, 67, 0.48);
-        }
-        img {
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
-          margin: 10px 20px;
+      position: relative;
+
+      .studentList {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+
+        .student {
+          margin: 10px;
+          width: 100px;
+          height: 130px;
+          text-align: center;
+
+          &:hover {
+            background-color: rgba(67, 67, 67, 0.48);
+          }
+
+          img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 10px 20px;
+          }
         }
       }
-    }
-    .openDraw {
-      width: 30px;
-      height: 80px;
-      background-color: rgb(48, 49, 51);
-      border: 0;
-      border-radius: 0 8px 8px 0;
-      position: fixed;
-      top: 42%;
-    }
-    .openedDrawer {
-      transition: transform 340ms ease-in-out;
-      transform: translateX(280px);
-    }
-  }
-  .studentInfo{
-    width: 100%;
-    height: 320px;
-    text-align: center;
-    /*background: plum;*/
-    /*background-image: url("");*/
-    /*filter:blur(3px);*/
-    .ivu-avatar{
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      margin: 25px 100px;
-    }
-  }
-  .modelFooter{
-    button{
-      width: 50px;
-      height: 30px;
-      border-radius: 8px;
-      border:0;
 
+      .openDraw {
+        width: 30px;
+        height: 80px;
+        background-color: rgb(48, 49, 51);
+        border: 0;
+        border-radius: 0 8px 8px 0;
+        position: fixed;
+        top: 42%;
+      }
+
+      .openedDrawer {
+        transition: transform 340ms ease-in-out;
+        transform: translateX(280px);
+      }
+    }
+
+    .studentInfo {
+      width: 100%;
+      height: 320px;
+      text-align: center;
+      /*background: plum;*/
+      /*background-image: url("");*/
+      /*filter:blur(3px);*/
+
+      .ivu-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 25px 100px;
+      }
+    }
+
+    .modelFooter {
+      button {
+        width: 50px;
+        height: 30px;
+        border-radius: 8px;
+        border: 0;
+
+      }
     }
   }
 
