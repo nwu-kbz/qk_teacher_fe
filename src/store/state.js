@@ -13,5 +13,6 @@ export default {
   qBank:[],
   documents: [],
   allResource:[],
-  docCateList: []
+  docCateList: [],
+  studentList: [],
 }

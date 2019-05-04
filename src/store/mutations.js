@@ -47,4 +47,7 @@ export default {
   saveDocCateList(state, val) {
     state.docCateList = val;
   },
+  saveStudentList(state, val) {
+    state.studentList = val;
+  },
 }

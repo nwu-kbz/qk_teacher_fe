@@ -45,4 +45,8 @@ export default {
   saveDocCateList({commit}, val) {
     commit('saveDocCateList', val);
   },
+  saveStudentList({commit}, val) {
+    commit('saveStudentList', val);
+  },
+
 }

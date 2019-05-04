@@ -25,7 +25,7 @@
             <Card style="width:92%">
               <div style="text-align:center">
                 <Icon type="ios-filing"size="40" color="#fbbd08" />
-                <h4>学生</h4>
+                <h4 @click="handleShowStudent">学生</h4>
               </div>
             </Card>
           </Col>
@@ -78,9 +78,9 @@
           <iframe v-if="pdf" width="100%" height="100%" :src="`./static/pdf/web/viewer.html?file=${url}`"></iframe>
         </div>
       </div>
-      <div class="talk_area">
-
-      </div>
+      <Modal v-model="studentModal" title="学生列表" width="80%">
+        <Table :columns="stuCols" :data="studentList"></Table>
+      </Modal>
     </div>
   </div>
 </template>
@@ -88,14 +88,14 @@
 <script>
   import NavBar from "../components/NavBar";
   import {Cell, CellGroup, Card, Collapse, Panel, ButtonGroup} from 'iview' ;
-  import {mapGetters} from 'vuex';
+  import {mapGetters,mapActions} from 'vuex';
   import config from '../config';
 
   export default {
     name: "ClassBegin",
     components: {NavBar, Cell, CellGroup, Card, Collapse, Panel, ButtonGroup},
     computed: {
-      ...mapGetters(['documents']),
+      ...mapGetters(['documents','studentList']),
       publicUrl() {
         return config.urls.publicUrl;
       },
@@ -105,15 +105,37 @@
       },
       pdf() {
         return this.url && this.url.endsWith('pdf');
-      }
+      },
     },
     data() {
       return {
+        stuCols: [
+          {title: 'Id', key: 'id'},
+          {title: '头像', key: 'avatar'},
+          {title: '姓名', key: 'nickname'},
+          {title: '用户名', key: 'username'},
+          {title: '学号', key: 'number'},
+          {title: '邮箱', key: 'email'},
+          {title: '手机号', key: 'mobile'},
+        ],
         url: '',
-        chapter: []
+        chapter: [],
+        studentModal: false
       }
     },
     methods: {
+      getStudentList() {
+        if (!this.studentList || this.studentList.length === 0) {
+          this.$http.get('/student/list').then(res => {
+            if (res.data.code === 1) {
+              this.saveStudentList(res.data.data);
+            }
+          });
+        }
+      },
+      handleShowStudent() {
+        this.studentModal = true;
+      },
       getChapters() {
         this.$http.get('/chapter/getChapterByCourse', {params: {id: this.$route.query.id}})
           .then(res => {
@@ -138,12 +160,13 @@
           })
       },
       handleShowWare(url) {
-        console.log(url);
         this.url = this.publicUrl + url;
-      }
+      },
+      ...mapActions(['saveStudentList'])
     },
     mounted() {
       this.getChapters();
+      this.getStudentList();
     }
   }
 </script>
@@ -156,6 +179,12 @@
     background: #e5e5e5;
 
     .main {
+      h4{
+        color: #2d2d2d;
+      }
+      h4:hover{
+        cursor: pointer;
+      }
       height: 100%;
       width: 100%;
       display: flex;
