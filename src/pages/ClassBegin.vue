@@ -43,7 +43,7 @@
             <Card style="width:92%">
               <div style="text-align:center">
                 <Icon type="logo-reddit" size="40" color="#1cbbb4"/>
-                <router-link to="/point"><h4>讨论</h4></router-link>
+                <router-link to="/discuss"><h4>讨论</h4></router-link>
               </div>
             </Card>
           </Col>
