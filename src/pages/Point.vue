@@ -157,6 +157,7 @@
         }
       }
     }
+  }
 
     .delete {
       background-color: rgba(212, 0, 0, 1);
@@ -186,7 +187,7 @@
         align-items: center;
         justify-content: center;
         width: 100%;
-        height: 100%;
+        min-height: 100%;
 
         .student {
           margin: 10px;
@@ -248,6 +249,6 @@
 
       }
     }
-  }
+
 
 </style>

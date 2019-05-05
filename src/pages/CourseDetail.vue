@@ -352,6 +352,8 @@
         this.examForm.question = list.map(l => l.id).join(',');
       },
       handleAddExam() {
+        this.examForm['user'] = this.teacherInfo.id;
+        this.examForm['sku'] = this.sku;
         this.$http.get('exam/addQuestionToExam',{params:this.examForm})
           .then(res=>{
             if (res.data.code === 1) {

@@ -21,7 +21,7 @@ import Signin from "../pages/Signin";
 import Group from "../pages/Group";
 import Point from "../pages/Point";
 import DoPractice from "../pages/DoPractice";
-import Comment from "../pages/Comment";
+import Discuss from "../pages/Discuss";
 
 Vue.use(Router)
 
@@ -61,9 +61,9 @@ let router = new Router({
       meta:{needLogin: false}
     },
     {
-      path: '/comment',
-      name: 'comment',
-      component: Comment,
+      path: '/discuss',
+      name: 'discuss',
+      component: Discuss,
       meta:{needLogin: false}
     },
     {

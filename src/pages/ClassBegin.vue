@@ -111,7 +111,6 @@
       return {
         stuCols: [
           {title: 'Id', key: 'id'},
-          {title: '头像', key: 'avatar'},
           {title: '姓名', key: 'nickname'},
           {title: '用户名', key: 'username'},
           {title: '学号', key: 'number'},
@@ -126,7 +125,7 @@
     methods: {
       getStudentList() {
         if (!this.studentList || this.studentList.length === 0) {
-          this.$http.get('/student/list').then(res => {
+          this.$http.get('/students/getUserList',{params: {id: this.$route.query.id}}).then(res => {
             if (res.data.code === 1) {
               this.saveStudentList(res.data.data);
             }
