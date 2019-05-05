@@ -61,12 +61,10 @@
       width: 100%;
       height: 94%;
       padding: 30px;
+      /*display: flex;*/
+      /*flex-wrap: wrap;*/
       .course {
-        width: 310px;
-        height: 230px;
         border-radius: 5px;
-        margin: 0;
-        display: flex;
         .course_card {
           display: inline-block;
           float: left;

@@ -75,7 +75,8 @@
           <h2 v-if="!url">请在右侧选择课件进行展示</h2>
           <iframe v-if="office" width="100%" height="100%"
                   :src="`https://view.officeapps.live.com/op/view.aspx?src=${url}`"></iframe>
-          <iframe v-if="pdf" width="100%" height="100%" :src="`./static/pdf/web/viewer.html?file=${url}`"></iframe>
+          <iframe v-if="pdf" width="100%" height="100%" :src="`./static/pdf/web/viewer.html?file=`+encodeURIComponent(url)"></iframe>
+          <video v-if="video" :src="url" width="100%" height="100%" controls></video>
         </div>
       </div>
       <Modal v-model="studentModal" title="学生列表" width="80%">
@@ -105,6 +106,9 @@
       },
       pdf() {
         return this.url && this.url.endsWith('pdf');
+      },
+      video() {
+        return this.url && this.url.endsWith('mp4');
       },
     },
     data() {

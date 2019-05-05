@@ -4,7 +4,10 @@
     <div class="main">
       <div class="show_area">
         <div class="show_courseware">
-          <iframe width="100%" height="100%" :src="`https://view.officeapps.live.com/op/view.aspx?src=${url}`"></iframe>
+          <iframe v-if="office" width="100%" height="100%"
+                  :src="`https://view.officeapps.live.com/op/view.aspx?src=${url}`"></iframe>
+          <iframe v-if="pdf" width="100%" height="100%" :src="`./static/pdf/web/viewer.html?file=`+encodeURIComponent(url)"></iframe>
+          <video v-if="video" :src="url" width="100%" height="100%" controls></video>
         </div>
       </div>
       <div class="talk_area">
@@ -21,6 +24,18 @@
   export default {
     name: "DocPreview",
     components: {NavBar, Cell, CellGroup, Card, Collapse, Panel, ButtonGroup},
+    computed:{
+      office() {
+        let format = ['ppt', 'pptx', 'doc', 'docx', 'xls', 'xlsx'];
+        return this.url && format.some(f => this.url.endsWith(f));
+      },
+      pdf() {
+        return this.url && this.url.endsWith('pdf');
+      },
+      video() {
+        return this.url && this.url.endsWith('mp4');
+      },
+    },
     data() {
       return {
         url: ''
