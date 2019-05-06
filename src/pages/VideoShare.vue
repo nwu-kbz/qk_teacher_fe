@@ -1,6 +1,6 @@
 <template>
   <div class="main_container">
-    <NavBar></NavBar>
+
     <div class="video">
       <div class="swf">
         <object>

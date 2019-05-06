@@ -1,6 +1,5 @@
 <template>
   <div class="main bg-grey">
-    <NavBar></NavBar>
     <!--题目列表-->
     <div class="main-container">
       <div>

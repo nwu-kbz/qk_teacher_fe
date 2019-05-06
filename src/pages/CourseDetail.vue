@@ -1,6 +1,5 @@
 <template>
   <div class="main bg-gray">
-    <NavBar></NavBar>
     <div class="qb_bar">
       <div class="qb_bar_left">
         <span>{{$route.params.name}}</span>

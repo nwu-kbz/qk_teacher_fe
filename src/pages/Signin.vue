@@ -1,6 +1,5 @@
 <template>
   <div class="main bg-grey">
-    <NavBar/>
     <div class="content">
       <!--签到列表-->
       <div class="left">

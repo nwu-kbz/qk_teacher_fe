@@ -1,6 +1,5 @@
 <template>
   <div class="main_page">
-    <NavBar></NavBar>
     <div class="info">
       <div class="header-info">
         <div class="course_info">

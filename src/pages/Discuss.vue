@@ -1,6 +1,6 @@
 <template>
   <div class="main bg-grey">
-    <NavBar></NavBar>
+
     <div class="main-content">
       <Card class="left">
         <p slot="title">

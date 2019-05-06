@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="about-page">
-      <NavBar ref="navBar" menus=""></NavBar>
       <div class="top_img">
         <img src="../../src/assets/bg.jpg">
       </div>

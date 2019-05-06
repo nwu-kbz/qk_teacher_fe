@@ -1,6 +1,6 @@
 <template>
   <div class="main_page">
-    <NavBar></NavBar>
+
     <div class="main">
       <div class="show_area">
         <div class="show_courseware">

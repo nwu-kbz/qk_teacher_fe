@@ -1,6 +1,5 @@
 <template>
   <div class="main bg-grey">
-    <NavBar/>
     <div class="content">
       <Card icon="ios-options" :padding="0" shadow class="group-card" v-for="(item,index) in groupList" :key="index">
         <p slot="title">分组{{index+1}}</p>

@@ -1,6 +1,5 @@
 <template>
   <div class="main bg-grey ">
-    <NavBar></NavBar>
     <div class="drawer">
       <Drawer title="Basic Drawer" placement="left" :closable="false" v-model="isOpen" :styles="styles" :width='280'>
         <h5 slot="header">

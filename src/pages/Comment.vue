@@ -1,6 +1,5 @@
 <template>
   <div class="main">
-    <NavBar></NavBar>
     <div class="qb_container">
     </div>
   </div>

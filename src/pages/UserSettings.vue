@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NavBar></NavBar>
+
     <div class="info">
       <p class="user_setting">用户信息</p>
       <hr>

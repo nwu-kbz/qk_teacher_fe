@@ -1,16 +1,38 @@
 <template>
   <div class="main-page">
-    <NavBar ref="navBar" menus=""></NavBar>
-    <div class="user_page">
-      <div class="user_photo">
-        <img class='ivu-avatar' :src="teacherInfo.avatar"/>
+    <!--<div class="user_page">-->
+    <!--<div class="user_photo">-->
+    <!--<img class='ivu-avatar' :src="teacherInfo.avatar"/>-->
+    <!--</div>-->
+    <!--<div class="user_label">-->
+    <!--<span><Icon type="md-person" /><span>{{teacherInfo.username}}</span></span>-->
+    <!--<span><Icon type="ios-book" /><span>{{teacherInfo.position}}</span></span>-->
+    <!--<span><Icon type="md-school" /><span>{{teacherInfo.school}}</span></span>-->
+    <!--<span><Icon type="md-home" /><span>{{teacherInfo.department}}</span></span>-->
+    <!--<span><Icon type="md-mail" /><span>{{teacherInfo.email}}</span></span>-->
+    <!--</div>-->
+    <!--</div>-->
+    <div class="userinfo">
+      <Divider><img class='avatar' :src="teacherInfo.avatar"/></Divider>
+      <div>
+        <p class="name">{{teacherInfo.username}}</p>
+        <p class="info">
+          {{teacherInfo.position}}.
+          {{teacherInfo.school}}.
+          {{teacherInfo.department}}.
+          {{teacherInfo.email}}
+        </p>
       </div>
-      <div class="user_label">
-        <span><Icon type="md-person" /><span>{{teacherInfo.username}}</span></span>
-        <span><Icon type="ios-book" /><span>{{teacherInfo.position}}</span></span>
-        <span><Icon type="md-school" /><span>{{teacherInfo.school}}</span></span>
-        <span><Icon type="md-home" /><span>{{teacherInfo.department}}</span></span>
-        <span><Icon type="md-mail" /><span>{{teacherInfo.email}}</span></span>
+      <div class="line"></div>
+      <div class="info-blocks">
+        <div class="info-block"><p>9</p>
+          <p>课堂</p></div>
+        <div class="info-block"><p>9</p>
+          <p>课堂</p></div>
+        <div class="info-block"><p>9</p>
+          <p>课堂</p></div>
+        <div class="info-block"><p>9</p>
+          <p>课堂</p></div>
       </div>
     </div>
     <div id="courseTable"></div>
@@ -21,7 +43,8 @@
   import {MenuItem, Menu, Icon, Submenu, MenuGroup, Avatar} from 'iview'
   import Timetables from 'timetables';
   import NavBar from "../components/NavBar";
-  import {mapGetters,mapActions} from 'vuex'
+  import {mapGetters, mapActions} from 'vuex'
+
   export default {
     name: "index",
     components: {
@@ -29,7 +52,7 @@
       MenuItem, Menu, Icon, Submenu, MenuGroup, Avatar
     },
     computed: {
-        ...mapGetters(['teacherInfo']),
+      ...mapGetters(['teacherInfo']),
       teacherInfo() {
         let info = this.$store.getters.teacherInfo;
         // if (!Object.keys(info).length) {
@@ -65,7 +88,7 @@
                 let arr = course.day.split(',').map(x => parseInt(x));
                 for (let x of arr) {
                   if (course.name)
-                    courseTable[course.week - 1][x-1] = `${course.name}@${course.id} -> ${course.place} [${course.type}]`;
+                    courseTable[course.week - 1][x - 1] = `${course.name}@${course.id} -> ${course.place} [${course.type}]`;
                 }
               }
               this.courseList = courseTable;
@@ -115,60 +138,79 @@
 </script>
 
 <style lang="less" scoped>
-  .main-page{
+  .main-page {
     font-size: 16px;
     font-weight: lighter;
-  }
-  #courseTable {
-    width: 70%;
-    margin: 10px auto;
-    height: 650px;
-    text-align: center;
-  }
-
-  .user_page {
+    height: 100%;
     width: 100%;
-    height: 280px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    background-image: linear-gradient(0deg, #8755ff 0%, #30AFED 51%, #03DDE4 100%);
-    .ivu-avatar-large {
-      line-height: 65px;
-    }
-    .user_photo {
-      width: 200px;
-    }
-    .user_label {
+
+    .userinfo {
+      height: 330px;
       width: 100%;
-      font-size: 20px;
-      text-align: center;
-      span {
-        margin: 0 5px;
-        color: white;
-        span{
-          margin-left: 5px;
+      /*background-color: rebeccapurple;*/
+
+      .avatar {
+        height: 80px;
+        width: 80px;
+        border-radius: 50%;
+      }
+
+      & > div {
+        height: 110px;
+        text-align: center;
+
+        .name {
+          font-size: 24px;
+          color: #4a4a4a;
+          line-height: 40px;
+          margin-top: 15px;
+        }
+
+        .info {
+          font-size: 14px;
+          color: #4a4a4a;
+          line-height: 20px;
+        }
+      }
+
+      .line{
+        height: 28px;
+        border-bottom: 1px solid #eee;
+        z-index: 0;
+      }
+      .info-blocks {
+        margin-top: -55px;
+        background-color: hsla(0,0%,100%,0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .info-block {
+          width: 24px;
+          height: 43px;
+          margin: 0 24px;
+
+          & > p:nth-child(1) {
+            font-size: 20px;
+            color: #4a4a4a;
+            text-align: center;
+          }
+
+          & > p:nth-child(2) {
+            font-size: 12px;
+            color: #9b9b9b;
+            line-height: 20px;
+          }
         }
       }
     }
   }
 
-  .ivu-avatar {
-    top: 0;
-    left: 50%;
-    margin-left: -35px;
-    width: 70px;
-    height: 70px;
-    border-radius: 35px;
-    font-size: 50px;
-    .ivu-icon-ios-person {
-      line-height: 70px !important;
-    }
-  }
-
-  #courseWrapper{
-    background-color: gray;
+  #courseTable {
+    width: 70%;
+    margin: 10px auto;
+    height: 650px;
+    text-align: center;
   }
 
 </style>

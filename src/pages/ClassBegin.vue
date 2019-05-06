@@ -1,6 +1,5 @@
 <template>
   <div class="main_page">
-    <NavBar></NavBar>
     <div class="main">
       <div class='courseware'>
         <!--功能模块-->

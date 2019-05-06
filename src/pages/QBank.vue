@@ -1,6 +1,5 @@
 <template>
   <div class="main">
-    <NavBar></NavBar>
     <div class="qb_container">
       <div class="course">
         <router-link v-for="(course,index) in courseArr" :key="index" :to="`/courseDetail/${course.id}/${course.name}`">
@@ -56,18 +55,15 @@
 <style lang="less" scoped>
   .main {
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     .qb_container {
       width: 100%;
       height: 94%;
       padding: 30px;
-      /*display: flex;*/
-      /*flex-wrap: wrap;*/
       .course {
         border-radius: 5px;
         .course_card {
           display: inline-block;
-          float: left;
           margin: 5px;
         }
         p {
@@ -82,10 +78,4 @@
       }
     }
   }
-
-  .ivu-card-head {
-    padding: 0;
-  }
-
-
 </style>

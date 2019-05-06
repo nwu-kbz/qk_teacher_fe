@@ -1,6 +1,6 @@
 <template>
   <div class="main_container">
-    <NavBar></NavBar>
+
     <div class="chart_container">
       <div class="chart chart1"></div>
       <div class="chart chart2"></div>

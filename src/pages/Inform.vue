@@ -1,6 +1,5 @@
 <template>
   <div class="main">
-    <NavBar ref="navBar"></NavBar>
     <div class="flex-container">
       <div class="inform_menu flex-item">
         <Card title="通知列表" icon="ios-options" :padding="0" shadow >
