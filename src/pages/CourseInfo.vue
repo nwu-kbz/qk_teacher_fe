@@ -4,10 +4,10 @@
       <Card dis-hover class="card">
         <div class="header-info">
           <div class="course_info">
-            <div>
+            <div class="course_picture">
               <img :src="urlPath" alt="课程">
             </div>
-            <div>
+            <div class="course_describe">
               <div><span><Icon size="24" type="md-paper"/>课程名称：{{classDetail.name}}</span></div>
               <div><span><Icon size="24" type="ios-clock"/>课时：{{classDetail.course_t}}课时</span></div>
               <div><span><Icon size="24" type="md-contact"/>班长：{{classDetail.monitor}}</span></div>
@@ -31,7 +31,7 @@
         </div>
       </Card>
       <Card dis-hover class="card">
-        <Tabs >
+        <Tabs>
           <TabPane label="课程介绍" icon="logo-apple">
             {{classDetail.introduce}}
           </TabPane>
@@ -92,9 +92,6 @@
           return [];
         }
       },
-      //瑾瑾是世界上最可爱的女孩子
-      //瑾瑾最好看了   身上也香香的    我好喜欢他啊
-      //我要做一个乖宝宝   听瑾瑾话
       docList() {
         if (this.classDetail['document']) {
           return this.classDetail['document'].filter(x => x.public === 1);
@@ -118,7 +115,7 @@
       ...mapActions(['saveDocument']),
       handleGotoQBase() {
         const sku = this.$route.params.id;
-        const currentCourse = this.courseList.find(x => x.id+'' === sku+'');
+        const currentCourse = this.courseList.find(x => x.id + '' === sku + '');
         this.$router.push(`/courseDetail/${currentCourse['cid']}/${currentCourse['name']}`)
       },
       begin_class() {
@@ -132,12 +129,12 @@
       },
       getDetail() {
         this.$http.get(`course/getDetail/id/${this.$route.params.id}`)
-          .then(res => {
-            if (res.data.code === 1) {
-              this.classDetail = res.data.data;
-              this.saveDocument(res.data.data.document);
-            }
-          })
+            .then(res => {
+              if (res.data.code === 1) {
+                this.classDetail = res.data.data;
+                this.saveDocument(res.data.data.document);
+              }
+            })
       }
     },
     mounted() {
@@ -173,18 +170,21 @@
     }
 
     .header-info {
-      min-height: 50%;
-      height: 50%;
+      min-height: 70%;
+      height: 70%;
       width: 100%;
     }
 
     .course_info {
       height: 100%;
-      width: 90%;
+      width: 95%;
       display: flex;
       justify-content: center;
       align-items: center;
+      .course_describe {
+        margin-top: 100px;
 
+      }
       & > div {
         width: 40%;
         box-sizing: border-box;
@@ -217,8 +217,8 @@
       .begin_class {
         height: 50px;
         font-size: 18px;
-        margin-left: 5%;
-        margin-top: 11%;
+        margin-left: 3%;
+        margin-top: 25%;
       }
     }
 
@@ -242,27 +242,6 @@
         height: 100%;
         width: 100%;
         border-radius: 9px;
-      }
-    }
-
-    .course_describe {
-      font-size: 16px;
-      display: inline-block;
-      float: left;
-      width: 50%;
-
-      & > div {
-        color: white;
-        width: 90%;
-        height: 30px;
-        margin-left: 30px;
-        border-bottom: 1px white dashed;
-        margin-top: 10px;
-
-        span {
-          line-height: 25px;
-          word-break: break-all;
-        }
       }
     }
 

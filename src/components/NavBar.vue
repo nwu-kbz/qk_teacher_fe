@@ -17,7 +17,7 @@
         </FormItem>
       </Form>
     </Modal>
-    <img class="layout-logo" src="https://file.iviewui.com/dist/e1cf12c07bf6458992569e67927d767e.png">
+    <h4 class="layout-logo">轻课</h4>
     <div class="layout-nav">
       <MenuItem :name="item.value" v-for="(item,index) in menu" :key="index" @click.native="handleJump(item.url)">
         <Icon :type="item.icon" size="25"/>
@@ -100,8 +100,9 @@
     border-radius: 3px;
     float: left;
     position: relative;
-    top: 5px;
+    top: 20px;
     left: 20px;
+    color: white;
   }
 
   .avatar_logo {
