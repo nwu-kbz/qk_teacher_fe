@@ -1,8 +1,8 @@
 <template>
   <div class="main-page">
     <div class="userinfo">
-      <Divider><img class='avatar' :src="teacherInfo.avatar"/></Divider>
-      <div>
+      <Divider><img class='avatar' :src="teacherInfo.avatar"/>
+      <!--<div>-->
         <p class="name">{{teacherInfo.username}}</p>
         <p class="info">
           {{teacherInfo.position}}.
@@ -10,17 +10,17 @@
           {{teacherInfo.department}}.
           {{teacherInfo.email}}
         </p>
-      </div>
-      <div class="line"></div>
+      </Divider>
+      <!--</div>-->
       <div class="info-blocks">
-        <div class="info-block"><p>9</p>
+        <div class="info-block"><p>8</p>
           <p>课堂</p></div>
-        <div class="info-block"><p>9</p>
-          <p>课堂</p></div>
-        <div class="info-block"><p>9</p>
-          <p>课堂</p></div>
-        <div class="info-block"><p>9</p>
-          <p>课堂</p></div>
+        <div class="info-block"><p>40</p>
+          <p>学生</p></div>
+        <div class="info-block"><p>50</p>
+          <p>题目</p></div>
+        <div class="info-block"><p>2</p>
+          <p>组卷</p></div>
       </div>
     </div>
     <div id="courseTable"></div>
@@ -133,14 +133,14 @@
     width: 100%;
 
     .userinfo {
-      height: 330px;
+      height: 240px;
       width: 100%;
-      /*background-color: rebeccapurple;*/
 
       .avatar {
         height: 80px;
         width: 80px;
         border-radius: 50%;
+
       }
 
       & > div {
@@ -151,7 +151,7 @@
           font-size: 24px;
           color: #4a4a4a;
           line-height: 40px;
-          margin-top: 15px;
+          margin-bottom: 15px;
         }
 
         .info {
@@ -167,7 +167,7 @@
         z-index: 0;
       }
       .info-blocks {
-        margin-top: -55px;
+        margin-top: -40px;
         background-color: hsla(0,0%,100%,0);
         display: flex;
         align-items: center;
