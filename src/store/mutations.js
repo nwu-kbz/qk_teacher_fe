@@ -65,4 +65,7 @@ export default {
   saveWs(state, val) {
     state.ws = val;
   },
+  saveWs1237(state, val) {
+    state.ws1237 = val;
+  },
 }

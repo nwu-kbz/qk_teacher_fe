@@ -63,5 +63,8 @@ export default {
   saveWs({commit}, val) {
     commit('saveWs', val);
   },
+  saveWs1237({commit}, val) {
+    commit('saveWs1237', val);
+  },
 
 }

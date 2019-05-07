@@ -31,4 +31,5 @@ export default {
   courseList: state => state.courseList,
   messageList: state => state.messageList,
   ws: state => state.ws,
+  ws1237: state => state.ws1237,
 }

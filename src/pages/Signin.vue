@@ -82,6 +82,7 @@
 
 <script>
   import NavBar from '../components/NavBar';
+  import config from '../config';
 
   export default {
     name: "Signin",
@@ -107,6 +108,31 @@
           title: '关闭签到',
           desc: '关闭签到成功！'
         });
+      },
+      initSocket() {
+        this.socket = new WebSocket(config.urls.studentSocketUrl);
+        this.socket && this.saveWs1237(this.socket);
+
+        // 监听socket连接
+        this.socket.onopen = this.open;
+        // 监听socket错误信息
+        this.socket.onerror = this.error;
+        // 监听socket消息
+        this.socket.onmessage = this.getMessage;
+      },
+      open() {
+        // 验证 token
+        const userInfo = {
+          'from': this.teacherInfo.id,
+          'token': this.teacherInfo.token
+        };
+        this.socket.send(JSON.stringify(userInfo));
+      },
+      error() {
+      },
+      getMessage({data}) {
+        let datas = JSON.parse(data)['data'];
+        if (datas && !_.isEmpty(datas)) datas['data'].map(x => this.addMessage({...x, read: 0}));
       }
     },
     data() {
@@ -116,7 +142,8 @@
         isSigned: false,
         count: 356,
         currentIndex: -1,
-        start: true
+        start: true,
+        socket: null
       }
     },
   }

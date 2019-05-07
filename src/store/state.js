@@ -17,5 +17,6 @@ export default {
   studentList: [],
   courseList: [],
   messageList: [],
-  ws: null
+  ws: null,
+  ws1237: null
 }
