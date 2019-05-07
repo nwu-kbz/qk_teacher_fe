@@ -1,22 +1,21 @@
 <template>
   <div class="main">
     <div class="flex-container">
-      <div class="inform_menu flex-item">
-        <Card title="通知列表" icon="ios-options" :padding="0" shadow >
-          <Button slot="extra" to="/inform/editorInform" type="primary">
-              <Icon type="md-add" sixe="30"/>
-              新建通知
-          </Button>
-          <CellGroup>
-            <Cell v-for="(item,index) in informArr" :title="item.content" :to="`/inform/showInform/${item.id}`" :key="index">
-              <Badge :count="10" slot="extra"/>
-            </Cell>
-          </CellGroup>
-        </Card>
-      </div>
-      <div class="inform_main flex-item">
-        <router-view></router-view>
-      </div>
+      <Card title="通知列表" icon="ios-options" class="left">
+        <Button slot="extra" to="/inform/editorInform" type="primary">
+          <Icon type="md-add" sixe="30"/>
+          新建通知
+        </Button>
+        <CellGroup>
+          <Cell v-for="(item,index) in messageList" :title="item['subject']" :to="`/inform/showInform/${index}`"
+                :key="index">
+            <p slot="extra">{{item.from['username']}}
+              <Badge v-if="item.read===0" :count="1"></Badge>
+            </p>
+          </Cell>
+        </CellGroup>
+      </Card>
+      <router-view class="right"></router-view>
     </div>
 
   </div>
@@ -24,18 +23,62 @@
 
 <script>
   import NavBar from "../components/NavBar";
+  import {mapGetters, mapActions} from 'vuex';
   import {Icon, Cell, CellGroup, Badge, Card, Button} from 'iview'
+  import config from '../config';
+  import _ from 'lodash';
 
   export default {
     name: "Inform",
     components: {NavBar},
+    computed: {
+      ...mapGetters(['teacherInfo', 'messageList', 'ws']),
+    },
     data() {
       return {
         activeName: '3',
-        informArr: [{id: 1, content: '第一条通知'}, {id: 2, content: '第二条通知'}, {id: 3, content: '第三条通知'}]
+        socket: null
+      }
+    },
+    methods: {
+      ...mapActions(['addMessage', 'saveMessage', 'saveWs']),
+      getMessages() {
+        this.$http.get('/message/index', {params: {id: this.teacherInfo.id}})
+          .then(res => {
+            if (res.data.code === 1) {
+              this.saveMessage(res.data.data);
+            }
+          })
+      },
+      initSocket() {
+        this.socket = new WebSocket(config.urls.teacherSocketUrl);
+        this.socket && this.saveWs(this.socket);
+
+        // 监听socket连接
+        this.socket.onopen = this.open;
+        // 监听socket错误信息
+        this.socket.onerror = this.error;
+        // 监听socket消息
+        this.socket.onmessage = this.getMessage;
+      },
+      open() {
+        // 验证 token
+        const userInfo = {
+          'from': this.teacherInfo.id,
+          'token': this.teacherInfo.token
+        };
+        this.socket.send(JSON.stringify(userInfo));
+      },
+      error() {
+      },
+      getMessage({data}) {
+        let datas = JSON.parse(data)['data'];
+        if (datas && !_.isEmpty(datas)) datas['data'].map(x => this.addMessage({...x, read: 0}));
       }
     },
     mounted: function () {
+      this.getMessages();
+      this.initSocket();
     },
   }
 </script>
@@ -44,58 +87,26 @@
   .main {
     width: 100%;
     height: 100%;
-    .inform_menu {
-      width: 20%;
-      height: 100%;
-      float: left;
-      min-width: 300px;
-      box-shadow: 2px 2px 5px rgba(128, 128, 128, 0.7);
-      .add_inform {
-        width: 200px;
-        height: 35px;
-        background-color: rgba(78, 197, 164, 0.93);
-        border: none;
-        box-shadow: 2px 2px 5px rgba(128, 134, 149, 0.8);
-        color: white;
-        font-size: 16px;
-        margin: 20px 50px;
-        /*margin-top: 20px;*/
+
+    .flex-container {
+      display: -webkit-flex;
+      display: flex;
+      width: 100%;
+      height: 94%;
+      justify-content: space-between;
+      overflow: hidden;
+      padding: 20px;
+
+      .left {
+        width: 20%;
+        min-width: 225px;
       }
-      .inform_items {
-        list-style: none;
-        width: 100%;
-        padding: 10px 20px;
-        height: 800px;
-        /*overflow: scroll;*/
-        .inform_item {
-          font-size: 16px;
-          height: 30px;
-          line-height: 20px;
-          margin: 5px auto;
-          border-bottom: 1px solid rgba(158, 158, 158, 0.71);
-        }
+
+      .right {
+        width: 78%;
       }
     }
-    .inform_main {
-      float: left;
-      width: 75%;
-      height: auto;
-      /*overflow: scroll;*/
-      /*background: #000;*/
-      /*background-color: #eee;*/
-
-      /*background-color: rebeccapurple;*/
-    }
-
   }
 
-  .flex-container {
-    display: -webkit-flex;
-    display: flex;
-    width: 100%;
-    height: 94%;
-    /*align-items: flex-end;*/
-    justify-content: space-between;
-    overflow: hidden;
-  }
+
 </style>

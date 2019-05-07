@@ -1,70 +1,61 @@
 <template>
-  <div>
-    <Card v-for="(item,index) in details" :key="index" :bordered="true" icon="ios-notifications" style="width: 90%;margin-top: 2%;">
-      <p slot="title">{{item.title}}</p>
-      <p>{{item.content}}</p>
-    </Card>
-  </div>
+  <Card icon="ios-notifications" class="right">
+    <p slot="title">{{detail.subject}}</p>
+    <p class="content">{{detail.content}}</p>
+  </Card>
 </template>
 
 <script>
+  import {mapGetters, mapActions} from 'vuex';
+
   export default {
     name: "showInform",
+    computed: {
+      ...mapGetters(['messageList'])
+    },
     data() {
       return {
         detail: {},
-        details: [
-          {
-            id: 1,
-            title: 'inform001',
-            content: 'this is inform001'
-          },
-          {
-            id: 1,
-            title: 'inform001',
-            content: 'this is inform001'
-          },
-          {
-            id: 1,
-            title: 'inform001',
-            content: 'this is inform001'
-          },
-          {
-            id: 1,
-            title: 'inform001',
-            content: 'this is inform001'
-          },
-          {
-            id: 1,
-            title: 'inform001',
-            content: 'this is inform001'
-          },
-          {
-            id: 2,
-            title: 'inform002',
-            content: 'this is inform002'
-          },
-          {
-            id: 3,
-            title: 'inform003',
-            content: 'this is inform003'
-          }
-        ]
       }
     },
-    mounted(){
-      this.detail = this.details.find(detail => this.$route.params.id*1 === detail.id)
+    methods: {
+      ...mapActions(['updateMessage']),
+      updateUnread() {
+        // 未读
+        if (this.detail['read'] === 0) {
+          this.$http.get('/message/changeStatus', {params: {id: this.detail['id']}}).then(res => {
+            if (res.data.code === 1) {
+              this.updateMessage({id: this.$route.params.id, obj: {...this.detail, read: 1}})
+            }
+          })
+        }
+      }
     },
-    watch:{
-      $route:function () {
-        this.detail = this.details.find(detail => this.$route.params.id*1 === detail.id)
+    mounted() {
+      if (this.messageList) {
+        this.detail = this.messageList[this.$route.params.id];
+        this.updateUnread();
+      }
+    },
+    watch: {
+      $route: function () {
+        if (this.messageList) {
+          this.detail = this.messageList[this.$route.params.id];
+          this.updateUnread();
+        }
       }
     }
   }
 </script>
 
-<style scoped>
-  .main{
-    margin: 3%;
+<style lang="less" scoped>
+  .right {
+    width: 80%;
+    min-width: 500px;
+
+    .content {
+      font-size: 23px;
+    }
   }
+
 </style>

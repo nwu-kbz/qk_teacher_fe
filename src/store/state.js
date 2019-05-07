@@ -15,5 +15,7 @@ export default {
   allResource:[],
   docCateList: [],
   studentList: [],
-  courseList: []
+  courseList: [],
+  messageList: [],
+  ws: null
 }

@@ -1,18 +1,18 @@
 //包含多个通过提交commit调用mutation从而修改状态的方法对象action
 
-import {Save_Info,School_Info,Department_Info,Position_Info} from './mutation-types'
+import {Save_Info, School_Info, Department_Info, Position_Info} from './mutation-types'
 
 export default {
   saveInfo({commit}, teacherInfo) {
     commit(Save_Info, teacherInfo)
   },
-  schoolInfo({commit}, schoolArr){
+  schoolInfo({commit}, schoolArr) {
     commit(School_Info, schoolArr)
   },
-  departmentInfo({commit}, departmentArr){
+  departmentInfo({commit}, departmentArr) {
     commit(Department_Info, departmentArr)
   },
-  positionInfo({commit}, positionArr){
+  positionInfo({commit}, positionArr) {
     commit(Position_Info, positionArr)
   },
   updateCurrentPath({commit}, path) {
@@ -49,7 +49,19 @@ export default {
     commit('saveStudentList', val);
   },
   saveCourseList({commit}, val) {
-    commit('saveCourseList',val);
-  }
+    commit('saveCourseList', val);
+  },
+  addMessage({commit}, val) {
+    commit('addMessage', val);
+  },
+  saveMessage({commit}, val) {
+    commit('saveMessage', val);
+  },
+  updateMessage({commit}, val) {
+    commit('updateMessage', val);
+  },
+  saveWs({commit}, val) {
+    commit('saveWs', val);
+  },
 
 }

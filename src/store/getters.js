@@ -29,6 +29,6 @@ export default {
   docCateList: state => state.docCateList,
   studentList: state => state.studentList,
   courseList: state => state.courseList,
-
-
+  messageList: state => state.messageList,
+  ws: state => state.ws,
 }

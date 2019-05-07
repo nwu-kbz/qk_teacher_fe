@@ -1,7 +1,8 @@
 const urls = {
   baseUrl: "",
   picUrl: "http://qk.heniankj.com/public",
-  publicUrl: "http://qk.heniankj.com/public"
+  publicUrl: "http://qk.heniankj.com/public",
+  teacherSocketUrl:"ws://120.78.183.39:1236"
 };
 
 const menu = [

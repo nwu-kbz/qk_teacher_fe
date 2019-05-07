@@ -52,5 +52,17 @@ export default {
   },
   saveCourseList(state, val) {
     state.courseList = val;
-  }
+  },
+  addMessage(state, val) {
+    state.messageList.push(val);
+  },
+  saveMessage(state, val) {
+    state.messageList = val;
+  },
+  updateMessage(state, val) {
+    state.messageList.splice(val['id'], 1, val['obj']);
+  },
+  saveWs(state, val) {
+    state.ws = val;
+  },
 }
