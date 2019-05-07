@@ -15,4 +15,5 @@ export default {
   allResource:[],
   docCateList: [],
   studentList: [],
+  courseList: []
 }

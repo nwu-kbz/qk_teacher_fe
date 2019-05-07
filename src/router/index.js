@@ -22,6 +22,7 @@ import Group from "../pages/Group";
 import Point from "../pages/Point";
 import DoPractice from "../pages/DoPractice";
 import Discuss from "../pages/Discuss";
+import ExamDetail from "../pages/ExamDetail";
 
 Vue.use(Router)
 
@@ -117,6 +118,12 @@ let router = new Router({
       path: '/courseDetail/:id/:name',
       name: 'CourseDetail',
       component: CourseDetail,
+      meta:{needLogin: true}
+    },
+    {
+      path: '/examDetail',
+      name: 'examDetail',
+      component: ExamDetail,
       meta:{needLogin: true}
     },
 

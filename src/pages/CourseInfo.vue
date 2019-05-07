@@ -1,99 +1,69 @@
 <template>
   <div class="main_page">
     <div class="info">
-      <div class="header-info">
-        <div class="course_info">
-          <div>
-            <img :src="urlPath" alt="课程">
-          </div>
-          <div>
-            <div><span><Icon size="24" type="md-paper"/>课程名称：{{classDetail.name}}</span></div>
-            <div><span><Icon size="24" type="ios-clock"/>课时：{{classDetail.course_t}}课时</span></div>
-            <div><span><Icon size="24" type="md-contact"/>班长：{{classDetail.monitor}}</span></div>
-            <div><span><Icon size="24" type="ios-happy"/>班级人数：{{classDetail.num}}</span></div>
-            <div><span><Icon size="24" type="md-cog"/>上课时间：{{classDetail.week}} - {{classDetail.day}}</span></div>
-            <div><span><Icon size="24" type="ios-home"/>教室：{{classDetail.place}}</span></div>
-            <div><span><Icon size="24" type="ios-contacts"/>班群QQ：{{classDetail.chat}}</span></div>
-          </div>
-          <Button @click="begin_class" @mouseover="button_style" @mouseout="button_style1" class="begin_class"
-                  type="success">
-            <Icon type="ios-people-outline" size="30"/>
-            开始上课
-          </Button>
+      <Card dis-hover class="card">
+        <div class="header-info">
+          <div class="course_info">
+            <div>
+              <img :src="urlPath" alt="课程">
+            </div>
+            <div>
+              <div><span><Icon size="24" type="md-paper"/>课程名称：{{classDetail.name}}</span></div>
+              <div><span><Icon size="24" type="ios-clock"/>课时：{{classDetail.course_t}}课时</span></div>
+              <div><span><Icon size="24" type="md-contact"/>班长：{{classDetail.monitor}}</span></div>
+              <div><span><Icon size="24" type="ios-happy"/>班级人数：{{classDetail.num}}</span></div>
+              <div><span><Icon size="24" type="md-cog"/>上课时间：{{classDetail.week}} - {{classDetail.day}}</span></div>
+              <div><span><Icon size="24" type="ios-home"/>教室：{{classDetail.place}}</span></div>
+              <div><span><Icon size="24" type="ios-contacts"/>班群QQ：{{classDetail.chat}}</span></div>
+            </div>
+            <Button @click="begin_class" @mouseover="button_style" @mouseout="button_style1" class="begin_class"
+                    type="success">
+              <Icon type="ios-people-outline" size="30"/>
+              开始上课
+            </Button>
+            <Button @click="handleGotoQBase" @mouseover="button_style" @mouseout="button_style1" class="begin_class"
+                    type="info">
+              <Icon type="ios-people-outline" size="30"/>
+              资料库
+            </Button>
 
+          </div>
         </div>
-      </div>
-      <div class="course_upload">
-        <div class="course_upload_detail course_upload_left">
-          <span><Icon type="md-school" size="40"/>课程信息</span>
-          <hr>
-          <Collapse simple>
-            <Panel name="1">
-              <Icon type="md-menu" size="30" color="pink"/>
-              <span class="panel-title">课程介绍</span>
-              <p slot="content">{{classDetail.introduce}}</p>
-            </Panel>
-            <Panel name="2">
-              <Icon type="ios-list-box" size="30" color="LightGreen"/>
-              <span class="panel-title">课程目标</span>
-              <p slot="content">{{classDetail.target}}</p>
-            </Panel>
-            <Panel name="3">
-              <Icon type="ios-calendar" size="30" color="PaleTurquoise"/>
-              <span class="panel-title">课程计划</span>
-              <p slot="content">{{classDetail.plan}}</p>
-            </Panel>
-            <Panel name="4">
-              <Icon type="ios-school" size="30" color="LightSalmon"/>
-              <span class="panel-title">评估方式</span>
-              <p slot="content">{{classDetail.evaluation}} </p>
-            </Panel>
-          </Collapse>
-        </div>
-        <div class="course_upload_detail course_upload_right">
-          <span><Icon type="ios-paper" size="40"/>资料库</span>
-          <hr>
-          <Collapse simple>
-            <Panel name="5">
-              <Icon type="ios-browsers" size="30" color="pink"/>
-              <span class="panel-title">课件</span>
-              <div slot="content">
-                <CellGroup >
-                  <Cell v-for="(item,index) in courseWare" :key="index" :title="`${item.name}`"  extra="查看详情" :to="`#/docPreview?url=${publicPath}${item.url}`" target="_blank" />
-                </CellGroup>
-              </div>
-            </Panel>
-            <Panel name="6">
-              <Icon type="ios-book" size="30" color="LightGreen"/>
-              <span class="panel-title">资料</span>
-              <div slot="content">
-                  <CellGroup >
-                    <Cell v-for="(item,index) in docList" :key="index" :title="`${item.name}`"  extra="查看详情" :to="`#/docPreview?url=${publicPath}${item.url}`" target="_blank" />
-                  </CellGroup>
-              </div>
-            </Panel>
-            <Panel name="7">
-              <Icon type="ios-checkbox" size="30" color="PaleTurquoise"/>
-              <span class="panel-title">测验</span>
-              <div slot="content">
-                <CellGroup >
-                  <Cell v-for="(item,index) in examList" :key="index" :title="`${item.name}`"  extra="查看详情" to="https://www.baidu.com" target="_blank" />
-                </CellGroup>
-              </div>
-            </Panel>
-            <Panel name="8">
-              <Icon type="ios-cloud" size="30" color="LightSalmon"/>
-              <span class="panel-title">题库</span>
-              <div slot="content">
-                <CellGroup >
-                  <Cell v-for="(item,index) in qBaseList" :key="index" :title="`${item.name}`"  extra="查看详情" :to="`/courseDetail/${item.id}/${item.name}`" target="_blank" />
-                </CellGroup>
-              </div>
-            </Panel>
-          </Collapse>
-        </div>
-
-      </div>
+      </Card>
+      <Card dis-hover class="card">
+        <Tabs >
+          <TabPane label="课程介绍" icon="logo-apple">
+            {{classDetail.introduce}}
+          </TabPane>
+          <TabPane label="课程目标" icon="logo-windows">
+            {{classDetail.target}}
+          </TabPane>
+          <TabPane label="课程计划" icon="logo-tux">
+            {{classDetail.plan}}
+          </TabPane>
+          <TabPane label="评估方式" icon="logo-tux">
+            {{classDetail.evaluation}}
+          </TabPane>
+          <TabPane label="课件" icon="logo-tux">
+            <CellGroup>
+              <Cell v-for="(item,index) in courseWare" :key="index" :title="`${item.name}`" extra="查看详情"
+                    :to="`#/docPreview?url=${publicPath}${item.url}`" target="_blank"/>
+            </CellGroup>
+          </TabPane>
+          <TabPane label="资料" icon="logo-tux">
+            <CellGroup>
+              <Cell v-for="(item,index) in docList" :key="index" :title="`${item.name}`" extra="查看详情"
+                    :to="`#/docPreview?url=${publicPath}${item.url}`" target="_blank"/>
+            </CellGroup>
+          </TabPane>
+          <TabPane label="测验" icon="logo-tux">
+            <CellGroup>
+              <Cell v-for="(item,index) in examList" :key="index" :title="`${item.name}`" extra="查看详情"
+                    :to="`/examDetail?id=${item.id}`" target="_blank"/>
+            </CellGroup>
+          </TabPane>
+        </Tabs>
+      </Card>
     </div>
   </div>
 </template>
@@ -101,15 +71,15 @@
 <script>
   import NavBar from "../components/NavBar";
   import {Panel, Collapse, Upload, Button} from 'iview'
-  import {mapGetters,mapActions} from 'vuex';
+  import {mapGetters, mapActions} from 'vuex';
   import config from '../config'
 
   export default {
     name: "CourseInfo",
     components: {NavBar, Panel, Collapse, Upload},
     computed: {
-      ...mapGetters(['teacherInfo']),
-      urlPath(){
+      ...mapGetters(['teacherInfo', 'courseList']),
+      urlPath() {
         return config.urls.picUrl + this.classDetail.path;
       },
       publicPath() {
@@ -118,7 +88,7 @@
       courseWare() {
         if (this.classDetail['document']) {
           return this.classDetail['document'].filter(x => x.public === 0);
-        }else {
+        } else {
           return [];
         }
       },
@@ -128,7 +98,7 @@
       docList() {
         if (this.classDetail['document']) {
           return this.classDetail['document'].filter(x => x.public === 1);
-        }else {
+        } else {
           return [];
         }
       },
@@ -146,6 +116,11 @@
     },
     methods: {
       ...mapActions(['saveDocument']),
+      handleGotoQBase() {
+        const sku = this.$route.params.id;
+        const currentCourse = this.courseList.find(x => x.id+'' === sku+'');
+        this.$router.push(`/courseDetail/${currentCourse['cid']}/${currentCourse['name']}`)
+      },
       begin_class() {
         this.$router.push(`/classBegin?id=${this.$route.params.id}`)
       },
@@ -183,19 +158,29 @@
   .info {
     width: 100%;
     height: 100%;
-    background-color: #e5e5e5;
     position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    .card {
+      width: 95%;
+      margin: 5px;
+
+      &:nth-child(2) {
+        font-size: 24px;
+      }
+    }
 
     .header-info {
-      background-color: rebeccapurple;
-      min-height:  50%;
+      min-height: 50%;
       height: 50%;
       width: 100%;
     }
 
     .course_info {
       height: 100%;
-      width: 100%;
+      width: 90%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -203,26 +188,27 @@
       & > div {
         width: 40%;
         box-sizing: border-box;
+        margin: 20px 0;
 
         &:nth-child(1) {
           text-align: center;
 
           img {
             border-radius: 4px;
-            height: 50%;
-            width: 65%;
+            height: 400px;
+            width: 400px;
           }
 
         }
 
         &:nth-child(2) {
           font-size: 20px;
-          color: #ffffff;
+          /*color: #ffffff;*/
           position: relative;
           width: 25%;
 
           & > div {
-            border-bottom: 1px white dashed;
+            border-bottom: 1px #666666 dashed;
             margin-bottom: 7px;
           }
         }

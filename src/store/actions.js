@@ -48,5 +48,8 @@ export default {
   saveStudentList({commit}, val) {
     commit('saveStudentList', val);
   },
+  saveCourseList({commit}, val) {
+    commit('saveCourseList',val);
+  }
 
 }

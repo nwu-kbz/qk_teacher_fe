@@ -28,6 +28,7 @@ export default {
   allResource: state => state.allResource,
   docCateList: state => state.docCateList,
   studentList: state => state.studentList,
+  courseList: state => state.courseList,
 
 
 }

@@ -1,17 +1,5 @@
 <template>
   <div class="main-page">
-    <!--<div class="user_page">-->
-    <!--<div class="user_photo">-->
-    <!--<img class='ivu-avatar' :src="teacherInfo.avatar"/>-->
-    <!--</div>-->
-    <!--<div class="user_label">-->
-    <!--<span><Icon type="md-person" /><span>{{teacherInfo.username}}</span></span>-->
-    <!--<span><Icon type="ios-book" /><span>{{teacherInfo.position}}</span></span>-->
-    <!--<span><Icon type="md-school" /><span>{{teacherInfo.school}}</span></span>-->
-    <!--<span><Icon type="md-home" /><span>{{teacherInfo.department}}</span></span>-->
-    <!--<span><Icon type="md-mail" /><span>{{teacherInfo.email}}</span></span>-->
-    <!--</div>-->
-    <!--</div>-->
     <div class="userinfo">
       <Divider><img class='avatar' :src="teacherInfo.avatar"/></Divider>
       <div>
@@ -54,11 +42,7 @@
     computed: {
       ...mapGetters(['teacherInfo']),
       teacherInfo() {
-        let info = this.$store.getters.teacherInfo;
-        // if (!Object.keys(info).length) {
-        //   info = JSON.parse(localStorage.getItem("userInfo"));
-        // }
-        return info;
+        return this.$store.getters.teacherInfo;
       }
     },
     data() {
@@ -67,7 +51,7 @@
       }
     },
     methods: {
-      // gridOnClick: function (e) {
+      ...mapActions(['saveCourseList']),
       gridOnClick: function () {
         this.$router.push('/courseInfo')
       },
@@ -83,7 +67,11 @@
                   courseTable[i][j] = '';
                 }
               }
-              if (!res.data.data) this.$Message.error('课程列表暂时为空!');
+              if (!res.data.data) {
+                this.$Message.error('课程列表暂时为空!');
+                return;
+              }
+              this.saveCourseList(res.data.data);
               for (let course of res.data.data) {
                 let arr = course.day.split(',').map(x => parseInt(x));
                 for (let x of arr) {

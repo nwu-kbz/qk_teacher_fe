@@ -28,21 +28,30 @@ axios.defaults.baseURL = 'http://qk.heniankj.com/public/index.php/home/';
 axios.interceptors.request.use(
   config => {
     let localStore = JSON.parse(localStorage.getItem("userInfo"));
-    let token = localStore && localStore.token || (store.getters.teacherInfo&&store.getters.teacherInfo.token) || null;
-    if (config.method == 'post'||config.method == 'options') {
+    let token = localStore && localStore.token || (store.getters.teacherInfo && store.getters.teacherInfo.token) || null;
+    if (config.method == 'post' || config.method == 'options') {
       config.data = {
         ...config.data,
         token
       };
       config.data = qs.stringify(config.data);
     } else if (config.method == 'get') {
-      config.params = {
-        ...config.params,
-        token
+      if (config.url.indexOf('login') === -1) {
+        config.params = {
+          ...config.params,
+          token
+        }
+      }else {
+        config.params = {
+          ...config.params,
+        }
       }
     }
     return config
-  }, function (error) {
+  }
+  ,
+
+  function (error) {
     return Promise.reject(error)
   }
 );

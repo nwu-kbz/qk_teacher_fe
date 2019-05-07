@@ -50,4 +50,7 @@ export default {
   saveStudentList(state, val) {
     state.studentList = val;
   },
+  saveCourseList(state, val) {
+    state.courseList = val;
+  }
 }
