@@ -111,10 +111,22 @@
       findStuById(id) {
         return this.students.find(s => s.id === id)||{};
       },
+      getStudentList() {
+        if (!this.studentList || this.studentList.length === 0) {
+          this.$http.get('/students/getUserList', {params: {id: this.$route.query.sku}}).then(res => {
+            if (res.data.code === 1) {
+              this.saveStudentList(res.data.data);
+              this.students = _.cloneDeep(res.data.data);
+            }
+          });
+        }else {
+          this.students = _.cloneDeep(this.studentList);
+        }
+      },
       ...mapActions(['saveStudentList'])
     },
     mounted() {
-      this.students = _.cloneDeep(this.studentList);
+      this.getStudentList();
       this.getGroupInfo();
     },
     data() {
