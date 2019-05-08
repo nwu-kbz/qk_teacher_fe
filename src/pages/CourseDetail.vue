@@ -1,5 +1,5 @@
 <template>
-  <div class="main bg-gray">
+  <div class="main bg-grey">
     <div class="qb_bar">
       <div class="qb_bar_left">
         <span>{{$route.params.name}}</span>
@@ -8,7 +8,7 @@
       </div>
       <div class="qb_bar_right">
         <Dropdown style="margin-left: 20px" @on-click="handleInsert">
-          <Button type="primary">
+          <Button type="success">
             录入题目
             <Icon type="ios-arrow-down"></Icon>
           </Button>
@@ -20,35 +20,31 @@
         </Dropdown>
       </div>
     </div>
-    <!--主体-->
-    <div class="qb_containter">
+
+    <div class="flex-content">
       <!--左边的菜单-->
-      <div class="qb_menu">
-        <div class="qb_menu_item">
-
-          <Menu theme="light" @on-select="menuSelect">
-            <MenuItem name="1">
-              <Icon type="ios-infinite"/>
-              所有资源
-              <div class="right_num">{{this.allResource.length}}</div>
+      <Card class="left">
+        <Menu @on-select="menuSelect" style="width: 100%">
+          <MenuItem name="1">
+            <Icon type="ios-infinite"/>
+            所有资源
+            <Badge :count="this.allResource.length"></Badge>
+          </MenuItem>
+          <Submenu name="2">
+            <template slot="title">
+              <Icon type="ios-paper"/>
+              章节
+            </template>
+            <MenuItem class="editor_charpter" :name="1" @click.native="chapterModal=true">添加章节</MenuItem>
+            <MenuItem v-for="(chapter,index) in chapterArr" :key="index+1" :name="'2-'+ (index+1)">
+              第{{index + 1}}章-{{chapter.name}}
             </MenuItem>
-            <Submenu name="2">
-              <template slot="title">
-                <Icon type="ios-paper"/>
-                章节
-              </template>
-              <button class="editor_charpter" @click="chapterModal=true">添加章节</button>
-              <MenuItem v-for="(chapter,index) in chapterArr" :key="index+1" :name="'2-'+ (index+1)">
-                第{{index + 1}}章-{{chapter.name}}
-              </MenuItem>
-              <MenuItem name="2-0">未指定章节</MenuItem>
-            </Submenu>
-          </Menu>
-
-        </div>
-      </div>
+            <MenuItem name="2-0">未指定章节</MenuItem>
+          </Submenu>
+        </Menu>
+      </Card>
       <!--中间显示题目,筛选条件-->
-      <div class="qb_main">
+      <Card class="right">
         <div class="options_container">
           <div class="options">
             类型：
@@ -79,7 +75,7 @@
         <div class="result_container">
           <QEDuestionList :result="resultArr" :cate="cate"/>
         </div>
-      </div>
+      </Card>
     </div>
 
     <!--章节-->
@@ -211,7 +207,7 @@
 
 <script>
   import NavBar from "../components/NavBar";
-  import {MenuItem, Icon, Menu, Modal, Button, Option, Rate, InputNumber, Form, Select,Table} from 'iview'
+  import {MenuItem, Icon, Menu, Modal, Button, Option, Rate, InputNumber, Form, Select, Table} from 'iview'
   import AnswerCheckbox from '../components/answer-checkbox';
   import AnswerRadio from '../components/answer-radio';
   import AnswerJudge from '../components/answer-judge';
@@ -224,9 +220,9 @@
 
   export default {
     name: "CourseDetail",
-    components: {QEDuestionList, NavBar, AnswerCheckbox, AnswerRadio, AnswerCompute, AnswerJudge, AnswerBlank,Table},
+    components: {QEDuestionList, NavBar, AnswerCheckbox, AnswerRadio, AnswerCompute, AnswerJudge, AnswerBlank, Table},
     computed: {
-      ...mapGetters(['teacherInfo', 'qBank', 'qForm', 'allResource', 'docCateList','courseList']),
+      ...mapGetters(['teacherInfo', 'qBank', 'qForm', 'allResource', 'docCateList', 'courseList']),
       showQType() {
         return this.research.cate === 1;
       },
@@ -245,7 +241,7 @@
         examCols: [
           {type: 'selection', width: 60, align: 'center'},
           {title: 'Id', key: 'id'},
-          {title: '问题', key: 'content',minWidth:100},
+          {title: '问题', key: 'content', minWidth: 100},
           {title: '答案', key: 'answer'},
           {title: '难度', key: 'hard'},
           {title: '正确数', key: 'right'},
@@ -314,18 +310,19 @@
       }
     },
     methods: {
+      ...mapActions(['updateQForm', 'clearQForm', 'saveAllResource', 'saveDocCateList']),
       handleSelectQ(list) {
         this.examForm.question = list.map(l => l.id).join(',');
       },
       handleAddExam() {
         this.examForm['user'] = this.teacherInfo.id;
         this.examForm['sku'] = this.sku;
-        this.$http.get('exam/addQuestionToExam',{params:this.examForm})
-          .then(res=>{
+        this.$http.get('exam/addQuestionToExam', {params: this.examForm})
+          .then(res => {
             if (res.data.code === 1) {
               this.success('组卷成功');
               this.examModal = false;
-            }else {
+            } else {
               this.error(res.data.msg);
             }
           })
@@ -333,11 +330,11 @@
       handleUploadDoc() {
         this.uploadForm['user'] = this.teacherInfo.id;
         this.uploadForm['course'] = this.sku;
-        this.$http.post('Document/add',this.uploadForm).then(res=>{
+        this.$http.post('Document/add', this.uploadForm).then(res => {
           if (res.data.code === 1) {
             this.success('添加文档成功');
             this.updateModal = false;
-          }else{
+          } else {
             this.error(res.data.msg);
           }
         })
@@ -455,10 +452,7 @@
           order: this.newOrder,
           course: this.sku
         };
-
-        this.$http.get('Chapter/addChapterTocourse', {params: newItem}
-        )
-          .then(res => {
+        this.$http.get('Chapter/addChapterTocourse', {params: newItem}).then(res => {
             this.newChapter = '';
             this.chapterArr.push(newItem)
           })
@@ -470,36 +464,36 @@
         }
         this.research.chapter = index.toString().substring(2);
       },
-      ...mapActions(['updateQForm', 'clearQForm', 'saveAllResource', 'saveDocCateList']),
-
-    },
-    mounted() {
-      //初始获取所有资源
-      this.getQList({q_base: this.$route.params.id}, () => {
-        this.saveAllResource(this.resultArr);
-        this.resultArr.map(q=>{
-          this.questionList.push({
-            ...q,
-            content:JSON.parse(q['content'])['content'],
-            answer:JSON.parse(q['content'])['answer']
-          })
-        })
-      });
-      this.getCateList();
-      //获取章节
-      let qb = this.qBank.find((item) => {
-        return item.id === parseInt(this.$route.params.id)
-      });
-      // console.log(qb);
-      this.sku = qb ? qb['course_sku']['sku'] : 1;
-      this.$http.get('Chapter/getChapterByCourse', {params: {id: this.sku}})
-        .then(res => {
+      getChapter() {
+        this.$http.get('chapter/getChapterByCourse', {params: {id: this.sku}}).then(res => {
           //给chapterArr赋值
           if (res.data.code === 1) {
             this.chapterArr = res.data.data;
             this.chapterArr.sort((a, b) => a.order - b.order);
           }
         })
+      },
+      getInitQList() {
+        this.getQList({sku: this.sku}, () => {
+          this.saveAllResource(this.resultArr);
+          this.resultArr.map(q => {
+            this.questionList.push({
+              ...q,
+              content: JSON.parse(q['content'])['content'],
+              answer: JSON.parse(q['content'])['answer']
+            })
+          })
+        });
+      }
+
+    },
+    mounted() {
+      this.sku = this.$route.params.id;
+      //初始获取所有资源
+      this.getInitQList();
+      this.getCateList();
+      this.getChapter();
+
     }
     ,
 
@@ -545,16 +539,38 @@
     width: 100%;
     min-height: 100%;
 
+    .flex-content {
+      display: -webkit-flex;
+      display: flex;
+      height: 94%;
+      justify-content: space-between;
+      overflow: hidden;
+      padding: 20px;
+
+      .left {
+        width: 20%;
+        min-width: 225px;
+      }
+
+      .right {
+        width: 78%;
+
+        .options_container {
+          width: 50%;
+          display: flex;
+          justify-content: space-around;
+          margin: 10px;
+        }
+      }
+    }
+
     .qb_bar {
       width: 100%;
       height: 50px;
-      padding: 10px;
+      padding: 29px;
       display: flex;
-      border-bottom: 1px solid #aaaaaa;
-      /*background-color: #2db7f5;*/
       align-items: center;
       justify-content: space-between;
-      /*box-shadow: 2px 2px 4px rgb(149, 149, 149);*/
 
       .qb_bar_left {
         display: flex;
@@ -574,100 +590,5 @@
       }
     }
 
-    .qb_containter {
-      /*height: 87%;*/
-      width: 100%;
-      display: flex;
-
-      .qb_menu {
-        width: 241px;
-        min-width: 241px;
-        /*height: 100%;*/
-        min-height: 100%;
-        background-color: white;
-
-        .qb_menu_item {
-          width: 99%;
-
-          .editor_charpter {
-            padding-left: 43px;
-            width: 100%;
-            border: none;
-            background-color: white;
-            height: 48px;
-            text-align: left;
-
-            &:hover {
-              color: #4dc8a9;
-            }
-          }
-        }
-
-        .right_num {
-          float: right;
-          display: inline-block;
-        }
-      }
-
-      .qb_main {
-        width: 1300px;
-        height: 100%;
-        min-height: 630px;
-        /*background-color: #e9ebecd9;*/
-
-        .options_container {
-          width: 50%;
-          display: flex;
-          justify-content: space-around;
-          margin: 10px;
-        }
-      }
-
-    }
   }
-
-  .addQuestion {
-    .addQuestion_header {
-      height: 40px;
-    }
-
-    .addQuestion_main {
-      flex-wrap: wrap;
-      align-items: flex-start;
-
-      .addQuestion_main_item {
-        display: flex;
-        margin: 20px;
-      }
-
-      span {
-        width: 40px
-      }
-
-      .editor_question {
-        display: inline-block;
-        width: 360px;
-      }
-
-    }
-  }
-
-  .margin10 {
-    margin: 20px;
-  }
-
-  .pull-both {
-    display: flex;
-    margin-top: 15px;
-    justify-content: space-between;
-  }
-
-  .result_container {
-    .content {
-      margin-top: 20px;
-    }
-
-    padding: 30px;
-  }
-
 </style>
