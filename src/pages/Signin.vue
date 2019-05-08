@@ -70,12 +70,24 @@
             </div>
           </div>
           <div class="long-line margin"></div>
+          <Title content="已签到人员列表"/>
           <div class="user-list">
             <div class="user" v-for="(user,index) in userList" :key="index">
               <div>
-                <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg"/>
+                <Avatar :src="publicUrl+findStuById(user)['avatar']"/>
               </div>
-              <span class="text-gray">徐鹏飞</span>
+              <span class="text-gray">{{findStuById(user)['nickname']}}</span>
+            </div>
+          </div>
+
+          <div class="long-line margin"></div>
+          <Title content="未签到人员列表"/>
+          <div class="user-list">
+            <div class="user" v-for="(user,index) in notSigninUser" :key="index">
+              <div>
+                <Avatar :src="publicUrl+user['avatar']"/>
+              </div>
+              <span class="text-gray">{{user['nickname']}}</span>
             </div>
           </div>
         </div>
@@ -87,13 +99,15 @@
 <script>
   import NavBar from '../components/NavBar';
   import config from '../config';
-  import {mapActions} from 'vuex';
+  import {mapActions,mapGetters} from 'vuex';
   import _ from 'lodash';
+  import Title from '../components/title';
 
   export default {
     name: "Signin",
-    components: {NavBar},
+    components: {NavBar,Title},
     computed: {
+      ...mapGetters(['studentList']),
       signCount() {
         return this.count + ''.split('').map(x => parseInt(x))
       },
@@ -103,10 +117,16 @@
         }else {
           return {users:[]};
         }
+      },
+      publicUrl() {
+        return config.urls.publicUrl;
+      },
+      notSigninUser() {
+        return this.studentList.filter(s => this.userList.findIndex(r => r === s.id) === -1);
       }
     },
     methods: {
-      ...mapActions(['saveWs1237']),
+      ...mapActions(['saveWs1237','saveStudentList']),
       handleDelete() {
         this.$http.get('/signin/delete',{params: {id: this.current['id']}})
           .then(res=>{
@@ -128,10 +148,12 @@
         this.isSigned = false;
         this.start = false;
         this.currentIndex = index;
+        this.userList=this.signList[index]['users']
       },
       handleStartSign() {
         this.isSigned = true;
         this.start = false;
+        this.initTime = this.time;
         if (!this.ptime) {
           this.$Notice.success({
             title: '失败',
@@ -187,7 +209,24 @@
       getMessage({data}) {
         let datas = JSON.parse(data)['data'];
         console.log(datas);
-        if (datas && !_.isEmpty(datas)) ;
+        if (datas && !_.isEmpty(datas)) {
+          if (datas['user']) { //有人来签到了
+            this.userList = datas['user'].map(u => u.id);
+            this.count = this.userList.length;
+          }
+        }
+      },
+      findStuById(id) {
+        return this.studentList.find(s => s.id === id)||{};
+      },
+      getStudentList() {
+        if (!this.studentList || this.studentList.length === 0) {
+          this.$http.get('/students/getUserList', {params: {id: this.$route.query.sku}}).then(res => {
+            if (res.data.code === 1) {
+              this.saveStudentList(res.data.data);
+            }
+          });
+        }
       },
       getSignList(last) {
         this.$http.get('/signin/getSignBySku',{params:{id:this.$route.query.sku}})
@@ -204,21 +243,23 @@
     data() {
       return {
         signList: [],
-        userList: [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6],
+        userList: [],
         isSigned: false,
-        count: 356,
+        count: 0,
         currentIndex: 0,
         start: true,
         socket: null,
         ptime: 10,
         timer: null,
         intvals:null,
-        timeout: null
+        timeout: null,
+        initTime: 0
       }
     },
     mounted() {
       this.initSocket();
       this.getSignList();
+      this.getStudentList();
     },
     watch:{
 
