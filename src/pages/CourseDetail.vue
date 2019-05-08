@@ -376,7 +376,7 @@
           })
       },
       searchByContent() {
-        this.getQList({q_base: this.$route.params.id, content: this.contentSearch});
+        this.getQList({sku: this.sku, content: this.contentSearch});
       },
       handleAllResource() {
         this.resultArr = this.allResource
@@ -403,13 +403,10 @@
           bid: 1
         });
         this.addQuestion(obj);
-        this.getQList({q_base: this.$route.params.id}, () => this.saveAllResource(this.resultArr));
+        this.getQList({sku: this.sku}, () => this.saveAllResource(this.resultArr));
       },
       clearQuestionForm() {
         this.clearQForm();
-      },
-      handleFilter(e) {
-        console.log(e);
       },
       getQList(params, callback) {
         this.commonGetList('Qbase/getQuestions', params, callback);
@@ -435,13 +432,11 @@
         this.$http.get(url, {params})
           .then(res => {
             if (res.data.code === 0) {
-              // this.$Message.info(res.data.msg);
               this.resultArr = [];
             } else {
               this.resultArr = res.data.data;
-              //把所有资源存储
-              callback && callback();
             }
+            callback && callback();
           })
       },
       addChapter() {
@@ -516,7 +511,7 @@
           }
           switch (val.cate) {
             case 1:
-              val && this.getQList(val);
+              val && this.getQList({...val,sku:this.sku});
               break;
             case 2:
               val && this.getEList({id: 10, ...val});

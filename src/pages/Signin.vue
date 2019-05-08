@@ -29,7 +29,7 @@
             <div>
               <div>
                 <div>出勤</div>
-                <div><span>{{current['users'].length}}</span><span>人</span></div>
+                <div><span>{{current['users'].length||0}}</span><span>人</span></div>
               </div>
               <div>
                 <div>出勤率</div>
@@ -88,6 +88,7 @@
   import NavBar from '../components/NavBar';
   import config from '../config';
   import {mapActions} from 'vuex';
+  import _ from 'lodash';
 
   export default {
     name: "Signin",
@@ -97,10 +98,10 @@
         return this.count + ''.split('').map(x => parseInt(x))
       },
       current() {
-        if (this.signList&&this.currentIndex>=0) {
-          return this.signList[this.currentIndex];
+        if (this.signList&&!_.isEmpty(this.signList)&&this.currentIndex>=0) {
+          return this.signList[this.currentIndex]||{users:[]};
         }else {
-          return {};
+          return {users:[]};
         }
       }
     },
@@ -194,6 +195,8 @@
             if (res.data.code === 1) {
               this.signList = res.data.data;
               if (last)  this.currentIndex = this.signList.length - 1;
+            }else {
+              this.signList = [];
             }
           })
       }
