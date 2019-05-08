@@ -4,12 +4,16 @@
       <!--签到列表-->
       <div class="left">
         <div class="margin">
-          <Button v-show="!isSigned" type="primary" shape="circle" long class="margin-top-lg text-md" @click="handleStartSign">开启签到</Button>
-          <Button v-show="isSigned&&!start" type="dashed" long class="margin-top-lg text-md bg-red" @click="handleStopSign">正在签到中...</Button>
+          <Input v-model="ptime" placeholder="请输入签到时长"/>
+          <Button v-show="!isSigned" type="primary" shape="circle" long class="margin-top-lg text-md"
+                  @click="handleStartSign">开启签到
+          </Button>
+          <Button v-show="isSigned&&!start" type="dashed" long class="margin-top-lg text-md bg-red">正在签到中...
+          </Button>
         </div>
         <div class="record-list">
           <CellGroup class="margin-top-lg">
-            <span v-for="(item,index) in signList" :key="index"><Cell :title="`${item.name}`"></Cell></span>
+            <span v-for="(item,index) in signList" :key="index" @click="handleShowDetail(index)"><Cell :title="`${item.date}签到`"></Cell></span>
           </CellGroup>
         </div>
       </div>
@@ -18,27 +22,27 @@
         <!--签到详情-->
         <div>
           <div v-show="!isSigned&&!start" class="delete">
-            <span class="text-md text-red"><Icon type="ios-trash" size="26"/>删除这个签到</span>
+            <span class="text-md text-red" @click="handleDelete"><Icon type="ios-trash" size="26"/>删除这个签到</span>
           </div>
           <div v-show="!isSigned&&!start" class="bg-gray info-card">
-            <h5>本次签到开启于 2019-05-03 15:29:34</h5>
+            <h5>本次签到开启于 {{current['date']}}</h5>
             <div>
               <div>
                 <div>出勤</div>
-                <div><span>0</span><span>人</span></div>
+                <div><span>{{current['users'].length}}</span><span>人</span></div>
               </div>
               <div>
                 <div>出勤率</div>
-                <div><span>0</span><span>%</span></div>
+                <div><span>{{current['ration']||0}}</span><span>%</span></div>
               </div>
               <div>
                 <div>开启签到时间</div>
-                <div><span>3</span><span>秒</span></div>
+                <div><span>{{current['time']}}</span><span>秒</span></div>
               </div>
             </div>
           </div>
           <div v-show="isSigned&&!start" class="bg-gray info-card">
-            <h5>距离本次签到还有 <span class="text-md text-red">299</span> 秒结束</h5>
+            <h5>距离本次签到还有 <span class="text-md text-red">{{this.ptime}}</span> 秒结束</h5>
             <div class="number-list">
               <div class="number">
                 <span>{{signCount[0]}}</span>
@@ -69,7 +73,7 @@
           <div class="user-list">
             <div class="user" v-for="(user,index) in userList" :key="index">
               <div>
-                <Avatar  src="https://i.loli.net/2017/08/21/599a521472424.jpg"/>
+                <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg"/>
               </div>
               <span class="text-gray">徐鹏飞</span>
             </div>
@@ -83,6 +87,7 @@
 <script>
   import NavBar from '../components/NavBar';
   import config from '../config';
+  import {mapActions} from 'vuex';
 
   export default {
     name: "Signin",
@@ -90,12 +95,57 @@
     computed: {
       signCount() {
         return this.count + ''.split('').map(x => parseInt(x))
+      },
+      current() {
+        if (this.signList&&this.currentIndex>=0) {
+          return this.signList[this.currentIndex];
+        }else {
+          return {};
+        }
       }
     },
-    methods:{
+    methods: {
+      ...mapActions(['saveWs1237']),
+      handleDelete() {
+        this.$http.get('/signin/delete',{params: {id: this.current['id']}})
+          .then(res=>{
+            if (res.data.code === 1) {
+              this.$Notice.success({
+                title: '成功',
+                desc: '删除成功！'
+              });
+              this.getSignList(true);
+            }else {
+              this.$Notice.success({
+                title: '失败',
+                desc: '删除失败'
+              });
+            }
+          })
+      },
+      handleShowDetail(index) {
+        this.isSigned = false;
+        this.start = false;
+        this.currentIndex = index;
+      },
       handleStartSign() {
         this.isSigned = true;
         this.start = false;
+        if (!this.ptime) {
+          this.$Notice.success({
+            title: '失败',
+            desc: '请输入时间'
+          });
+          return;
+        }
+        this.socket.send(JSON.stringify({
+          'type': 'publish',
+          'tasks': 'sign',
+          'time': this.ptime,
+          'sku': this.$route.query.sku
+        }));
+        this.intvals = setInterval(() => this.ptime > 0 && this.ptime--, 1000);
+        this.timeout = setTimeout(this.handleStopSign, this.ptime * 1000);
         this.$Notice.success({
           title: '开启签到',
           desc: '开启签到成功！'
@@ -104,6 +154,9 @@
       handleStopSign() {
         this.isSigned = false;
         this.start = false;
+        clearInterval(this.intvals);
+        clearTimeout(this.timeout);
+        this.getSignList(true);
         this.$Notice.info({
           title: '关闭签到',
           desc: '关闭签到成功！'
@@ -121,31 +174,52 @@
         this.socket.onmessage = this.getMessage;
       },
       open() {
-        // 验证 token
-        const userInfo = {
-          'from': this.teacherInfo.id,
-          'token': this.teacherInfo.token
+        // 登录
+        const info = {
+          'type': 'publish',
+          'tasks': 'login'
         };
-        this.socket.send(JSON.stringify(userInfo));
+        this.socket.send(JSON.stringify(info));
       },
       error() {
       },
       getMessage({data}) {
         let datas = JSON.parse(data)['data'];
-        if (datas && !_.isEmpty(datas)) datas['data'].map(x => this.addMessage({...x, read: 0}));
+        console.log(datas);
+        if (datas && !_.isEmpty(datas)) ;
+      },
+      getSignList(last) {
+        this.$http.get('/signin/getSignBySku',{params:{id:this.$route.query.sku}})
+          .then(res=>{
+            if (res.data.code === 1) {
+              this.signList = res.data.data;
+              if (last)  this.currentIndex = this.signList.length - 1;
+            }
+          })
       }
     },
     data() {
       return {
-        signList: [{name: 'aaa',}, {name: 'aaa',}, {name: 'aaa'}],
+        signList: [],
         userList: [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6],
         isSigned: false,
         count: 356,
-        currentIndex: -1,
+        currentIndex: 0,
         start: true,
-        socket: null
+        socket: null,
+        ptime: 10,
+        timer: null,
+        intvals:null,
+        timeout: null
       }
     },
+    mounted() {
+      this.initSocket();
+      this.getSignList();
+    },
+    watch:{
+
+    }
   }
 </script>
 
@@ -210,17 +284,19 @@
           margin-top: 100px;
           padding: 20px;
 
-          .number-list{
+          .number-list {
             margin: 0 auto;
             width: 30%;
             display: flex;
             justify-content: space-around;
-            .number{
+
+            .number {
               font-size: 80px;
               color: white;
               font-weight: bold;
               background: #333;
-              &>span{
+
+              & > span {
                 text-shadow: #aac9e8 2px -3px;
               }
             }
