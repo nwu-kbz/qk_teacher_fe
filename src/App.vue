@@ -95,6 +95,7 @@
 
   .layout-nav {
     width: 600px;
+    height: 100%;
     margin: 0 auto;
     margin-right: 20px;
   }
