@@ -32,4 +32,5 @@ export default {
   messageList: state => state.messageList,
   ws: state => state.ws,
   ws1237: state => state.ws1237,
+  courseImage: state => state.courseImage,
 }

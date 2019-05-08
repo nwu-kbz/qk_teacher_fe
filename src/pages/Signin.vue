@@ -4,7 +4,7 @@
       <!--签到列表-->
       <div class="left">
         <div class="margin">
-          <Input v-model="ptime" placeholder="请输入签到时长"/>
+          <Input v-model="ptime" placeholder="请输入签到时长" width="30px"/>
           <Button v-show="!isSigned" type="primary" shape="circle" long class="margin-top-lg text-md"
                   @click="handleStartSign">开启签到
           </Button>

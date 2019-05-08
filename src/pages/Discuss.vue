@@ -103,8 +103,6 @@
       },
       initSocket() {
         this.socket = new WebSocket(config.urls.studentSocketUrl);
-        this.socket && this.saveWs1237(this.socket);
-
         // 监听socket连接
         this.socket.onopen = this.open;
         // 监听socket错误信息
