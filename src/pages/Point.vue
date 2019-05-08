@@ -8,18 +8,22 @@
         </h5>
         <div class="record-item">
           <div class="time">
-            <Icon type="md-radio-button-on"/>
-            <span>2019年5月5日</span></div>
+            <!--            <Icon type="md-radio-button-on"/>-->
+            <!--            <span>2019年5月5日</span>-->
+          </div>
           <div class="aRecord" v-for="(item,index) in recordList" :key="index">
             <div class="itemContainer">
               <div class="stars"><img :src="starImage(item.star)"></div>
-              <span>{{item.nickname}}</span>
+              <span>{{getNicknameById(item.uid)}}</span>
             </div>
             <!--<div class="delete"><Icon type="md-trash" size="25" class="icon"/></div>-->
           </div>
         </div>
       </Drawer>
     </div>
+
+    <Button type="info" style="margin: 20px" shape="circle" @click="openDraw">查看回答问题列表</Button>
+    <Button type="error" style="margin: 20px" shape="circle" @click="handleRandom">随机点人</Button>
     <div class="studentList">
       <div class="student" v-for="(item,index) in studentList" :key="index" @click="handleModal(index)">
         <img class='ivu-avatar' :src="publicUrl+item.avatar"/>
@@ -38,19 +42,15 @@
         </div>
       </Modal>
     </div>
-    <Button @click="openDraw" type="primary" class="openDraw" :class="{'openedDrawer':openedDrawer}">
-      <Icon style="margin-left: -10px" :type="btnLogo" size="25"/>
-    </Button>
-
   </div>
 
 </template>
 
 <script>
   import NavBar from "../components/NavBar";
-  import {Modal} from 'iview' ;
   import config from '../config'
-  import {mapGetters} from 'vuex'
+  import {mapGetters,mapActions} from 'vuex'
+  import random from 'random';
 
   export default {
     name: "Point",
@@ -65,7 +65,7 @@
         openedDrawer: false,
         // ["md-arrow-round-forward",'md-arrow-round-back']
         btnLogo: "md-arrow-round-forward",
-        studentArr: [],
+        studentArr: [1, 2, 3, 3, 4, 4, 4],
         studentModal: false,
         index: -1,
         star: 1,
@@ -86,6 +86,27 @@
       }
     },
     methods: {
+      ...mapActions(['saveStudentList']),
+      getStudentList() {
+        if (!this.studentList || this.studentList.length === 0) {
+          this.$http.get('/students/getUserList', {params: {id: this.$route.query.sku}}).then(res => {
+            if (res.data.code === 1) {
+              this.saveStudentList(res.data.data);
+            }
+          });
+        }
+      },
+      getNicknameById(id) {
+        if (this.studentList && this.studentList.length > 0 && id) {
+          return this.studentList.find(s => s.id === id * 1)['nickname'];
+        } else {
+          return "";
+        }
+      },
+      handleRandom() {
+        this.index = random.int(0, this.studentList.length - 1);
+        this.studentModal = true
+      },
       starImage(star) {
         let maps = [
           '../../static/img/one.png',
@@ -95,9 +116,28 @@
         return maps[star - 1];
       },
       handleRate() {
-        this.recordList.push({...this.current, star: this.star});
-        this.star = 1;
-        this.studentModal = false;
+        this.$http.get('/rate/rate', {
+          params: {
+            uid: this.studentList[this.index]['id'],
+            sku: this.$route.query.sku,
+            star: this.star
+          }
+        }).then(res => {
+          if (res.data.code === 1) {
+            this.recordList.push({...this.current, star: this.star, uid: this.studentList[this.index]['id']});
+            this.star = 1;
+            this.studentModal = false;
+            this.$Notice.success({
+              title: '成功',
+              content: '评分成功'
+            })
+          } else {
+            this.$Notice.error({
+              title: '失败',
+              content: '评分失败'
+            })
+          }
+        })
       },
       openDraw() {
         this.isOpen = !this.isOpen;
@@ -106,6 +146,14 @@
       handleModal(index) {
         this.index = index;
         this.studentModal = true
+      },
+      getRatedList() {
+        this.$http.get('/rate/index', {params: {sku: this.$route.query.sku}})
+          .then(res => {
+            if (res.data.code === 1) {
+              this.recordList = res.data.data;
+            }
+          })
       }
     },
     watch: {
@@ -118,6 +166,10 @@
           this.openedDrawer = false;
         }
       }
+    },
+    mounted() {
+      this.getStudentList();
+      this.getRatedList();
     }
   }
 </script>
@@ -158,96 +210,98 @@
     }
   }
 
-    .delete {
-      background-color: rgba(212, 0, 0, 1);
-      width: 50px;
-      height: 38px;
-      /*display: none;*/
-      visibility: hidden;
-      float: left;
-      transition: all 300ms ease-in-out;
+  .delete {
+    background-color: rgba(212, 0, 0, 1);
+    width: 50px;
+    height: 38px;
+    /*display: none;*/
+    visibility: hidden;
+    float: left;
+    transition: all 300ms ease-in-out;
 
-      .icon {
-        margin: 5px 12px;
-      }
-
-      /*margin-left: -50px;*/
+    .icon {
+      margin: 5px 12px;
     }
 
+    /*margin-left: -50px;*/
+  }
 
-    .main {
+
+  .main {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    .studentList {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
       width: 100%;
       height: 100%;
-      position: relative;
+      min-height: 600px;
 
-      .studentList {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        min-height: 100%;
+      .student {
+        cursor: pointer;
+        margin: 10px;
+        width: 100px;
+        height: 130px;
+        text-align: center;
 
-        .student {
-          margin: 10px;
-          width: 100px;
-          height: 130px;
-          text-align: center;
+        &:hover {
+          background-color: rgba(67, 67, 67, 0.48);
+        }
 
-          &:hover {
-            background-color: rgba(67, 67, 67, 0.48);
-          }
-
-          img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            margin: 10px 20px;
-          }
+        img {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          margin: 10px 20px;
         }
       }
-
-      .openDraw {
-        width: 30px;
-        height: 80px;
-        background-color: rgb(48, 49, 51);
-        border: 0;
-        border-radius: 0 8px 8px 0;
-        position: fixed;
-        top: 42%;
-      }
-
-      .openedDrawer {
-        transition: transform 340ms ease-in-out;
-        transform: translateX(280px);
-      }
     }
 
-    .studentInfo {
-      width: 100%;
-      height: 320px;
-      text-align: center;
-      /*background: plum;*/
-      /*background-image: url("");*/
-      /*filter:blur(3px);*/
-
-      .ivu-avatar {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        margin: 25px 100px;
-      }
+    .openDraw {
+      width: 30px;
+      height: 80px;
+      background-color: rgb(48, 49, 51);
+      border: 0;
+      border-radius: 0 8px 8px 0;
+      position: fixed;
+      top: 42%;
     }
 
-    .modelFooter {
-      button {
-        width: 50px;
-        height: 30px;
-        border-radius: 8px;
-        border: 0;
-
-      }
+    .openedDrawer {
+      transition: transform 340ms ease-in-out;
+      transform: translateX(280px);
     }
+  }
+
+  .studentInfo {
+    width: 100%;
+    height: 320px;
+    text-align: center;
+    /*background: plum;*/
+    /*background-image: url("");*/
+    /*filter:blur(3px);*/
+
+    .ivu-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 25px 100px;
+    }
+  }
+
+  .modelFooter {
+    button {
+      width: 50px;
+      height: 30px;
+      border-radius: 8px;
+      border: 0;
+
+    }
+  }
 
 
 </style>
