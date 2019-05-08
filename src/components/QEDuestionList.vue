@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main">
     <Card :bordered="false" v-for="(item,index) in result" :key="index" class="margin10">
       <!---->
       <div v-show="cate===1">
@@ -29,7 +29,7 @@
           size="20" type="md-star-half"/>难度: <Rate :count="4" disabled v-model="item.hard"/></span></div>
       </div>
     </Card>
-    <div v-show="resultArr.length===0" style="text-align: center">
+    <div v-show="result.length===0" style="text-align: center">
       <Icon type="ios-alert-outline" size="50"/>
       <h3>啊哦!暂时没有内容呢~</h3>
     </div>
@@ -52,6 +52,27 @@
   }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+
+  .main{
+    color: #666666;
+  }
+  .margin10 {
+    margin: 20px;
+  }
+
+  .pull-both {
+    display: flex;
+    margin-top: 15px;
+    justify-content: space-between;
+  }
+
+  .result_container {
+    .content {
+      margin-top: 20px;
+    }
+
+    padding: 30px;
+  }
 
 </style>
