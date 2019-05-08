@@ -5,7 +5,7 @@
 <script>
   export default {
     props: ['content'],
-    name: "title"
+    name: "atitle"
   }
 </script>
 

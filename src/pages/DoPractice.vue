@@ -2,34 +2,33 @@
   <div class="main bg-grey">
     <!--题目列表-->
     <div class="main-container">
-      <div>
-        <Card title="题目列表" icon="ios-options" :padding="0" shadow>
-          <Collapse simple @on-change="handleSelectPractice">
-            <Panel :name="ins" v-for="(prac,ins) in eList" :key="ins">
-              {{prac.name}}
-              <p slot="content">
-                <CellGroup>
-                  <span v-for="(item,index) in prac['practice']" :key="index"><Cell :title="item.content"/></span>
-                </CellGroup>
-              </p>
-            </Panel>
-          </Collapse>
+      <Card title="题目列表" icon="ios-options" :padding="0" shadow class="left">
+        <Collapse simple @on-change="handleSelectPractice">
+          <Panel :name="ins+''" v-for="(prac,ins) in eList" :key="ins">
+            {{prac.name}}
+            <p slot="content">
+              <CellGroup>
+                <span v-for="(item,index) in prac['practice']" :key="index" @click="handleShowQuestion(ins,index)"><Cell
+                  :title="item.content"/></span>
+              </CellGroup>
+            </p>
+          </Panel>
+        </Collapse>
 
-        </Card>
-      </div>
+      </Card>
       <!--题目详情-->
-      <div>
-        <Card title="题目详情" icon="ios-options" :padding="0" shadow style="width: 100%">
+      <Card title="题目详情" icon="ios-options" :padding="0" shadow class="right">
+        <div v-if="showQuestion">
           <!--题目概况-->
           <Card class="inner-card">
-            <Tag type="dot" color="success">{{currentQ.type}}</Tag>
-            <h4>{{currentQ.content}}</h4>
+            <Tag type="dot" color="success">{{getType(currentQuestion.type)}}</Tag>
+            <h4 style="margin: 10px ">题干： {{currentQuestion['content']}}</h4>
             <div class="qlist">
-              <div v-for="(item,key,index) in currentQ.answer">{{key}}. {{item}}</div>
+              <div v-for="(item,key,index) in currentQuestion['question']">{{key}}. {{item}}</div>
             </div>
             <Divider/>
             <div v-if="!start">
-              <Poptip title="答案" :content="currentQ.rightAnswer">
+              <Poptip title="答案" :content="currentQuestion['rightAnswer']">
                 <Button type="error">展示答案</Button>
               </Poptip>
               <span class="text-grey">
@@ -37,8 +36,8 @@
               </span>
               <Button type="info" @click="handleStartQuestion">开始计时答题</Button>
             </div>
-            <div v-else class="doTime">
-              <span>剩余时间 <span>{{leftTime}}</span></span>
+            <div v-else >
+              <span>剩余时间 :{{this.time}} <Progress :percent="leftTime" status="wrong"/></span>
               <Button type="error" size="large" style="margin-right: 20px" @click="handleStopQuestion">结束答题</Button>
             </div>
           </Card>
@@ -79,17 +78,17 @@
               </ul>
             </div>
           </Card>
-        </Card>
-      </div>
+        </div>
+      </Card>
     </div>
   </div>
 </template>
 
 <script>
   import NavBar from "../components/NavBar";
-  import {Card} from 'iview'
   import Title from '../components/title';
   import {mapGetters, mapActions} from 'vuex'
+  import config from '../config';
 
   export default {
     name: "DoPractice",
@@ -99,7 +98,9 @@
         start: false,
         currentQIndex: -1,
         currentPId: 1,
+        showQuestion: false,
         eList: [],
+        initTime: 5,
         time: 5,
         rightUsers: [1, 2, 2, 3, 3, 3, 33, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
         summaryData: {
@@ -117,21 +118,56 @@
             {'选项': 'C', '人数': 2923},
             {'选项': 'D', '人数': 1723},
           ]
-        }
+        },
+        currentQuestion: {},
+        intvals: null,
+        timeout: null
       }
     },
     computed: {
       ...mapGetters(['teacherInfo']),
-      currentQ() {
-        if (this.currentQIndex>0) {
-          return this.qList[this.currentQIndex] || {};
-        }else {
-          return {};
-        }
+      leftTime() {
+        return Math.floor(100*(this.time / this.initTime*1));
       }
     },
     methods: {
-      ...mapActions([]),
+      ...mapActions(['saveWs1237']),
+      initSocket() {
+        this.socket = new WebSocket(config.urls.studentSocketUrl);
+        this.socket && this.saveWs1237(this.socket);
+
+        // 监听socket连接
+        this.socket.onopen = this.open;
+        // 监听socket错误信息
+        this.socket.onerror = this.error;
+        // 监听socket消息
+        this.socket.onmessage = this.getMessage;
+      },
+      open() {
+        // 登录
+        const info = {
+          'type': 'publish',
+          'tasks': 'login'
+        };
+        this.socket.send(JSON.stringify(info));
+      },
+      error() {
+      },
+      getMessage({data}) {
+        let datas = JSON.parse(data)['data'];
+        console.log(datas);
+        if (datas && !_.isEmpty(datas)) ;
+      },
+      getType(val) {
+        const maps = [
+          '单选', '多选', '判断', '简答',
+        ];
+        return maps[val - 1];
+      },
+      handleShowQuestion(ins, index) {
+        this.showQuestion = true;
+        this.currentQuestion = this.eList[ins]['practice'][index];
+      },
       getExamList() {
         this.$http.get('practice/getlist', {params: {id: this.$route.query.sku}}).then(rs => {
           if (rs.data.code === 1) {
@@ -140,23 +176,43 @@
         })
       },
       handleStartQuestion() {
+        this.socket.send(JSON.stringify({
+          type: 'publish',
+          tasks: 'answer',
+          sku:this.$route.query.sku,
+          name:this.currentQuestion['content'],
+          questions: this.currentQuestion['id'],
+        }));
         this.start = true;
+        this.initTime = this.time;
+        this.timeout = setTimeout(() => {
+          this.start = false;
+          clearTimeout(this.timeout);
+          clearInterval(this.intvals);
+        }, this.time * 1000);
+        this.intvals = setInterval(() => this.time > 0 && --this.time, 1000);
       },
 
       handleStopQuestion() {
         this.start = false;
+        clearTimeout(this.timeout);
+        clearInterval(this.intvals);
       },
       handleSelectPractice(current) {
         current = parseInt(current[0]);
-        if (!this.eList[current]['practice']) {
+        if (this.eList[current] && !this.eList[current]['practice']) {
           this.$http.get('practice/getquestionsbysku', {params: {id: this.eList[current]['id']}}).then(rs => {
             if (rs.data.code === 1) {
               let ret = rs.data.data;
-              let content = JSON.parse(ret['content']);
-              ret['content'] = content['content'];
-              ret['question'] = JSON.parse(content['question']);
-              ret['rightAnswer'] = content['answer'];
-              this.eList[current]['practice'] = ret;
+              let qlist = [];
+              for (let q of ret) {
+                let content = JSON.parse(q['content']);
+                q['question'] = JSON.parse(content['questions'].replace(/'/g, "\""));
+                q['content'] = content['content'];
+                q['rightAnswer'] = content['answer'];
+                qlist.push(q);
+              }
+              this.eList.splice(current, 1, {...this.eList[current], 'practice': qlist});
             }
           })
         }
@@ -164,6 +220,7 @@
     },
     mounted() {
       this.getExamList();
+      this.initSocket();
     }
 
   }
@@ -181,28 +238,41 @@
 
   .main {
     width: 100%;
-    min-height: 100%;
+    height: 100%;
+    min-height: 700px;
 
     .main-container {
-      margin: 20px;
+      height: 100%;
       width: 100%;
       display: flex;
+      min-height: 700px;
+      justify-content: space-between;
+      padding: 20px;
 
-      & > div:nth-child(1) {
-        width: 18%;
+      .left {
+        width: 20%;
       }
 
-      & > div:nth-child(2) {
-        width: 78%;
-        margin-left: 20px;
+      .right {
+        width: 79%;
+        color: #666666;
       }
 
       .inner-card {
         margin: 16px;
 
+        .qlist {
+          font-size: 18px;
+          margin-left: 20px;
+
+          & > div {
+            margin: 5px;
+          }
+        }
+
         .doTime {
           height: 78px;
-          width: 100%;
+          /*width: 100%;*/
           /*background-color: rebeccapurple;*/
           display: flex;
           justify-content: space-between;
