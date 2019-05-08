@@ -14,8 +14,7 @@
     <div class="submit-btn">
       <Button type="success" size="large" @click="handleAddGroup">添加组</Button>
       <Button type="success" size="large" @click="handleSubGroup">删除组</Button>
-      <Button type="success" size="large" @click="handleSubmitGroup">提交修改</Button>
-
+      <Button type="success" size="large" @click="handleUpdateGroup">提交修改</Button>
     </div>
 
     <!--选择学生的modal-->
@@ -42,6 +41,36 @@
       ...mapGetters(['studentList'])
     },
     methods:{
+      handleUpdateGroup() {
+        let obj = {
+          sku:this.$route.query.sku,
+          content: JSON.stringify(this.groupList)
+        };
+        if (this.gid) {
+          obj['id'] = this.gid;
+        }
+        this.$http.get('/groups/addOrUpdate',{params: obj}).then(res=>{
+          if (res.data.code === 1) {
+            this.$Notice.success({
+              'title': '成功',
+              'content': "分组成功"
+            })
+          }else {
+            this.$Notice.error({
+              'title': '失败',
+              'content': "分组失败"
+            })
+          }
+        })
+      },
+      getGroupInfo() {
+        this.$http.get('/groups/index',{params:{sku:this.$route.query.sku}}).then(res=>{
+          if (res.data.code === 1) {
+            this.groupList=res.data.data['content'];
+            this.gid = res.data.data['id'];
+          }
+        })
+      },
       handleAddGroup() {
         this.groupList.push([]);
       },
@@ -86,6 +115,7 @@
     },
     mounted() {
       this.students = _.cloneDeep(this.studentList);
+      this.getGroupInfo();
     },
     data() {
       return {
@@ -107,7 +137,8 @@
           {title:'是否被选择',key:'selected'},
         ],
         selectedStu: [],
-        selectedIds: []
+        selectedIds: [],
+        gid: null
       }
     },
   }
@@ -115,7 +146,8 @@
 
 <style lang="less" scoped>
   .main {
-    min-height: 100%;
+    min-height: 800px;
+    height: 100%;
     width: 100%;
     position: relative;
     .submit-btn{
