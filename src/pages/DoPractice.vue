@@ -36,7 +36,7 @@
               </span>
               <Button type="info" @click="handleStartQuestion">开始计时答题</Button>
             </div>
-            <div v-else >
+            <div v-else>
               <span>剩余时间 :{{this.time}} <Progress :percent="leftTime" status="wrong"/></span>
               <Button type="error" size="large" style="margin-right: 20px" @click="handleStopQuestion">结束答题</Button>
             </div>
@@ -54,9 +54,9 @@
               <ul class="right-list">
                 <li v-for="(item,index) in rightUsers" :key="index">
                   <div class="avatar-wrap">
-                    <img src="https://app.teachermate.com.cn/5aea7754/1547642167_oq9PYwu_1MCV-C-XSum3Qgo2JlOM"/>
+                    <img :src="publicUrl+findStuById(item)['avatar']"/>
                   </div>
-                  <span class="name">王瑾</span>
+                  <span class="name">{{findStuById(item)['nickname']}}</span>
                 </li>
               </ul>
             </div>
@@ -69,11 +69,11 @@
             <div>
               <Title content="未答题人员名单"></Title>
               <ul class="right-list">
-                <li v-for="(item,index) in rightUsers" :key="index">
+                <li v-for="(item,index) in notAnswerUser" :key="index">
                   <div class="avatar-wrap">
-                    <img src="https://app.teachermate.com.cn/5aea7754/1547642167_oq9PYwu_1MCV-C-XSum3Qgo2JlOM"/>
+                    <img :src="publicUrl+item['avatar']"/>
                   </div>
-                  <span class="name">王瑾</span>
+                  <span class="name">{{item['nickname']}}</span>
                 </li>
               </ul>
             </div>
@@ -102,21 +102,21 @@
         eList: [],
         initTime: 5,
         time: 5,
-        rightUsers: [1, 2, 2, 3, 3, 3, 33, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+        rightUsers: [],
         summaryData: {
-          columns: ['类型', '人数'],
+          columns: ['type', 'count'],
           rows: [
-            {'类型': '正确', '人数': 3},
-            {'类型': '错误', '人数': 5},
+            {'type': '正确', 'count': 0},
+            {'type': '错误', 'count': 0},
           ]
         },
         answerDistributionData: {
-          columns: ['选项', '人数'],
+          columns: ['type', 'count'],
           rows: [
-            {'选项': 'A', '人数': 1393},
-            {'选项': 'B', '人数': 3530},
-            {'选项': 'C', '人数': 2923},
-            {'选项': 'D', '人数': 1723},
+            {'type': 'A', 'count': 0},
+            {'type': 'B', 'count': 0},
+            {'type': 'C', 'count': 0},
+            {'type': 'D', 'count': 0},
           ]
         },
         currentQuestion: {},
@@ -125,13 +125,31 @@
       }
     },
     computed: {
-      ...mapGetters(['teacherInfo']),
+      ...mapGetters(['teacherInfo','studentList']),
       leftTime() {
-        return Math.floor(100*(this.time / this.initTime*1));
+        return Math.floor(100 * (this.time / this.initTime * 1));
+      },
+      publicUrl() {
+        return config.urls.publicUrl;
+      },
+      notAnswerUser() {
+        return this.studentList.filter(s => this.rightUsers.findIndex(r => r === s.id) === -1);
       }
     },
     methods: {
-      ...mapActions(['saveWs1237']),
+      ...mapActions(['saveWs1237','saveStudentList']),
+      findStuById(id) {
+        return this.studentList.find(s => s.id === id)||{};
+      },
+      getStudentList() {
+        if (!this.studentList || this.studentList.length === 0) {
+          this.$http.get('/students/getUserList', {params: {id: this.$route.query.sku}}).then(res => {
+            if (res.data.code === 1) {
+              this.saveStudentList(res.data.data);
+            }
+          });
+        }
+      },
       initSocket() {
         this.socket = new WebSocket(config.urls.studentSocketUrl);
         this.socket && this.saveWs1237(this.socket);
@@ -153,10 +171,41 @@
       },
       error() {
       },
+      updateCurrentInfo(rwCount, rightUser, answer) {
+        let rows = [];
+        // 概览
+        rows.push({type:'正确',count:rwCount['right']});
+        rows.push({type:'错误',count:rwCount['wrong']});
+        this.summaryData.rows = rows;
+        // 正确用户
+        this.rightUsers = rightUser;
+        // 答案分布区
+        rows = [];
+        for (let k in answer) {
+          rows.push({type:k, count: answer[k]})
+        }
+        this.answerDistributionData.rows = rows;
+      },
       getMessage({data}) {
         let datas = JSON.parse(data)['data'];
-        console.log(datas);
-        if (datas && !_.isEmpty(datas)) ;
+        console.log(datas, 'msg');
+        if (datas && !_.isEmpty(datas)) {
+          if (!datas['create']) { // 有人答题了
+            let rwCount = {right: 0, wrong: 0};
+            let rightUser = [];
+            let answer = {};
+            for (let item of datas.info) {
+              item.right ? rwCount['right']++ : rwCount['wrong']++;
+              rightUser.push(item.uid);
+              if (!answer[item.given]) {
+                answer[item.given] = 1;
+              } else {
+                answer[item.given]++;
+              }
+            }
+            this.updateCurrentInfo(rwCount, rightUser, answer);
+          }
+        }
       },
       getType(val) {
         const maps = [
@@ -179,8 +228,8 @@
         this.socket.send(JSON.stringify({
           type: 'publish',
           tasks: 'answer',
-          sku:this.$route.query.sku,
-          name:this.currentQuestion['content'],
+          sku: this.$route.query.sku,
+          name: this.currentQuestion['content'],
           questions: this.currentQuestion['id'],
         }));
         this.start = true;
@@ -221,6 +270,7 @@
     mounted() {
       this.getExamList();
       this.initSocket();
+      this.getStudentList();
     }
 
   }
