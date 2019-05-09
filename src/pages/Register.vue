@@ -3,7 +3,7 @@
     <div class="bg bg-blur"></div>
     <div class="main-page">
       <div class="title">
-        <h1 style="font-size: 30px;color: #51d3b2;display: inline-block">注册&nbsp;</h1>
+        <h1 style="font-size: 30px;color: rgba(0,0,255,0.84);display: inline-block">注册&nbsp;</h1>
         <span style="font-size: 15px;color:#dbdbdb;">Register User</span></div>
       <div class="welcomeText">
         <span class="line"></span>
@@ -110,11 +110,14 @@
   .main {
     height: 100%;
     width: 100%;
+
   }
 
   .bg {
     /*background: url("../assets/bg.jpg");*/
-    background-image: linear-gradient(0deg, #8755ff 0%, #30AFED 51%, #03DDE4 100%);
+    /*background-image: linear-gradient(0deg, #8755ff 0%, #30AFED 51%, #03DDE4 100%);*/
+    background-image: url("../../static/img/bcg.png");
+    filter: blur(5px);
     height: 100%;
     width: 100%;
     text-align: center;
@@ -173,7 +176,7 @@
   }
 
   .login_btn {
-    background-color: #51d3b2;
+    background-color: rgba(0, 0, 255, 0.85);
     border: none;
     width: 300px;
     display: block !important;

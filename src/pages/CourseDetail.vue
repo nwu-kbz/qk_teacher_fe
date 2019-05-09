@@ -139,7 +139,7 @@
           <span>章节&nbsp;</span>
           <Select style="width:200px" v-model="questionForm.chapter">
             <Option value="0">不指定章节</Option>
-            <Option v-for="(item,index) in chapterArr" :key="index" :value="item.id">第{{index + 1}}章 {{item.name}}
+            <Option v-for="(item,index) in chapterArr" :key="index" :value="index+1">第{{index + 1}}章 {{item.name}}
             </Option>
           </Select>
         </div>

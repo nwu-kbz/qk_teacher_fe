@@ -5,16 +5,15 @@
       <Card title="题目列表" icon="ios-options" :padding="0" shadow class="left">
         <Collapse simple @on-change="handleSelectPractice">
           <Panel :name="ins+''" v-for="(prac,ins) in eList" :key="ins">
-            {{prac.name}}
+            <div class="displayE">{{prac.name}}</div>
             <p slot="content">
               <CellGroup>
                 <span v-for="(item,index) in prac['practice']" :key="index" @click="handleShowQuestion(ins,index)"><Cell
-                  :title="item.content"/></span>
+                        :title="item.content"/></span>
               </CellGroup>
             </p>
           </Panel>
         </Collapse>
-
       </Card>
       <!--题目详情-->
       <Card title="题目详情" icon="ios-options" :padding="0" shadow class="right">
@@ -125,7 +124,7 @@
       }
     },
     computed: {
-      ...mapGetters(['teacherInfo','studentList']),
+      ...mapGetters(['teacherInfo', 'studentList']),
       leftTime() {
         return Math.floor(100 * (this.time / this.initTime * 1));
       },
@@ -137,9 +136,9 @@
       }
     },
     methods: {
-      ...mapActions(['saveWs1237','saveStudentList']),
+      ...mapActions(['saveWs1237', 'saveStudentList']),
       findStuById(id) {
-        return this.studentList.find(s => s.id === id)||{};
+        return this.studentList.find(s => s.id === id) || {};
       },
       getStudentList() {
         if (!this.studentList || this.studentList.length === 0) {
@@ -174,15 +173,15 @@
       updateCurrentInfo(rwCount, rightUser, answer) {
         let rows = [];
         // 概览
-        rows.push({type:'正确',count:rwCount['right']});
-        rows.push({type:'错误',count:rwCount['wrong']});
+        rows.push({type: '正确', count: rwCount['right']});
+        rows.push({type: '错误', count: rwCount['wrong']});
         this.summaryData.rows = rows;
         // 正确用户
         this.rightUsers = rightUser;
         // 答案分布区
         rows = [];
         for (let k in answer) {
-          rows.push({type:k, count: answer[k]})
+          rows.push({type: k, count: answer[k]})
         }
         this.answerDistributionData.rows = rows;
       },
@@ -379,5 +378,11 @@
     padding: 0;
   }
 
+  .displayE {
+    display: inline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
 </style>

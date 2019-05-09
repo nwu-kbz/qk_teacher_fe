@@ -2,9 +2,9 @@
   <div class="user-login">
     <div class="user-login-bg"></div>
     <div class="content-wrapper">
-      <h2 class="slogan">
+      <span class="slogan" style="font-size: 50px;color: white;">
         欢迎使用 <br/> 轻课教学管理系统
-      </h2>
+      </span>
       <div class="form-container">
         <h4 class="form-title">登录</h4>
         <el-form ref="form" label-width="0">
