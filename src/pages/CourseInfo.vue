@@ -116,7 +116,7 @@
       handleGotoQBase() {
         const sku = this.$route.params.id;
         const currentCourse = this.courseList.find(x => x.id + '' === sku + '');
-        this.$router.push(`/courseDetail/${currentCourse['cid']}/${currentCourse['name']}`)
+        this.$router.push(`/courseDetail/${sku}/${currentCourse['name']}`)
       },
       begin_class() {
         this.$router.push(`/classBegin?id=${this.$route.params.id}`)

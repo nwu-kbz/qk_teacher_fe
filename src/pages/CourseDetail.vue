@@ -397,6 +397,7 @@
       },
       handleSubmit() {
         let obj = Object.assign({}, this.questionForm, {
+          chapter:this.questionForm.chapter,
           answer: this.qForm.rightAnswer,
           questions: this.qForm.answers,
           user: 1,
