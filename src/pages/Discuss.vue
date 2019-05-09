@@ -62,21 +62,32 @@
     methods: {
       ...mapActions(['saveStudentList']),
       handleAddDiscuss() {
-        this.$http.get('/discuss/add', {params: {sku: this.$route.query.sku, name: this.disName}})
-          .then(res => {
-            if (res.data.code === 1) {
-              this.getDiscussList();
-              this.$Notice.success({
-                title: '成功',
-                content: '添加成功'
-              })
-            } else {
-              this.$Notice.error({
-                title: '失败',
-                content: '添加失败'
-              })
-            }
-          })
+        // this.$http.get('/discuss/add', {params: {sku: this.$route.query.sku, name: this.disName}})
+        //   .then(res => {
+        //     if (res.data.code === 1) {
+        //       this.getDiscussList();
+        //       this.$Notice.success({
+        //         title: '成功',
+        //         content: '添加成功'
+        //       })
+        //     } else {
+        //       this.$Notice.error({
+        //         title: '失败',
+        //         content: '添加失败'
+        //       })
+        //     }
+        //   })
+        this.socket.send(JSON.stringify({
+          type: "publish",
+          tasks: "discuss",
+          name: this.disName,
+          sku: this.$route.query.sku
+        }));
+        this.getDiscussList();
+        this.$Notice.success({
+          title: '成功',
+          content: '添加成功'
+        })
       },
       handleShowDetail(index) {
         this.currentDiscuss = this.discussList[index];
@@ -123,7 +134,10 @@
       getMessage({data}) {
         let datas = JSON.parse(data)['data'];
         console.log(datas);
-        if (datas && !_.isEmpty(datas)) ;
+        if (datas && !_.isEmpty(datas)) {
+          let dis = this.discussList.find(dis => dis.id === datas['id'] * 1);
+          dis.push({id: datas['id'] * 1, discuss: datas['id'] * 1, user: datas['user'] * 1, content: datas['content']})
+        }
       },
     },
     mounted() {
